@@ -8,7 +8,6 @@ config = {
 class NotFoundError(Exception):
     pass
 
-
 class InvalidPathError(Exception):
     pass
 
@@ -16,6 +15,22 @@ def get_data(url):
     result = urlfetch.fetch(url)
     return result.content
 
-def write_response(response, content):
-    response.headers['Content-Type'] = 'text/javascript'
-    response.out.write(content)
+def get_cached_data(url):
+    cached = memcache.get(url)
+
+    if cached:
+        return cached
+    else:
+        cached = get_data(url)
+
+    memcache.set(url, cached, config['cacheLength'])
+    return cached
+
+def write_response(request, response, content):
+    callback = request.get('callback')
+    if callback:
+        response.headers['Content-Type'] = 'text/javascript'
+        response.out.write("%s(%s)" % (callback, content))
+    else:
+        response.headers['Content-Type'] = 'application/json'
+        response.out.write(content)

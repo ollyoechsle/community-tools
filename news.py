@@ -6,7 +6,7 @@ import time
 from xml.dom import minidom
 
 def get_rss(url):
-    xml = common.get_data(url)
+    xml = common.get_cached_data(url)
     xmldoc = minidom.parseString(xml)
     items = []
     xmlItems = xmldoc.getElementsByTagName("item")
@@ -32,9 +32,7 @@ def getText(dom, tagName):
 
 class EDPRSSFeed(webapp2.RequestHandler):
     def get(self):
-        self.response.headers['Content-Type'] = 'application/json'
         content = get_rss("http://www.edp24.co.uk/cmlink/edp24_news_1_595700")
-        common.write_response(self.response, json.dumps(content))
-
+        common.write_response(self.request, self.response, json.dumps(content))
 
 app = webapp2.WSGIApplication([('/news', EDPRSSFeed)], debug=True)
