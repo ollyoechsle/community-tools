@@ -11,3 +11,5 @@ handlers:
   script: news.app
 - url: /twitter.*
   script: twitter.app
+- url: /buses.*
+  script: buses.app
