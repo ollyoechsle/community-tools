@@ -27,9 +27,6 @@ def toISOTime(text):
     formatted = time.strftime('%Y-%m-%d %H:%M:%SZ', timeObj)
     return formatted
 
-def getText(dom, tagName):
-    return dom.getElementsByTagName(tagName)[0].childNodes[0].data
-
 class EDPRSSFeed(webapp2.RequestHandler):
     def get(self):
         content = get_rss("http://www.edp24.co.uk/cmlink/edp24_news_1_595700")

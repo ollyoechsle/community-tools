@@ -8,6 +8,7 @@ from google.appengine.api import memcache
 from datetime import datetime
 import urllib
 import urllib2
+from xml.dom import minidom
 
 config = {
     'top_level': "http://nextbus.mxdata.co.uk",
@@ -77,14 +78,33 @@ def get_buses():
     else:
         cached = get_buses_xml()
 
-    memcache.set("buses", cached, 300)
+    memcache.set("buses", cached, 600)
     return cached
 
+def to_json(xml):
+
+    xmldoc = minidom.parseString(xml)
+
+    visits = xmldoc.getElementsByTagName("MonitoredStopVisit")
+
+    ret = []
+
+    for visit in visits:
+        ret.append(to_object(visit))
+
+    return ret
+
+def to_object(item):
+    return {
+        "destination": common.getText(item, 'DirectionName'),
+        "time": common.getText(item, 'AimedDepartureTime'),
+        "service": common.getText(item, 'PublishedLineName'),
+    }
 
 class Buses(webapp2.RequestHandler):
     def get(self):
 
-        content = get_buses()
-        common.write_response(self.request, self.response, content)
+        content = to_json(get_buses())
+        common.write_response(self.request, self.response, json.dumps(content))
 
 app = webapp2.WSGIApplication([('/buses', Buses)], debug=True)

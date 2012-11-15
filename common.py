@@ -15,6 +15,9 @@ def get_data(url):
     result = urlfetch.fetch(url)
     return result.content
 
+def getText(dom, tagName):
+    return dom.getElementsByTagName(tagName)[0].childNodes[0].data
+
 def get_cached_data(url):
     cached = memcache.get(url)
 
