@@ -1,2 +1,5 @@
+console.log("Welcome to Yaxham!");
 /**@namespace*/
-window.Y = Y || {};
+window.yaxham = window.yaxham || {};
+/**@namespace*/
+window.yaxham.modules = window.yaxham.modules || {};
