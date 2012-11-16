@@ -14,11 +14,16 @@
 .table tbody td {
     padding: 3px;
     border-bottom: 1px solid #666;
+    padding-right: 10px;
 }
 
 
-.departures tbody {
+.departures tbody .time {
+    text-align: right;
+}
 
+.departures tbody .inTime {
+    color: #bbb;
 }
 
 .departures tbody .service {

@@ -6,26 +6,52 @@
             throw new Error("Invalid selector: " + selector);
         }
         this.load();
+        // update the view every 10 seconds
+        setInterval(jQuery.proxy(this.updateAll, this), 10000);
+        // retrieve more data from the server every 5 minutes
+        setInterval(jQuery.proxy(this.load, this), 60000 * 5);
     }
 
     Buses.prototype.load = function () {
-        console.log("Loading bus data...");
         jQuery.ajax({
                         url:"http://localhost:8080/buses",
                         dataType:"jsonp"
-                    }
-        ).then(jQuery.proxy(this.display, this));
+                    }).then(jQuery.proxy(this.handleLoad, this));
     };
 
-    Buses.prototype.display = function (json) {
-        console.log("Displaying bus data: " + json);
+    Buses.prototype.handleLoad = function (data) {
+        this.setData(data);
+        this.updateAll();
+    };
 
-        json[0].estimated = moment().add('m', 5).format("YYYY-MM-DDTHH:mm:ss z");
+    Buses.prototype.setData = function (json) {
+        json[0].estimated = moment().add('m', 1).format("YYYY-MM-DDTHH:mm:ss z");
+        this.data = json;
+    };
 
+    Buses.prototype.updateAll = function () {
+
+        if (!this.data) {
+            return;
+        }
         var html = mustache.to_html(Buses.LIST, {
-            list:_.map(json, process)
+            list:_.map(this.data, process)
         });
+
         this.jElement.html(html);
+
+        if (this.data.length) {
+            var first = this.data[0],
+                timestamp = first.estimated || first.scheduled,
+                inPast = moment(timestamp).diff(moment()) < 0;
+
+            if (inPast) {
+                this.jElement.find("tbody tr").eq(0).fadeOut();
+                this.data.unshift();
+            }
+
+        }
+
     };
 
     function process(item) {
@@ -36,7 +62,7 @@
             afterToday = time.diff(endOfToday) > 0,
             tenMinutesTime = moment().add("m", 10),
             inTenMinutes = time.diff(tenMinutesTime) < 0,
-            formatStr = afterToday ? "ddd hh:mm" : "hh:mm";
+            formatStr = afterToday ? "ddd HH:mm" : "HH:mm";
 
         return {
             destination:item.destination,
@@ -58,7 +84,7 @@
                      + '<th class="service">Service</th>'
                      + '<th>To</th>'
                      + '<th>Departs</th>'
-                     + '<th>In</th>'
+                     + '<th></th>'
                      + '</tr>'
                      + '</thead>'
                      + '<tbody>' +
