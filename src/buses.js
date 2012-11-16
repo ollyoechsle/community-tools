@@ -25,7 +25,6 @@
     };
 
     Buses.prototype.setData = function (json) {
-        json[0].estimated = moment().add('m', 1).format("YYYY-MM-DDTHH:mm:ss z");
         this.data = json;
     };
 
