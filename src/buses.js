@@ -26,10 +26,18 @@
     };
 
     function process(item) {
+
+        var timestamp = item.estimated || item.scheduled,
+            endOfToday = moment().eod().format(),
+            time = moment(timestamp),
+            afterToday = time.diff(endOfToday) > 0,
+            formatStr = afterToday ? "ddd hh:mm" : "hh:mm";
+
         return {
             destination:item.destination,
             service:item.service,
-            time:moment(item.scheduled).fromNow()
+            timestamp: timestamp,
+            time:time.format(formatStr)
         }
     }
 
@@ -50,7 +58,7 @@
                  '<tr>' +
                  '<td class="service">{{service}}</td>' +
                  '<td>{{destination}}</td>' +
-                 '<td><time datetime="{{time}}">' +
+                 '<td><time datetime="{{timestamp}}">' +
                  '{{time}}' +
                  '</time></td>' +
                  '</tr>' +
