@@ -97,8 +97,10 @@ def to_json(xml):
 def to_object(item):
     return {
         "destination": common.getText(item, 'DirectionName'),
-        "time": common.getText(item, 'AimedDepartureTime'),
+        "scheduled": common.getText(item, 'AimedDepartureTime'),
+        "estimated": common.getText(item, 'ExpectedDepartureTime'),
         "service": common.getText(item, 'PublishedLineName'),
+        "stop": common.getText(item, 'MonitoringRef'),
     }
 
 class Buses(webapp2.RequestHandler):
