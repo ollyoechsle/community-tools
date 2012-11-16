@@ -78,7 +78,7 @@ def get_buses():
     else:
         cached = get_buses_xml()
 
-    memcache.set("buses", cached, 600)
+    memcache.set("buses", cached, 1200)
     return cached
 
 def to_json(xml):
