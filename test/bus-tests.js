@@ -36,22 +36,7 @@
 
     test("Displays data", function () {
 
-        given(data = [
-            {
-                "destination":"Norwich",
-                "scheduled":moment().format(),
-                "estimated":"",
-                "service":"4",
-                "stop":"1234"
-            },
-            {
-                "destination":"Norwich",
-                "scheduled":moment().format(),
-                "estimated":"",
-                "service":"4",
-                "stop":"1234"
-            }
-        ]);
+        given(data = [departure(), departure()]);
         given(buses.initialise());
 
         thenThe(jQuery(".busData .table"))
@@ -64,25 +49,34 @@
 
     test("Iminent Departure", function () {
 
-        given(data = [
-            {
-                "destination":"Norwich",
-                "scheduled":moment().format(),
-                "estimated":"",
-                "service":"4",
-                "stop":"1234"
-            }
-        ]);
+        given(data = [departure(moment())]);
         given(buses.initialise());
 
-        thenThe(jQuery(".busData .table"))
-            .should(beThere);
-
         thenThe(jQuery(".busData .table tbody tr"))
-            .should(haveSize(1))
             .should(haveClass("iminent"));
 
     });
+
+    test("Non Imiment Departure", function () {
+
+        given(data = [departure()]);
+        given(buses.initialise());
+
+        thenThe(jQuery(".busData .table tbody tr"))
+            .shouldNot(haveClass("iminent"));
+
+    });
+
+    function departure(at) {
+        at = at || moment().add('hours', 1);
+        return {
+            "destination":"Norwich",
+            "scheduled":at.format(),
+            "estimated":"",
+            "service":"4",
+            "stop":"1234"
+        }
+    }
 
     var buses, data;
 
