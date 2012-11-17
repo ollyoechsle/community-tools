@@ -1,0 +1,19 @@
+.table {
+    border-spacing: 0;
+}
+
+.table thead {
+    background: #999
+}
+
+.table thead th {
+    text-align: left;
+    padding: 3px;
+}
+
+.table tbody td {
+    padding: 3px;
+    border-bottom: 1px solid #666;
+    padding-right: 10px;
+}
+
