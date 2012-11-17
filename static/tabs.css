@@ -1,3 +1,24 @@
-ul.tabls {
+ul.tabs {
+    border-bottom: 2px solid #999;
+}
 
+ul.tabs li {
+    display: inline-block;
+    padding: 3px 8px;
+    color: #fbfafa;
+}
+
+.ie6, .ie7 ul.tabs li {
+    display: inline;
+}
+
+ul.tabs li:hover {
+    background: #666;
+    cursor: pointer;
+}
+
+ul.tabs li.selected,
+ul.table li.selected:hover {
+    background: #999;
+    cursor: default;
 }

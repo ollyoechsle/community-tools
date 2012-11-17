@@ -1,17 +1,27 @@
-.departures tbody .time {
+.loading {
+    background: url(loading.gif) no-repeat center;
+    line-height: 100px;
+    text-align: center;
+}
+
+.board table {
+    width: 100%;
+}
+
+.board tbody .time {
     text-align: right;
 }
 
-.departures tbody .inTime {
+.board tbody .inTime {
     color: #bbb;
 }
 
-.departures tbody .service {
+.board tbody .service {
     color: yellow;
     font-family: monospace;
     text-align: center;
 }
 
-.departures tbody .iminent .inTime  {
+.board tbody .iminent .inTime  {
     color: red;
 }

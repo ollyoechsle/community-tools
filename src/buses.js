@@ -1,43 +1,67 @@
-(function (jQuery) {
+(function () {
 
     function Buses(selector) {
         this.jElement = jQuery(selector);
         if (this.jElement.length == 0) {
             throw new Error("Invalid selector: " + selector);
         }
-        this.load();
-        // update the view every 10 seconds
-        setInterval(jQuery.proxy(this.updateAll, this), 10000);
-        // retrieve more data from the server every 5 minutes
-        setInterval(jQuery.proxy(this.load, this), 60000 * 5);
+        this.jElement.html(Buses.MARKUP);
+        this.jBoard = this.jElement.find(".board");
+        this.intervals = [];
+        console.log("Buses, initialised with board ", this.jBoard);
     }
 
-    Buses.prototype.load = function () {
-        jQuery.ajax({
-                        url:"http://community-tools.appspot.com/buses",
-                        dataType:"jsonp"
-                    }).then(jQuery.proxy(this.handleLoad, this));
-    };
-
-    Buses.prototype.handleLoad = function (data) {
-        this.setData(data);
+    Buses.prototype.initialise = function () {
+        this.load();
+        // update the board every 10 seconds
+        this.intervals.push(setInterval(this.updateAll.bind(this), 10000));
+        // retrieve more data from the server every 5 minutes
+        this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.updateAll();
     };
 
-    Buses.prototype.setData = function (json) {
-        this.data = json;
+    Buses.prototype.load = function () {
+        console.log("Starting to load...");
+        var data = {
+            url:Buses.URL,
+            dataType:"jsonp"
+        };
+        var promise = jQuery.ajax(data);
+        promise.then(this.handleLoad.bind(this));
+    };
+
+    Buses.prototype.handleLoad = function (data) {
+        console.log("Finished loading");
+        this.data = data;
+        this.updateAll();
     };
 
     Buses.prototype.updateAll = function () {
 
-        if (!this.data) {
-            return;
+        if (this.data) {
+            this.displayBoard();
+        } else {
+            this.displayLoading();
         }
+
+    };
+
+    Buses.prototype.displayLoading = function () {
+        console.log("Loading...");
+        this.jBoard
+            .addClass("loading")
+            .html("Loading live bus departures...");
+    };
+
+    Buses.prototype.displayBoard = function () {
+        console.log("Displaying board...");
         var html = mustache.to_html(Buses.LIST, {
             list:this.data.map(process)
         });
 
-        this.jElement.html(html);
+        this.jBoard
+            .removeClass("loading")
+            .html(html);
 
         if (this.data.length) {
             var first = this.data[0],
@@ -51,6 +75,12 @@
 
         }
 
+    };
+
+    Buses.prototype.destroy = function() {
+        this.intervals.forEach(function(interval) {
+            window.clearInteval(interval);
+        })
     };
 
     function process(item) {
@@ -73,11 +103,12 @@
         }
     }
 
+
     /**
-     * @type {String} Rendering the list of keywords
+     * @type {String}
      */
     Buses.LIST = '' +
-                 '<table class="table departures">'
+                 '<table class="table">'
                      + '<thead>'
                      + '<tr>'
                      + '<th class="service">Service</th>'
@@ -100,6 +131,15 @@
                  '</tbody>' +
                  '</table>';
 
+    Buses.MARKUP = '<h2>Bus Departures</h2>' +
+                   '<ul class="tabs">' +
+                   '<li class="selected">To Dereham</li>' +
+                   '<li>To Norwich</li>' +
+                   '</ul>' +
+                   '<div class="board"></div>';
+
+    Buses.URL = "http://community-tools.appspot.com/buses";
+
     yaxham.modules.Buses = Buses;
 
-})(jQuery);
+})();

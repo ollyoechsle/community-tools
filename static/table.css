@@ -9,11 +9,17 @@
 .table thead th {
     text-align: left;
     padding: 3px;
+    color: #fbfafa;
 }
 
 .table tbody td {
     padding: 3px;
     border-bottom: 1px solid #666;
     padding-right: 10px;
+}
+
+.table tr:hover {
+    background: #666;
+    -webkit-transition: all 1s ease;
 }
 
