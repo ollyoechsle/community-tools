@@ -14,10 +14,11 @@ config = {
     'top_level': "http://nextbus.mxdata.co.uk",
     'url': "http://nextbus.mxdata.co.uk/nextbuses/1.0/1",
     'username': "TravelineAPI138",
+    'stop': "nfogjmpt",
     'password': "AeD6Otai"
 }
 
-def get_soap_request(*arg):
+def get_soap_request(stop):
 
     now = datetime.now()
 
@@ -29,18 +30,18 @@ def get_soap_request(*arg):
             '<StopMonitoringRequest version="1.0">'
             '<RequestTimestamp>%s</RequestTimestamp>'
             '<MessageIdentifier>123</MessageIdentifier>'
-            '<MonitoringRef>2900D1590</MonitoringRef>'
+            '<MonitoringRef>%s</MonitoringRef>'
             '</StopMonitoringRequest>'
             '</ServiceRequest>'
             '</Siri>')
 
     formatted = now.strftime('%Y-%m-%d %H:%M:%SZ')
 
-    return (post % (formatted, config["username"], formatted))
+    return (post % (formatted, config["username"], formatted, stop))
 
-def get_buses_xml():
+def get_buses_xml(stop):
 
-    soap_request = get_soap_request()
+    soap_request = get_soap_request(stop)
 
     # create a password manager
     password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
@@ -69,16 +70,18 @@ def get_buses_xml():
     return response.read()
 
 
-def get_buses():
+def get_buses(stop):
 
-    cached = memcache.get("buses")
+    cache_id = "bus_request" + stop
+
+    cached = memcache.get(cache_id)
 
     if cached:
         return cached
     else:
-        cached = get_buses_xml()
+        cached = get_buses_xml(stop)
 
-    memcache.set("buses", cached, 1200)
+    memcache.set("buses", cache_id, 1200)
     return cached
 
 def to_json(xml):
@@ -106,7 +109,14 @@ def to_object(item):
 class Buses(webapp2.RequestHandler):
     def get(self):
 
-        content = to_json(get_buses())
+        stop = self.request.get("stop")
+        logging.info("Request for stop:" + stop)
+
+        if stop == "":
+            logging.info("Using default stop")
+            stop = config["stop"]
+
+        content = to_json(get_buses(stop))
         common.write_response(self.request, self.response, json.dumps(content))
 
 app = webapp2.WSGIApplication([('/buses', Buses)], debug=True)
