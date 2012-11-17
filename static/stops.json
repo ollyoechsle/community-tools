@@ -1,0 +1,98 @@
+[
+    {
+        "AtcoCode":"2900Y011",
+        "NaptanCode":"nfogjmpt",
+        "CommonName":"Bus Shelter",
+        "Landmark":"The Rosary",
+        "Street":"Norwich Road",
+        "Indicator":"adj",
+        "Bearing":"W",
+        "LocalityName":"Yaxham",
+        "Longitude":0.96479,
+        "Latitude":52.6557
+    },
+    {
+        "AtcoCode":"2900Y013",
+        "NaptanCode":"nfogjmpw",
+        "CommonName":"Well Hill",
+        "Landmark":"Well Hill",
+        "Street":"Norwich Road",
+        "Indicator":"opp",
+        "Bearing":"NE",
+        "LocalityName":"Clint Green",
+        "Longitude":0.98935,
+        "Latitude":52.65937
+    },
+    {
+        "AtcoCode":"2900Y014",
+        "NaptanCode":"nfogjmta",
+        "CommonName":"Bus Shelter",
+        "Landmark":"The Rosary",
+        "Street":"Norwich Road",
+        "Indicator":"opp",
+        "Bearing":"E",
+        "LocalityName":"Yaxham",
+        "Longitude":0.96461,
+        "Latitude":52.65584
+    },
+    {
+        "AtcoCode":"2900Y015",
+        "NaptanCode":"nfogjmtd",
+        "CommonName":"Well Hill",
+        "Landmark":"Well Hill",
+        "Street":"Norwich Road",
+        "Indicator":"adj",
+        "Bearing":"SW",
+        "LocalityName":"Clint Green",
+        "Longitude":0.98847,
+        "Latitude":52.65877
+    },
+    {
+        "AtcoCode":"2900Y016",
+        "NaptanCode":"nfogjmtg",
+        "CommonName":"Elm Close",
+        "Landmark":"St. Peters Close",
+        "Street":"Norwich Road",
+        "Indicator":"opp",
+        "Bearing":"W",
+        "LocalityName":"Yaxham",
+        "Longitude":0.9689,
+        "Latitude":52.65518
+    },
+    {
+        "AtcoCode":"2900Y017",
+        "NaptanCode":"nfogjmtj",
+        "CommonName":"Elm Close",
+        "Landmark":"Elm Close",
+        "Street":"Norwich Road",
+        "Indicator":"adj",
+        "Bearing":"NW",
+        "LocalityName":"Yaxham",
+        "Longitude":0.96829,
+        "Latitude":52.65514
+    },
+    {
+        "AtcoCode":"2900Y018",
+        "NaptanCode":"nfogmtdw",
+        "CommonName":"Station Road",
+        "Landmark":"Station Road",
+        "Street":"Dereham Road",
+        "Indicator":"opp",
+        "Bearing":"SE",
+        "LocalityName":"Yaxham",
+        "Longitude":0.96239,
+        "Latitude":52.65583
+    },
+    {
+        "AtcoCode":"2900Y019",
+        "NaptanCode":"nfogpdjd",
+        "CommonName":"Station Road",
+        "Landmark":"",
+        "Street":"Dereham Road",
+        "Indicator":"adj",
+        "Bearing":"NW",
+        "LocalityName":"Yaxham",
+        "Longitude":0.96207,
+        "Latitude":52.65608
+    }
+]

@@ -14,7 +14,7 @@
 
     Buses.prototype.load = function () {
         jQuery.ajax({
-                        url:"http://localhost:8080/buses",
+                        url:"http://community-tools.appspot.com/buses",
                         dataType:"jsonp"
                     }).then(jQuery.proxy(this.handleLoad, this));
     };
