@@ -59,8 +59,8 @@
             endOfToday = moment().eod().format(),
             time = moment(timestamp),
             afterToday = time.diff(endOfToday) > 0,
-            tenMinutesTime = moment().add("m", 10),
-            inTenMinutes = time.diff(tenMinutesTime) < 0,
+            fiveMinutesTime = moment().add("m", 5),
+            inTenMinutes = time.diff(fiveMinutesTime) < 0,
             formatStr = afterToday ? "ddd HH:mm" : "HH:mm";
 
         return {
