@@ -36,11 +36,22 @@
 
     test("Displays data", function () {
 
-        given(data = []);
+        given(data = [
+            {
+                "destination":"Norwich",
+                "scheduled":"2012-11-17T21:49:45Z",
+                "estimated":"",
+                "service":"4",
+                "stop":"1234"
+            }
+        ]);
         given(buses.initialise());
 
         thenThe(jQuery(".busData .table"))
             .should(beThere);
+
+        thenThe(jQuery(".busData .table tbody tr"))
+            .should(haveSize(1));
 
     });
 
