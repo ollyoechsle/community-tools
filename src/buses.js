@@ -55,7 +55,7 @@
 
     Buses.prototype.displayBoard = function () {
         console.log("Displaying board...");
-        var html = mustache.to_html(Buses.LIST, {
+        var html = Mustache.to_html(Buses.LIST, {
             list:this.data.map(process)
         });
 
@@ -79,7 +79,7 @@
 
     Buses.prototype.destroy = function() {
         this.intervals.forEach(function(interval) {
-            window.clearInteval(interval);
+            window.clearInterval(interval);
         })
     };
 
