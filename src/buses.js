@@ -34,7 +34,7 @@
             return;
         }
         var html = mustache.to_html(Buses.LIST, {
-            list:_.map(this.data, process)
+            list:this.data.map(process)
         });
 
         this.jElement.html(html);
