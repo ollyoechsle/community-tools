@@ -13,6 +13,7 @@
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
+        this.view.on("stopChanged", this.load.bind(this));
     };
 
     BusDeparturesController.prototype.load = function () {
@@ -34,7 +35,8 @@
     BusDeparturesController.prototype.destroy = function () {
         this.intervals.forEach(function (interval) {
             window.clearInterval(interval);
-        })
+        });
+        this.view.destroy();
     };
 
     BusDeparturesController.URL = "http://community-tools.appspot.com/buses";

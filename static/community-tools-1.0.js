@@ -20,6 +20,7 @@ window.yaxham.modules = window.yaxham.modules || {};
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
+        this.view.on("stopChanged", this.load.bind(this));
     };
 
     BusDeparturesController.prototype.load = function () {
@@ -41,7 +42,8 @@ window.yaxham.modules = window.yaxham.modules || {};
     BusDeparturesController.prototype.destroy = function () {
         this.intervals.forEach(function (interval) {
             window.clearInterval(interval);
-        })
+        });
+        this.view.destroy();
     };
 
     BusDeparturesController.URL = "http://community-tools.appspot.com/buses";
@@ -56,12 +58,12 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.directions = [
             {
                 "direction":"To Dereham",
-                "stop":"",
+                "stop":"nfogjmpw",
                 className:"selected"
             },
             {
                 "direction":"To Norwich",
-                "stop":""
+                "stop":"nfogjmta"
             },
 
         ];
@@ -137,14 +139,26 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     BusDeparturesView.prototype.initialise = function () {
 
+        var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
+            list:this.model.directions
+        });
+
         this.jElement
             .append(BusDeparturesView.HEADING)
-            .append(Mustache.to_html(BusDeparturesView.TABS, {
-            list:this.model.directions
-        }))
+            .append(tabsHTML)
             .append(BusDeparturesView.BOARD);
 
         this.jBoard = this.jElement.find(".board");
+        this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
+    };
+
+    BusDeparturesView.prototype.handleTabClick = function(jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            stop = jTarget.data("stop");
+
+        console.log("Changing stop to : " + stop);
+        this.fire("stopChanged", stop);
+
     };
 
     BusDeparturesView.prototype.updateAll = function () {
@@ -183,6 +197,10 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     };
 
+    BusDeparturesView.prototype.destroy = function() {
+        this.jElement.undelegate();
+    };
+
     /**
      * @type {String}
      */
@@ -214,7 +232,7 @@ window.yaxham.modules = window.yaxham.modules || {};
     BusDeparturesView.BOARD = '<div class="board"></div>';
     BusDeparturesView.TABS = '<ul class="tabs">' +
                              '{{#list}}' +
-                             '<li class="{{className}}">{{direction}}</li>' +
+                             '<li data-stop="{{stop}}" class="{{className}}">{{direction}}</li>' +
                              '{{/list}}' +
                              '</ul>';
 

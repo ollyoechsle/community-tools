@@ -5,12 +5,12 @@
         this.directions = [
             {
                 "direction":"To Dereham",
-                "stop":"",
+                "stop":"nfogjmpw",
                 className:"selected"
             },
             {
                 "direction":"To Norwich",
-                "stop":""
+                "stop":"nfogjmta"
             },
 
         ];

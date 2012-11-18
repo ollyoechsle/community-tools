@@ -76,12 +76,28 @@
             .should(haveSize(2));
 
         thenThe(jQuery(".tabs li").eq(0))
+            .should(haveAttribute("data-stop", "nfogjmpw"))
             .should(haveText("To Dereham"))
             .should(haveClass("selected"));
 
         thenThe(jQuery(".tabs li").eq(1))
+            .should(haveAttribute("data-stop", "nfogjmta"))
             .should(haveText("To Norwich"))
             .shouldNot(haveClass("selected"))
+
+    });
+
+    test("Switch tabs", function () {
+
+        given(sinon.stub(busController, "load"));
+        given(data = [departure()]);
+        given(busController.initialise());
+
+        thenThe(busController.load).shouldHaveBeen(calledOnce);
+
+        when(theUserClicksOn(jQuery(".tabs li:not(.selected)")));
+
+        thenThe(busController.load).shouldHaveBeen(calledAgain);
 
     });
 

@@ -17,14 +17,26 @@
 
     BusDeparturesView.prototype.initialise = function () {
 
+        var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
+            list:this.model.directions
+        });
+
         this.jElement
             .append(BusDeparturesView.HEADING)
-            .append(Mustache.to_html(BusDeparturesView.TABS, {
-            list:this.model.directions
-        }))
+            .append(tabsHTML)
             .append(BusDeparturesView.BOARD);
 
         this.jBoard = this.jElement.find(".board");
+        this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
+    };
+
+    BusDeparturesView.prototype.handleTabClick = function(jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            stop = jTarget.data("stop");
+
+        console.log("Changing stop to : " + stop);
+        this.fire("stopChanged", stop);
+
     };
 
     BusDeparturesView.prototype.updateAll = function () {
@@ -63,6 +75,10 @@
 
     };
 
+    BusDeparturesView.prototype.destroy = function() {
+        this.jElement.undelegate();
+    };
+
     /**
      * @type {String}
      */
@@ -94,7 +110,7 @@
     BusDeparturesView.BOARD = '<div class="board"></div>';
     BusDeparturesView.TABS = '<ul class="tabs">' +
                              '{{#list}}' +
-                             '<li class="{{className}}">{{direction}}</li>' +
+                             '<li data-stop="{{stop}}" class="{{className}}">{{direction}}</li>' +
                              '{{/list}}' +
                              '</ul>';
 
