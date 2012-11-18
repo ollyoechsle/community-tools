@@ -76,14 +76,30 @@
             .should(haveSize(2));
 
         thenThe(jQuery(".tabs li").eq(0))
-            .should(haveAttribute("data-stop", "nfogjmpw"))
-            .should(haveText("To Dereham"))
-            .should(haveClass("selected"));
+            .should(haveAttribute("data-stop", "nfogjmpt"))
+            .should(haveText("To Dereham"));
 
         thenThe(jQuery(".tabs li").eq(1))
             .should(haveAttribute("data-stop", "nfogjmta"))
-            .should(haveText("To Norwich"))
-            .shouldNot(haveClass("selected"))
+            .should(haveText("To Norwich"));
+
+    });
+
+    test("Selects Correct Tabs", function () {
+
+        given(busController.model.data = [departure()]);
+
+        when(busController.model.stopId = "nfogjmpt");
+        when(busController.view.updateAll());
+
+        thenThe(jQuery(".tabs li.selected"))
+            .should(haveAttribute("data-stop", "nfogjmpt"));
+
+        when(busController.model.stopId = "nfogjmta");
+        when(busController.view.updateAll());
+
+        thenThe(jQuery(".tabs li.selected"))
+            .should(haveAttribute("data-stop", "nfogjmta"));
 
     });
 
@@ -95,7 +111,10 @@
 
         thenThe(busController.load).shouldHaveBeen(calledOnce);
 
+        given(data = null);
         when(theUserClicksOn(jQuery(".tabs li:not(.selected)")));
+        thenThe(jQuery(".busData .board"))
+            .should(containText("Loading"));
 
         thenThe(busController.load).shouldHaveBeen(calledAgain);
 

@@ -20,14 +20,24 @@ window.yaxham.modules = window.yaxham.modules || {};
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
-        this.view.on("stopChanged", this.load.bind(this));
+        this.view.on("stopChanged", this.handleStopChanged.bind(this));
     };
 
-    BusDeparturesController.prototype.load = function () {
+    BusDeparturesController.prototype.handleStopChanged = function(stopId) {
+        this.model.data = null;
+        this.model.stopId = stopId;
+        this.load(stopId);
+        this.view.updateAll();
+    };
+
+    BusDeparturesController.prototype.load = function (stopId) {
         console.log("Starting to load...");
         var data = {
             url:BusDeparturesController.URL,
-            dataType:"jsonp"
+            dataType:"jsonp",
+            data:{
+                stop:stopId
+            }
         };
         var promise = jQuery.ajax(data);
         promise.then(this.handleLoad.bind(this));
@@ -58,16 +68,18 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.directions = [
             {
                 "direction":"To Dereham",
-                "stop":"nfogjmpw",
-                className:"selected"
+                "stop":"nfogjmpt"
             },
             {
                 "direction":"To Norwich",
                 "stop":"nfogjmta"
-            },
+            }
 
         ];
+        this.stopId = this.directions[0].stop;
     }
+
+    BusDeparturesModel.stopId = null;
 
     BusDeparturesModel.data = null;
 
@@ -77,6 +89,16 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     BusDeparturesModel.prototype.getDepartures = function () {
         return this.data.map(process)
+    };
+
+    BusDeparturesModel.prototype.getDirections = function () {
+        return this.directions.map(function (obj) {
+            return {
+                direction:obj.direction,
+                stop:obj.stop,
+                className:obj.stop == this.stopId ? "selected" : ""
+            }
+        }.bind(this))
     };
 
     BusDeparturesModel.prototype.firstDepartureAlreadyLeft = function () {
@@ -138,21 +160,12 @@ window.yaxham.modules = window.yaxham.modules || {};
     BusDeparturesView.prototype.jBoard = null;
 
     BusDeparturesView.prototype.initialise = function () {
-
-        var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
-            list:this.model.directions
-        });
-
-        this.jElement
-            .append(BusDeparturesView.HEADING)
-            .append(tabsHTML)
-            .append(BusDeparturesView.BOARD);
-
+        this.jElement.append(BusDeparturesView.MARKUP);
         this.jBoard = this.jElement.find(".board");
         this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
     };
 
-    BusDeparturesView.prototype.handleTabClick = function(jEvent) {
+    BusDeparturesView.prototype.handleTabClick = function (jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
             stop = jTarget.data("stop");
 
@@ -162,6 +175,11 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesView.prototype.updateAll = function () {
+
+        var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
+                    list:this.model.getDirections()
+                });
+        this.jElement.find(".tabs").html(tabsHTML);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -197,7 +215,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     };
 
-    BusDeparturesView.prototype.destroy = function() {
+    BusDeparturesView.prototype.destroy = function () {
         this.jElement.undelegate();
     };
 
@@ -228,13 +246,10 @@ window.yaxham.modules = window.yaxham.modules || {};
                              '</tbody>' +
                              '</table>';
 
-    BusDeparturesView.HEADING = '<h2>Bus Departures</h2>';
-    BusDeparturesView.BOARD = '<div class="board"></div>';
-    BusDeparturesView.TABS = '<ul class="tabs">' +
-                             '{{#list}}' +
+    BusDeparturesView.MARKUP = '<h2>Bus Departures</h2><ul class="tabs"></ul><div class="board"></div>';
+    BusDeparturesView.TABS = '{{#list}}' +
                              '<li data-stop="{{stop}}" class="{{className}}">{{direction}}</li>' +
-                             '{{/list}}' +
-                             '</ul>';
+                             '{{/list}}';
 
     yaxham.modules.BusDeparturesView = BusDeparturesView;
 

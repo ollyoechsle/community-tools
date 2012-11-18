@@ -16,21 +16,12 @@
     BusDeparturesView.prototype.jBoard = null;
 
     BusDeparturesView.prototype.initialise = function () {
-
-        var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
-            list:this.model.directions
-        });
-
-        this.jElement
-            .append(BusDeparturesView.HEADING)
-            .append(tabsHTML)
-            .append(BusDeparturesView.BOARD);
-
+        this.jElement.append(BusDeparturesView.MARKUP);
         this.jBoard = this.jElement.find(".board");
         this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
     };
 
-    BusDeparturesView.prototype.handleTabClick = function(jEvent) {
+    BusDeparturesView.prototype.handleTabClick = function (jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
             stop = jTarget.data("stop");
 
@@ -40,6 +31,11 @@
     };
 
     BusDeparturesView.prototype.updateAll = function () {
+
+        var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
+                    list:this.model.getDirections()
+                });
+        this.jElement.find(".tabs").html(tabsHTML);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -75,7 +71,7 @@
 
     };
 
-    BusDeparturesView.prototype.destroy = function() {
+    BusDeparturesView.prototype.destroy = function () {
         this.jElement.undelegate();
     };
 
@@ -106,13 +102,10 @@
                              '</tbody>' +
                              '</table>';
 
-    BusDeparturesView.HEADING = '<h2>Bus Departures</h2>';
-    BusDeparturesView.BOARD = '<div class="board"></div>';
-    BusDeparturesView.TABS = '<ul class="tabs">' +
-                             '{{#list}}' +
+    BusDeparturesView.MARKUP = '<h2>Bus Departures</h2><ul class="tabs"></ul><div class="board"></div>';
+    BusDeparturesView.TABS = '{{#list}}' +
                              '<li data-stop="{{stop}}" class="{{className}}">{{direction}}</li>' +
-                             '{{/list}}' +
-                             '</ul>';
+                             '{{/list}}';
 
     yaxham.modules.BusDeparturesView = BusDeparturesView;
 

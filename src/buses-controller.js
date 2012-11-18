@@ -13,14 +13,24 @@
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
-        this.view.on("stopChanged", this.load.bind(this));
+        this.view.on("stopChanged", this.handleStopChanged.bind(this));
     };
 
-    BusDeparturesController.prototype.load = function () {
+    BusDeparturesController.prototype.handleStopChanged = function(stopId) {
+        this.model.data = null;
+        this.model.stopId = stopId;
+        this.load(stopId);
+        this.view.updateAll();
+    };
+
+    BusDeparturesController.prototype.load = function (stopId) {
         console.log("Starting to load...");
         var data = {
             url:BusDeparturesController.URL,
-            dataType:"jsonp"
+            dataType:"jsonp",
+            data:{
+                stop:stopId
+            }
         };
         var promise = jQuery.ajax(data);
         promise.then(this.handleLoad.bind(this));

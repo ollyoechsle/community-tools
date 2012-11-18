@@ -5,16 +5,18 @@
         this.directions = [
             {
                 "direction":"To Dereham",
-                "stop":"nfogjmpw",
-                className:"selected"
+                "stop":"nfogjmpt"
             },
             {
                 "direction":"To Norwich",
                 "stop":"nfogjmta"
-            },
+            }
 
         ];
+        this.stopId = this.directions[0].stop;
     }
+
+    BusDeparturesModel.stopId = null;
 
     BusDeparturesModel.data = null;
 
@@ -24,6 +26,16 @@
 
     BusDeparturesModel.prototype.getDepartures = function () {
         return this.data.map(process)
+    };
+
+    BusDeparturesModel.prototype.getDirections = function () {
+        return this.directions.map(function (obj) {
+            return {
+                direction:obj.direction,
+                stop:obj.stop,
+                className:obj.stop == this.stopId ? "selected" : ""
+            }
+        }.bind(this))
     };
 
     BusDeparturesModel.prototype.firstDepartureAlreadyLeft = function () {
