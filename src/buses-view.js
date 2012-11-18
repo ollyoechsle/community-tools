@@ -48,8 +48,7 @@
     BusDeparturesView.prototype.displayLoading = function () {
         console.log("Loading...");
         this.jBoard
-            .addClass("loading")
-            .html("Loading live bus departures...");
+            .addClass("loading");
     };
 
     BusDeparturesView.prototype.displayBoard = function () {

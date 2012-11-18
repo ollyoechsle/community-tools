@@ -28,7 +28,7 @@
             .should(haveText("Bus Departures"));
 
         thenThe(jQuery(".busData .board"))
-            .should(containText("Loading"));
+            .should(haveClass("loading"));
 
         thenThe(jQuery.ajax).shouldHaveBeen(calledOnce);
 
@@ -124,7 +124,7 @@
         given(data = null);
         when(theUserClicksOn(jQuery(".tabs li:not(.selected)")));
         thenThe(jQuery(".busData .board"))
-            .should(containText("Loading"));
+            .should(haveClass("loading"));
 
         thenThe(busController.load).shouldHaveBeen(calledAgain);
 
