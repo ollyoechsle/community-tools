@@ -88,7 +88,9 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesModel.prototype.getDepartures = function () {
-        return this.data.map(process)
+        return this.data
+            .map(process)
+            .filter(noMoreThan5)
     };
 
     BusDeparturesModel.prototype.getDirections = function () {
@@ -118,6 +120,10 @@ window.yaxham.modules = window.yaxham.modules || {};
         return false;
 
     };
+
+    function noMoreThan5(val, i) {
+        return i < 5;
+    }
 
     function process(item) {
 

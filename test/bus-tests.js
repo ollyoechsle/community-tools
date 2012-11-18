@@ -47,6 +47,16 @@
 
     });
 
+    test("Limits amount of data", function () {
+
+        given(data = [departure(), departure(), departure(), departure(), departure(), departure(), departure()]);
+        given(busController.initialise());
+
+        thenThe(jQuery(".busData .table tbody tr"))
+            .should(haveSize(5));
+
+    });
+
     test("Iminent Departure", function () {
 
         given(data = [departure(moment())]);

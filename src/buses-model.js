@@ -25,7 +25,9 @@
     };
 
     BusDeparturesModel.prototype.getDepartures = function () {
-        return this.data.map(process)
+        return this.data
+            .map(process)
+            .filter(noMoreThan5)
     };
 
     BusDeparturesModel.prototype.getDirections = function () {
@@ -55,6 +57,10 @@
         return false;
 
     };
+
+    function noMoreThan5(val, i) {
+        return i < 5;
+    }
 
     function process(item) {
 
