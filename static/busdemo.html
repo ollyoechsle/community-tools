@@ -37,7 +37,8 @@
 
         window.Mustache = mustache;
 
-        yaxham.modules.Buses.URL = "http://localhost:8080/buses";
+        var location = self.location;
+        yaxham.modules.BusDeparturesController.URL = location.protocol + "//" + location.host + "/buses";
 
         yaxham.modules.Buses(".busData").initialise();
 

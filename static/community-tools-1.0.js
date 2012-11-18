@@ -23,20 +23,20 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.view.on("stopChanged", this.handleStopChanged.bind(this));
     };
 
-    BusDeparturesController.prototype.handleStopChanged = function(stopId) {
+    BusDeparturesController.prototype.handleStopChanged = function (stopId) {
         this.model.data = null;
         this.model.stopId = stopId;
-        this.load(stopId);
+        this.load();
         this.view.updateAll();
     };
 
-    BusDeparturesController.prototype.load = function (stopId) {
-        console.log("Starting to load...");
+    BusDeparturesController.prototype.load = function () {
+        console.log("Loading data from " + BusDeparturesController.URL);
         var data = {
             url:BusDeparturesController.URL,
             dataType:"jsonp",
             data:{
-                stop:stopId
+                stop:this.model.stopId
             }
         };
         var promise = jQuery.ajax(data);
