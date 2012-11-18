@@ -52,8 +52,19 @@ window.yaxham.modules = window.yaxham.modules || {};
 (function () {
 
     function BusDeparturesModel(view) {
-        this.intervals = [];
         this.view = view;
+        this.directions = [
+            {
+                "direction":"To Dereham",
+                "stop":"",
+                className:"selected"
+            },
+            {
+                "direction":"To Norwich",
+                "stop":""
+            },
+
+        ];
     }
 
     BusDeparturesModel.data = null;
@@ -114,12 +125,27 @@ window.yaxham.modules = window.yaxham.modules || {};
         if (this.jElement.length == 0) {
             throw new Error("Invalid selector: " + selector);
         }
-        this.jElement.html(BusDeparturesView.MARKUP);
-        this.jBoard = this.jElement.find(".board");
         this.model = model;
-        this.intervals = [];
+        this.initialise();
         console.log("Buses, initialised with board ", this.jBoard);
     }
+
+    BusDeparturesView.prototype = Object.create(Subscribable.prototype);
+
+    BusDeparturesView.prototype.jElement = null;
+    BusDeparturesView.prototype.jBoard = null;
+
+    BusDeparturesView.prototype.initialise = function () {
+
+        this.jElement
+            .append(BusDeparturesView.HEADING)
+            .append(Mustache.to_html(BusDeparturesView.TABS, {
+            list:this.model.directions
+        }))
+            .append(BusDeparturesView.BOARD);
+
+        this.jBoard = this.jElement.find(".board");
+    };
 
     BusDeparturesView.prototype.updateAll = function () {
 
@@ -184,12 +210,13 @@ window.yaxham.modules = window.yaxham.modules || {};
                              '</tbody>' +
                              '</table>';
 
-    BusDeparturesView.MARKUP = '<h2>Bus Departures</h2>' +
-                               '<ul class="tabs">' +
-                               '<li class="selected">To Dereham</li>' +
-                               '<li>To Norwich</li>' +
-                               '</ul>' +
-                               '<div class="board"></div>';
+    BusDeparturesView.HEADING = '<h2>Bus Departures</h2>';
+    BusDeparturesView.BOARD = '<div class="board"></div>';
+    BusDeparturesView.TABS = '<ul class="tabs">' +
+                             '{{#list}}' +
+                             '<li class="{{className}}">{{direction}}</li>' +
+                             '{{/list}}' +
+                             '</ul>';
 
     yaxham.modules.BusDeparturesView = BusDeparturesView;
 

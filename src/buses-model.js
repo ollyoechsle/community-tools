@@ -1,8 +1,19 @@
 (function () {
 
     function BusDeparturesModel(view) {
-        this.intervals = [];
         this.view = view;
+        this.directions = [
+            {
+                "direction":"To Dereham",
+                "stop":"",
+                className:"selected"
+            },
+            {
+                "direction":"To Norwich",
+                "stop":""
+            },
+
+        ];
     }
 
     BusDeparturesModel.data = null;

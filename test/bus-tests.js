@@ -57,13 +57,31 @@
 
     });
 
-    test("Non Imiment Departure", function () {
+    test("Non Iminent Departure", function () {
 
         given(data = [departure()]);
         given(busController.initialise());
 
         thenThe(jQuery(".busData .table tbody tr"))
             .shouldNot(haveClass("iminent"));
+
+    });
+
+    test("Adds Tabs", function () {
+
+        given(data = [departure()]);
+        given(busController.initialise());
+
+        thenThe(jQuery(".tabs li"))
+            .should(haveSize(2));
+
+        thenThe(jQuery(".tabs li").eq(0))
+            .should(haveText("To Dereham"))
+            .should(haveClass("selected"));
+
+        thenThe(jQuery(".tabs li").eq(1))
+            .should(haveText("To Norwich"))
+            .shouldNot(haveClass("selected"))
 
     });
 
@@ -79,5 +97,9 @@
     }
 
     var busController, data;
+
+    function theUserClicksOn(jObj) {
+        jObj.click();
+    }
 
 })();
