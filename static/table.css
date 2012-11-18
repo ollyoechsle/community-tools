@@ -18,7 +18,7 @@
     padding-right: 10px;
 }
 
-.table tr:hover {
+.table tbody tr:hover {
     background: #666;
     -webkit-transition: all 1s ease;
 }

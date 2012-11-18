@@ -1,6 +1,6 @@
 .loading {
     background: url(loading.gif) no-repeat center;
-    line-height: 137px;
+    min-height: 137px;
     text-align: center;
 }
 
