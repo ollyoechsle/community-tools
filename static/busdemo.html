@@ -34,11 +34,11 @@
                 'http://cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.2/moment.min.js'
             ], function (communityTools, mustache, moment, _) {
 
-        window.mustache = mustache;
+        window.Mustache = mustache;
 
         yaxham.modules.Buses.URL = "http://localhost:8080/buses";
 
-        new yaxham.modules.Buses(".busData").initialise();
+        yaxham.modules.Buses(".busData").initialise();
 
     });
 </script>

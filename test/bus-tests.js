@@ -10,18 +10,18 @@
                                     then:function (f) {
                                         f(data);
                                     }});
-            buses = new yaxham.modules.Buses(".busData");
+            busController = yaxham.modules.Buses(".busData");
         },
         teardown:function () {
             jQuery.ajax.restore();
             jQuery(".busData").remove();
-            buses.destroy();
+            busController.destroy();
         }
     });
 
     test("Initialises", function () {
 
-        given(buses.initialise());
+        given(busController.initialise());
 
         thenThe(jQuery(".busData h2"))
             .should(haveSize(1))
@@ -37,7 +37,7 @@
     test("Displays data", function () {
 
         given(data = [departure(), departure()]);
-        given(buses.initialise());
+        given(busController.initialise());
 
         thenThe(jQuery(".busData .table"))
             .should(beThere);
@@ -50,7 +50,7 @@
     test("Iminent Departure", function () {
 
         given(data = [departure(moment())]);
-        given(buses.initialise());
+        given(busController.initialise());
 
         thenThe(jQuery(".busData .table tbody tr"))
             .should(haveClass("iminent"));
@@ -60,7 +60,7 @@
     test("Non Imiment Departure", function () {
 
         given(data = [departure()]);
-        given(buses.initialise());
+        given(busController.initialise());
 
         thenThe(jQuery(".busData .table tbody tr"))
             .shouldNot(haveClass("iminent"));
@@ -78,6 +78,6 @@
         }
     }
 
-    var buses, data;
+    var busController, data;
 
 })();
