@@ -2,13 +2,12 @@
 
     function BusDeparturesModel(view) {
         this.view = view;
-        var stops = this.getStops("opp");
-        console.log(stops);
-        this.stopId = stops[0].NaptanCode;
+        this.locationIndex = 0;
+        this.direction = "dereham";
     }
 
-    BusDeparturesModel.stopId = null;
-
+    BusDeparturesModel.locationIndex = null;
+    BusDeparturesModel.direction = null;
     BusDeparturesModel.data = null;
 
     BusDeparturesModel.prototype.hasData = function () {
@@ -22,20 +21,23 @@
     };
 
     BusDeparturesModel.prototype.getDirections = function () {
-        return BusDeparturesModel.INDICATORS.map(function (obj) {
-            var stop = this.getStops(obj.indicator)[0];
+        return BusDeparturesModel.DIRECTIONS.map(function (direction) {
             return {
-                direction:obj.label,
-                stop:stop.NaptanCode,
-                className:stop.NaptanCode == this.stopId ? "selected" : ""
+                direction:direction.direction,
+                label:direction.label,
+                className:direction.direction == this.direction ? "selected" : ""
             }
         }.bind(this))
     };
 
-    BusDeparturesModel.prototype.getStops = function (indicator) {
-        return BusDeparturesModel.STOPS.filter(function (stop) {
-            return stop.Indicator == indicator;
-        })
+    BusDeparturesModel.prototype.getStop = function () {
+        return BusDeparturesModel.LOCATIONS[this.locationIndex][this.direction];
+    };
+
+    BusDeparturesModel.prototype.getAllStopsInDirection = function (indicator) {
+        return BusDeparturesModel.LOCATIONS.filter(function (location) {
+            return location[this.direction]
+        }.bind(this))
     };
 
     BusDeparturesModel.prototype.firstDepartureAlreadyLeft = function () {
@@ -80,98 +82,107 @@
         }
     }
 
-    BusDeparturesModel.INDICATORS = [
+    BusDeparturesModel.DIRECTIONS = [
         {
-            indicator:"adj",
+            direction:"dereham",
             label:"To Dereham"
         },
         {
-            indicator:"opp",
+            direction:"norwich",
             label:"To Norwich"
         }
     ];
 
-    BusDeparturesModel.STOPS = [
+    BusDeparturesModel.LOCATIONS = [
         {
-            "NaptanCode":"nfogjmpt",
-            "CommonName":"Bus Shelter",
-            "Landmark":"The Rosary",
-            "Street":"Norwich Road",
-            "Indicator":"adj",
-            "LocalityName":"Yaxham",
-            "Longitude":0.96479,
-            "Latitude":52.6557
+            dereham:{
+                "NaptanCode":"nfogpdjd",
+                "CommonName":"Station Road",
+                "Landmark":"",
+                "Street":"Dereham Road",
+                "Indicator":"adj",
+                "LocalityName":"Yaxham",
+                "Longitude":0.96207,
+                "Latitude":52.65608
+            },
+            norwich:{
+                "NaptanCode":"nfogmtdw",
+                "CommonName":"Station Road",
+                "Landmark":"Station Road",
+                "Street":"Dereham Road",
+                "Indicator":"opp",
+                "LocalityName":"Yaxham",
+                "Longitude":0.96239,
+                "Latitude":52.65583
+            }
         },
         {
-            "NaptanCode":"nfogjmpw",
-            "CommonName":"Well Hill",
-            "Landmark":"Well Hill",
-            "Street":"Norwich Road",
-            "Indicator":"opp",
-            "LocalityName":"Clint Green",
-            "Longitude":0.98935,
-            "Latitude":52.65937
+            "dereham":{
+                "NaptanCode":"nfogjmpt",
+                "CommonName":"Bus Shelter",
+                "Landmark":"The Rosary",
+                "Street":"Norwich Road",
+                "Indicator":"adj",
+                "LocalityName":"Yaxham",
+                "Longitude":0.96479,
+                "Latitude":52.6557
+            },
+            "norwich":{
+                "NaptanCode":"nfogjmta",
+                "CommonName":"Bus Shelter",
+                "Landmark":"The Rosary",
+                "Street":"Norwich Road",
+                "Indicator":"opp",
+                "LocalityName":"Yaxham",
+                "Longitude":0.96461,
+                "Latitude":52.65584
+            }
         },
         {
-            "NaptanCode":"nfogjmta",
-            "CommonName":"Bus Shelter",
-            "Landmark":"The Rosary",
-            "Street":"Norwich Road",
-            "Indicator":"opp",
-            "LocalityName":"Yaxham",
-            "Longitude":0.96461,
-            "Latitude":52.65584
+            "dereham":{
+                "NaptanCode":"nfogjmtj",
+                "CommonName":"Elm Close",
+                "Landmark":"Elm Close",
+                "Street":"Norwich Road",
+                "Indicator":"adj",
+                "LocalityName":"Yaxham",
+                "Longitude":0.96829,
+                "Latitude":52.65514
+            },
+            "norwich":{
+                "NaptanCode":"nfogjmtg",
+                "CommonName":"Elm Close",
+                "Landmark":"St. Peters Close",
+                "Street":"Norwich Road",
+                "Indicator":"opp",
+                "LocalityName":"Yaxham",
+                "Longitude":0.9689,
+                "Latitude":52.65518
+            }
         },
         {
-            "NaptanCode":"nfogjmtd",
-            "CommonName":"Well Hill",
-            "Landmark":"Well Hill",
-            "Street":"Norwich Road",
-            "Indicator":"adj",
-            "LocalityName":"Clint Green",
-            "Longitude":0.98847,
-            "Latitude":52.65877
-        },
-        {
-            "NaptanCode":"nfogjmtg",
-            "CommonName":"Elm Close",
-            "Landmark":"St. Peters Close",
-            "Street":"Norwich Road",
-            "Indicator":"opp",
-            "LocalityName":"Yaxham",
-            "Longitude":0.9689,
-            "Latitude":52.65518
-        },
-        {
-            "NaptanCode":"nfogjmtj",
-            "CommonName":"Elm Close",
-            "Landmark":"Elm Close",
-            "Street":"Norwich Road",
-            "Indicator":"adj",
-            "LocalityName":"Yaxham",
-            "Longitude":0.96829,
-            "Latitude":52.65514
-        },
-        {
-            "NaptanCode":"nfogmtdw",
-            "CommonName":"Station Road",
-            "Landmark":"Station Road",
-            "Street":"Dereham Road",
-            "Indicator":"opp",
-            "LocalityName":"Yaxham",
-            "Longitude":0.96239,
-            "Latitude":52.65583
-        },
-        {
-            "NaptanCode":"nfogpdjd",
-            "CommonName":"Station Road",
-            "Landmark":"",
-            "Street":"Dereham Road",
-            "Indicator":"adj",
-            "LocalityName":"Yaxham",
-            "Longitude":0.96207,
-            "Latitude":52.65608
+            "dereham":{
+                "NaptanCode":"nfogjmtd",
+                "CommonName":"Well Hill",
+                "Landmark":"Well Hill",
+                "Street":"Norwich Road",
+                "Indicator":"adj",
+                "LocalityName":"Clint Green",
+                "Longitude":0.98847,
+                "Latitude":52.65877
+            },
+            "norwich":{
+                "NaptanCode":"nfogjmpw",
+                "CommonName":"Well Hill",
+                "Landmark":"Well Hill",
+                "Street":"Norwich Road",
+                "Indicator":"opp",
+                "LocalityName":"Clint Green",
+                "Longitude":0.98935,
+                "Latitude":52.65937
+            }
         }
+
     ];
 
     yaxham.modules.BusDeparturesModel = BusDeparturesModel;

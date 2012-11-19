@@ -13,12 +13,12 @@
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
-        this.view.on("stopChanged", this.handleStopChanged.bind(this));
+        this.view.on("directionChanged", this.handleDirectionChanged.bind(this));
     };
 
-    BusDeparturesController.prototype.handleStopChanged = function (stopId) {
+    BusDeparturesController.prototype.handleDirectionChanged = function (newDirection) {
         this.model.data = null;
-        this.model.stopId = stopId;
+        this.model.direction = newDirection;
         this.load();
         this.view.updateAll();
     };
@@ -29,7 +29,7 @@
             url:BusDeparturesController.URL,
             dataType:"jsonp",
             data:{
-                stop:this.model.stopId
+                stop:this.model.getStop().NaptanCode
             }
         };
         var promise = jQuery.ajax(data);

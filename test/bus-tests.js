@@ -86,11 +86,11 @@
             .should(haveSize(2));
 
         thenThe(jQuery(".tabs li").eq(0))
-            .should(haveAttribute("data-stop", "nfogjmpt"))
+            .should(haveAttribute("data-direction", "dereham"))
             .should(haveText("To Dereham"));
 
         thenThe(jQuery(".tabs li").eq(1))
-            .should(haveAttribute("data-stop", "nfogjmpw"))
+            .should(haveAttribute("data-direction", "norwich"))
             .should(haveText("To Norwich"));
 
     });
@@ -99,17 +99,17 @@
 
         given(busController.model.data = [departure()]);
 
-        when(busController.model.stopId = "nfogjmpw");
+        when(busController.model.direction = "norwich");
         when(busController.view.updateAll());
 
         thenThe(jQuery(".tabs li.selected"))
-            .should(haveAttribute("data-stop", "nfogjmpw"));
+            .should(haveAttribute("data-direction", "norwich"));
 
-        when(busController.model.stopId = "nfogjmpt");
+        when(busController.model.direction = "dereham");
         when(busController.view.updateAll());
 
         thenThe(jQuery(".tabs li.selected"))
-            .should(haveAttribute("data-stop", "nfogjmpt"));
+            .should(haveAttribute("data-direction", "dereham"));
 
     });
 

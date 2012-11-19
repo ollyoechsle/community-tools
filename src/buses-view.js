@@ -23,19 +23,24 @@
 
     BusDeparturesView.prototype.handleTabClick = function (jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
-            stop = jTarget.data("stop");
+            direction = jTarget.data("direction");
 
-        console.log("Changing stop to : " + stop);
-        this.fire("stopChanged", stop);
+        console.log("Changing direction to : " + direction);
+        this.fire("directionChanged", direction);
 
     };
 
     BusDeparturesView.prototype.updateAll = function () {
 
         var tabsHTML = Mustache.to_html(BusDeparturesView.TABS, {
-                    list:this.model.getDirections()
-                });
+            list:this.model.getDirections()
+        });
         this.jElement.find(".tabs").html(tabsHTML);
+
+        var selectHTML = Mustache.to_html(BusDeparturesView.SELECT, {
+            list:this.model.getAllStopsInDirection()
+        });
+        this.jElement.find(".otherStops").html(selectHTML);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -101,10 +106,22 @@
                              '</tbody>' +
                              '</table>';
 
-    BusDeparturesView.MARKUP = '<h2>Bus Departures</h2><ul class="tabs"></ul><div class="board"></div>';
+    BusDeparturesView.MARKUP = '' +
+                               '<h2>Bus Departures</h2>' +
+                               '<ul class="tabs"></ul>' +
+                               '<div class="otherStops"></div>' +
+                               '<div class="board"></div>';
+
     BusDeparturesView.TABS = '{{#list}}' +
-                             '<li data-stop="{{stop}}" class="{{className}}">{{direction}}</li>' +
+                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>' +
                              '{{/list}}';
+
+    BusDeparturesView.SELECT = '' +
+                             '<select>' +
+                             '{{#list}}' +
+                             '<option>{{direction}}</option>' +
+                             '{{/list}}' +
+                             '</select>';
 
     yaxham.modules.BusDeparturesView = BusDeparturesView;
 
