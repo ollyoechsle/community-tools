@@ -107,7 +107,8 @@
                 "Indicator":"adj",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96207,
-                "Latitude":52.65608
+                "Latitude":52.65608,
+                "delta": 0
             },
             norwich:{
                 "NaptanCode":"nfogmtdw",
@@ -117,7 +118,8 @@
                 "Indicator":"opp",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96239,
-                "Latitude":52.65583
+                "Latitude":52.65583,
+                "delta": 0
             }
         },
         {
@@ -129,7 +131,8 @@
                 "Indicator":"adj",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96479,
-                "Latitude":52.6557
+                "Latitude":52.6557,
+                "delta": 0
             },
             "norwich":{
                 "NaptanCode":"nfogjmta",

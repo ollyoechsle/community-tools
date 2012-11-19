@@ -130,6 +130,22 @@
 
     });
 
+    test("Switch stops", function () {
+
+        given(sinon.spy(busController.view, "updateAll"));
+        given(data = [departure()]);
+        given(busController.initialise());
+
+        thenThe(jQuery("select")).should(haveValue("0"));
+
+        when(jQuery("select").val("1"));
+
+        thenThe(jQuery("select")).should(haveValue("1"));
+
+        thenThe(busController.view.updateAll).shouldHaveBeen(calledTwice);
+
+    });
+
     function departure(at) {
         at = at || moment().add('hours', 1);
         return {

@@ -169,7 +169,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"adj",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96207,
-                "Latitude":52.65608
+                "Latitude":52.65608,
+                "delta": 0
             },
             norwich:{
                 "NaptanCode":"nfogmtdw",
@@ -179,7 +180,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"opp",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96239,
-                "Latitude":52.65583
+                "Latitude":52.65583,
+                "delta": 0
             }
         },
         {
@@ -191,7 +193,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"adj",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96479,
-                "Latitude":52.6557
+                "Latitude":52.6557,
+                "delta": 0
             },
             "norwich":{
                 "NaptanCode":"nfogjmta",
@@ -306,7 +309,9 @@ window.yaxham.modules = window.yaxham.modules || {};
         var selectHTML = Mustache.to_html(BusDeparturesView.SELECT, {
             list:this.model.getAllStopsInDirection()
         });
-        this.jElement.find(".otherStops").html(selectHTML);
+        this.jElement.find(".otherStops")
+            .html(selectHTML)
+            .find("select").val(this.model.locationIndex);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -379,15 +384,16 @@ window.yaxham.modules = window.yaxham.modules || {};
                                '<div class="board"></div>';
 
     BusDeparturesView.TABS = '{{#list}}' +
-                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>' +
+                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>'
+        +
                              '{{/list}}';
 
     BusDeparturesView.SELECT = '' +
-                             '<select>' +
-                             '{{#list}}' +
-                             '<option value="{{locationIndex}}">{{label}}</option>' +
-                             '{{/list}}' +
-                             '</select>';
+                               '<select>' +
+                               '{{#list}}' +
+                               '<option value="{{locationIndex}}">{{label}}</option>' +
+                               '{{/list}}' +
+                               '</select>';
 
     yaxham.modules.BusDeparturesView = BusDeparturesView;
 

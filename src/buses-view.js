@@ -50,7 +50,9 @@
         var selectHTML = Mustache.to_html(BusDeparturesView.SELECT, {
             list:this.model.getAllStopsInDirection()
         });
-        this.jElement.find(".otherStops").html(selectHTML);
+        this.jElement.find(".otherStops")
+            .html(selectHTML)
+            .find("select").val(this.model.locationIndex);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -123,15 +125,16 @@
                                '<div class="board"></div>';
 
     BusDeparturesView.TABS = '{{#list}}' +
-                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>' +
+                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>'
+        +
                              '{{/list}}';
 
     BusDeparturesView.SELECT = '' +
-                             '<select>' +
-                             '{{#list}}' +
-                             '<option value="{{locationIndex}}">{{label}}</option>' +
-                             '{{/list}}' +
-                             '</select>';
+                               '<select>' +
+                               '{{#list}}' +
+                               '<option value="{{locationIndex}}">{{label}}</option>' +
+                               '{{/list}}' +
+                               '</select>';
 
     yaxham.modules.BusDeparturesView = BusDeparturesView;
 
