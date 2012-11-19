@@ -20,12 +20,11 @@ window.yaxham.modules = window.yaxham.modules || {};
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
-        this.view.on("directionChanged", this.handleDirectionChanged.bind(this));
+        this.view.on("changed", this.handleModelChanged.bind(this));
     };
 
-    BusDeparturesController.prototype.handleDirectionChanged = function (newDirection) {
+    BusDeparturesController.prototype.handleModelChanged = function () {
         this.model.data = null;
-        this.model.direction = newDirection;
         this.load();
         this.view.updateAll();
     };
@@ -98,8 +97,12 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesModel.prototype.getAllStopsInDirection = function (indicator) {
-        return BusDeparturesModel.LOCATIONS.filter(function (location) {
-            return location[this.direction]
+        return BusDeparturesModel.LOCATIONS.map(function (location, index) {
+            var stop = location[this.direction];
+            return {
+                label: stop.CommonName,
+                locationIndex: index
+            }
         }.bind(this))
     };
 
@@ -272,14 +275,24 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.jElement.append(BusDeparturesView.MARKUP);
         this.jBoard = this.jElement.find(".board");
         this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
+        this.jElement.delegate("select", "change", this.handleStopClick.bind(this));
     };
 
     BusDeparturesView.prototype.handleTabClick = function (jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
             direction = jTarget.data("direction");
-
+        this.model.direction = direction;
         console.log("Changing direction to : " + direction);
-        this.fire("directionChanged", direction);
+        this.fire("changed");
+
+    };
+
+    BusDeparturesView.prototype.handleStopClick = function (jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            locationIndex = jTarget.val();
+        this.model.locationIndex = locationIndex;
+        console.log("Changing location to : " + locationIndex);
+        this.fire("changed");
 
     };
 
@@ -372,7 +385,7 @@ window.yaxham.modules = window.yaxham.modules || {};
     BusDeparturesView.SELECT = '' +
                              '<select>' +
                              '{{#list}}' +
-                             '<option>{{direction}}</option>' +
+                             '<option value="{{locationIndex}}">{{label}}</option>' +
                              '{{/list}}' +
                              '</select>';
 

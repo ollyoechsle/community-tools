@@ -13,12 +13,11 @@
         // retrieve more data from the server every 5 minutes
         this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
         this.view.updateAll();
-        this.view.on("directionChanged", this.handleDirectionChanged.bind(this));
+        this.view.on("changed", this.handleModelChanged.bind(this));
     };
 
-    BusDeparturesController.prototype.handleDirectionChanged = function (newDirection) {
+    BusDeparturesController.prototype.handleModelChanged = function () {
         this.model.data = null;
-        this.model.direction = newDirection;
         this.load();
         this.view.updateAll();
     };

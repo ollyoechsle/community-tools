@@ -19,14 +19,24 @@
         this.jElement.append(BusDeparturesView.MARKUP);
         this.jBoard = this.jElement.find(".board");
         this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
+        this.jElement.delegate("select", "change", this.handleStopClick.bind(this));
     };
 
     BusDeparturesView.prototype.handleTabClick = function (jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
             direction = jTarget.data("direction");
-
+        this.model.direction = direction;
         console.log("Changing direction to : " + direction);
-        this.fire("directionChanged", direction);
+        this.fire("changed");
+
+    };
+
+    BusDeparturesView.prototype.handleStopClick = function (jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            locationIndex = jTarget.val();
+        this.model.locationIndex = locationIndex;
+        console.log("Changing location to : " + locationIndex);
+        this.fire("changed");
 
     };
 
@@ -119,7 +129,7 @@
     BusDeparturesView.SELECT = '' +
                              '<select>' +
                              '{{#list}}' +
-                             '<option>{{direction}}</option>' +
+                             '<option value="{{locationIndex}}">{{label}}</option>' +
                              '{{/list}}' +
                              '</select>';
 

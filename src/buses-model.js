@@ -35,8 +35,12 @@
     };
 
     BusDeparturesModel.prototype.getAllStopsInDirection = function (indicator) {
-        return BusDeparturesModel.LOCATIONS.filter(function (location) {
-            return location[this.direction]
+        return BusDeparturesModel.LOCATIONS.map(function (location, index) {
+            var stop = location[this.direction];
+            return {
+                label: stop.CommonName,
+                locationIndex: index
+            }
         }.bind(this))
     };
 
