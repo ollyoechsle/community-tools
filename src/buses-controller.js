@@ -28,7 +28,7 @@
             url:BusDeparturesController.URL,
             dataType:"jsonp",
             data:{
-                stop:this.model.getStop().NaptanCode
+                stop:this.model.getFirstStop().NaptanCode
             }
         };
         var promise = jQuery.ajax(data);

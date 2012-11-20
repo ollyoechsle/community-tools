@@ -35,7 +35,7 @@ window.yaxham.modules = window.yaxham.modules || {};
             url:BusDeparturesController.URL,
             dataType:"jsonp",
             data:{
-                stop:this.model.getStop().NaptanCode
+                stop:this.model.getFirstStop().NaptanCode
             }
         };
         var promise = jQuery.ajax(data);
@@ -77,9 +77,27 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesModel.prototype.getDepartures = function () {
+        var delta = this.getStop().delta;
         return this.data
-            .map(process)
             .filter(noMoreThan5)
+            .map(function (departure) {
+                     var timestamp = departure.estimated || departure.scheduled,
+                         endOfToday = moment().eod().format(),
+                         departureTime = moment(timestamp).add("m", delta),
+                         afterToday = departureTime.diff(endOfToday) > 0,
+                         threeMinutesTime = moment().add("m", 5),
+                         inTenMinutes = departureTime.diff(threeMinutesTime) < 0,
+                         formatStr = afterToday ? "ddd HH:mm" : "HH:mm";
+
+                     return {
+                         destination:departure.destination,
+                         service:departure.service,
+                         timestamp:timestamp,
+                         time:departureTime.format(formatStr),
+                         inTime:departureTime.fromNow(),
+                         className:inTenMinutes ? "iminent" : ""
+                     }
+                 })
     };
 
     BusDeparturesModel.prototype.getDirections = function () {
@@ -96,12 +114,16 @@ window.yaxham.modules = window.yaxham.modules || {};
         return BusDeparturesModel.LOCATIONS[this.locationIndex][this.direction];
     };
 
+    BusDeparturesModel.prototype.getFirstStop = function () {
+        return BusDeparturesModel.LOCATIONS[0][this.direction];
+    };
+
     BusDeparturesModel.prototype.getAllStopsInDirection = function (indicator) {
         return BusDeparturesModel.LOCATIONS.map(function (location, index) {
             var stop = location[this.direction];
             return {
-                label: stop.CommonName,
-                locationIndex: index
+                label:stop.CommonName,
+                locationIndex:index
             }
         }.bind(this))
     };
@@ -128,26 +150,6 @@ window.yaxham.modules = window.yaxham.modules || {};
         return i < 5;
     }
 
-    function process(item) {
-
-        var timestamp = item.estimated || item.scheduled,
-            endOfToday = moment().eod().format(),
-            time = moment(timestamp),
-            afterToday = time.diff(endOfToday) > 0,
-            fiveMinutesTime = moment().add("m", 5),
-            inTenMinutes = time.diff(fiveMinutesTime) < 0,
-            formatStr = afterToday ? "ddd HH:mm" : "HH:mm";
-
-        return {
-            destination:item.destination,
-            service:item.service,
-            timestamp:timestamp,
-            time:time.format(formatStr),
-            inTime:time.fromNow(),
-            className:inTenMinutes ? "iminent" : ""
-        }
-    }
-
     BusDeparturesModel.DIRECTIONS = [
         {
             direction:"dereham",
@@ -170,7 +172,7 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "LocalityName":"Yaxham",
                 "Longitude":0.96207,
                 "Latitude":52.65608,
-                "delta": 0
+                "delta":0
             },
             norwich:{
                 "NaptanCode":"nfogmtdw",
@@ -181,7 +183,7 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "LocalityName":"Yaxham",
                 "Longitude":0.96239,
                 "Latitude":52.65583,
-                "delta": 0
+                "delta":0
             }
         },
         {
@@ -194,7 +196,7 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "LocalityName":"Yaxham",
                 "Longitude":0.96479,
                 "Latitude":52.6557,
-                "delta": 0
+                "delta":0
             },
             "norwich":{
                 "NaptanCode":"nfogjmta",
@@ -295,8 +297,7 @@ window.yaxham.modules = window.yaxham.modules || {};
             locationIndex = jTarget.val();
         this.model.locationIndex = locationIndex;
         console.log("Changing location to : " + locationIndex);
-        this.fire("changed");
-
+        this.updateAll();
     };
 
     BusDeparturesView.prototype.updateAll = function () {

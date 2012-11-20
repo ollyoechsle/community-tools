@@ -36,8 +36,7 @@
             locationIndex = jTarget.val();
         this.model.locationIndex = locationIndex;
         console.log("Changing location to : " + locationIndex);
-        this.fire("changed");
-
+        this.updateAll();
     };
 
     BusDeparturesView.prototype.updateAll = function () {
