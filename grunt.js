@@ -8,7 +8,7 @@ module.exports = function (grunt) {
         },
         concat:{
             dist:{
-                src:['<banner:meta.banner>', 'src/namespace.js', 'src/*.js'],
+                src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/*.js'],
                 dest:'static/community-tools-<%= meta.version %>.js'
             }
         },

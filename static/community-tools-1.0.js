@@ -7,6 +7,51 @@ window.yaxham = window.yaxham || {};
 window.yaxham.modules = window.yaxham.modules || {};
 (function () {
 
+    function HSelector(jElement) {
+        this.jElement = jElement;
+        this.initialise();
+    }
+
+    HSelector.prototype = Object.create(Subscribable.prototype);
+
+    HSelector.prototype.initialise = function () {
+        this.jElement.html(HSelector.HTML);
+        this.jElement.delegate(".arrow.enabled", "click", this.handleClick.bind(this));
+    };
+
+    HSelector.prototype.handleClick = function (jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget);
+        if (jTarget.hasClass("left")) {
+            this.fire("changed", this.selectedIndex - 1);
+        } else {
+            this.fire("changed", this.selectedIndex + 1);
+        }
+    };
+
+    HSelector.prototype.render = function (values, selectedIndex) {
+
+        var selectedValue = values[selectedIndex].label;
+
+        this.jElement.find(".value").html(selectedValue);
+        this.jElement.find(".left").toggleClass("enabled", selectedIndex > 0);
+        this.jElement.find(".right").toggleClass("enabled", selectedIndex < values.length - 1);
+
+        this.selectedIndex = selectedIndex;
+
+    };
+
+    HSelector.HTML = '' +
+                     '<div class="hselector">' +
+                     '<div class="arrow left">&#8592;</div>' +
+                     '<div class="value"></div>' +
+                     '<div class="arrow right">&#8594;</div>' +
+                     '</div>';
+
+    window.HSelector = HSelector;
+
+})();
+(function () {
+
     function BusDeparturesController(view, model) {
         this.intervals = [];
         this.view = view;
@@ -280,12 +325,14 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     BusDeparturesView.prototype.jElement = null;
     BusDeparturesView.prototype.jBoard = null;
+    BusDeparturesView.prototype.selector = null;
 
     BusDeparturesView.prototype.initialise = function () {
         this.jElement.append(BusDeparturesView.MARKUP);
         this.jBoard = this.jElement.find(".board");
+        this.selector = new HSelector(this.jElement.find(".otherStops"));
         this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
-        this.jElement.delegate("select", "change", this.handleStopClick.bind(this));
+        this.selector.on("changed", this.handleStopClick.bind(this));
     };
 
     BusDeparturesView.prototype.handleTabClick = function (jEvent) {
@@ -297,9 +344,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     };
 
-    BusDeparturesView.prototype.handleStopClick = function (jEvent) {
-        var jTarget = jQuery(jEvent.currentTarget),
-            locationIndex = jTarget.val();
+    BusDeparturesView.prototype.handleStopClick = function (locationIndex) {
         this.model.locationIndex = locationIndex;
         console.log("Changing location to : " + locationIndex);
         this.updateAll();
@@ -312,12 +357,7 @@ window.yaxham.modules = window.yaxham.modules || {};
         });
         this.jElement.find(".tabs").html(tabsHTML);
 
-        var selectHTML = Mustache.to_html(BusDeparturesView.SELECT, {
-            list:this.model.getAllStopsInDirection()
-        });
-        this.jElement.find(".otherStops")
-            .html(selectHTML)
-            .find("select").val(this.model.locationIndex);
+        this.selector.render(this.model.getAllStopsInDirection(), this.model.locationIndex);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -339,8 +379,6 @@ window.yaxham.modules = window.yaxham.modules || {};
         var data = {
             list:this.model.getDepartures()
         };
-
-        console.log(data);
 
         var html = Mustache.to_html(BusDeparturesView.LIST, data);
 
@@ -392,8 +430,7 @@ window.yaxham.modules = window.yaxham.modules || {};
                                '<div class="board"></div>';
 
     BusDeparturesView.TABS = '{{#list}}' +
-                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>'
-        +
+                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>' +
                              '{{/list}}';
 
     BusDeparturesView.SELECT = '' +

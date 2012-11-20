@@ -2,14 +2,11 @@
     border-spacing: 0;
 }
 
-.table thead {
-    background: #999
-}
-
 .table thead th {
     text-align: left;
     padding: 3px;
     color: #fbfafa;
+    border-bottom: 2px solid #666;
 }
 
 .table tbody td {

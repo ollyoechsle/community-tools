@@ -136,13 +136,13 @@
         given(data = [departure()]);
         given(busController.initialise());
 
-        thenThe(jQuery("select")).should(haveValue("0"));
+        thenThe(jQuery(".value")).should(haveText("Station Road"));
 
-        when(jQuery("select").val("1"));
+        when(theUserClicksOn(jQuery(".right.arrow")));
 
-        thenThe(jQuery("select")).should(haveValue("1"));
+        thenThe(jQuery(".value")).should(haveText("Bus Shelter"));
 
-        thenThe(busController.view.updateAll).shouldHaveBeen(calledTwice);
+        thenThe(busController.view.updateAll).shouldHaveBeen(calledAgain);
 
     });
 

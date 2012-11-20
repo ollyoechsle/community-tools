@@ -14,12 +14,14 @@
 
     BusDeparturesView.prototype.jElement = null;
     BusDeparturesView.prototype.jBoard = null;
+    BusDeparturesView.prototype.selector = null;
 
     BusDeparturesView.prototype.initialise = function () {
         this.jElement.append(BusDeparturesView.MARKUP);
         this.jBoard = this.jElement.find(".board");
+        this.selector = new HSelector(this.jElement.find(".otherStops"));
         this.jElement.delegate(".tabs li:not(.selected)", "click", this.handleTabClick.bind(this));
-        this.jElement.delegate("select", "change", this.handleStopClick.bind(this));
+        this.selector.on("changed", this.handleStopClick.bind(this));
     };
 
     BusDeparturesView.prototype.handleTabClick = function (jEvent) {
@@ -31,9 +33,7 @@
 
     };
 
-    BusDeparturesView.prototype.handleStopClick = function (jEvent) {
-        var jTarget = jQuery(jEvent.currentTarget),
-            locationIndex = jTarget.val();
+    BusDeparturesView.prototype.handleStopClick = function (locationIndex) {
         this.model.locationIndex = locationIndex;
         console.log("Changing location to : " + locationIndex);
         this.updateAll();
@@ -46,12 +46,7 @@
         });
         this.jElement.find(".tabs").html(tabsHTML);
 
-        var selectHTML = Mustache.to_html(BusDeparturesView.SELECT, {
-            list:this.model.getAllStopsInDirection()
-        });
-        this.jElement.find(".otherStops")
-            .html(selectHTML)
-            .find("select").val(this.model.locationIndex);
+        this.selector.render(this.model.getAllStopsInDirection(), this.model.locationIndex);
 
         if (this.model.hasData()) {
             this.displayBoard();
@@ -124,8 +119,7 @@
                                '<div class="board"></div>';
 
     BusDeparturesView.TABS = '{{#list}}' +
-                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>'
-        +
+                             '<li data-direction="{{direction}}" class="{{className}}">{{label}}</li>' +
                              '{{/list}}';
 
     BusDeparturesView.SELECT = '' +

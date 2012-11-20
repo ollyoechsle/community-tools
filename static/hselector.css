@@ -1,0 +1,40 @@
+.hselector {
+    width: 100%;
+    position: relative;
+    height: 20px;
+    margin: 5px 0;
+}
+
+.hselector .value {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    line-height: 20px;
+    text-align: center;
+    top: 0;
+}
+
+.hselector .arrow {
+    position: absolute;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    top: 0;
+}
+
+.hselector .arrow.enabled {
+    cursor: pointer;
+}
+
+.hselector .arrow.enabled:hover {
+    background: white;
+}
+
+.hselector .arrow.left {
+    left: 0;
+}
+
+.hselector .arrow.right {
+    right: 0;
+}
+
