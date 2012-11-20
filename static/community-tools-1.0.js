@@ -28,8 +28,13 @@ window.yaxham.modules = window.yaxham.modules || {};
         }
     };
 
+    HSelector.prototype.empty = function() {
+        this.jElement.css("visibility", "hidden");
+    };
+
     HSelector.prototype.render = function (values, selectedIndex) {
 
+        this.jElement.css("visibility", "visible");
         var selectedValue = values[selectedIndex].label;
 
         this.jElement.find(".value").html(selectedValue);
@@ -75,7 +80,6 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesController.prototype.load = function () {
-        console.log("Loading data from " + BusDeparturesController.URL);
         var data = {
             url:BusDeparturesController.URL,
             dataType:"jsonp",
@@ -88,7 +92,6 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesController.prototype.handleLoad = function (data) {
-        console.log("Finished loading");
         this.model.data = data;
         this.view.updateAll();
     };
@@ -318,7 +321,6 @@ window.yaxham.modules = window.yaxham.modules || {};
         }
         this.model = model;
         this.initialise();
-        console.log("Buses, initialised with board ", this.jBoard);
     }
 
     BusDeparturesView.prototype = Object.create(Subscribable.prototype);
@@ -336,17 +338,13 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesView.prototype.handleTabClick = function (jEvent) {
-        var jTarget = jQuery(jEvent.currentTarget),
-            direction = jTarget.data("direction");
-        this.model.direction = direction;
-        console.log("Changing direction to : " + direction);
+        var jTarget = jQuery(jEvent.currentTarget);
+        this.model.direction = jTarget.data("direction");
         this.fire("changed");
-
     };
 
     BusDeparturesView.prototype.handleStopClick = function (locationIndex) {
         this.model.locationIndex = locationIndex;
-        console.log("Changing location to : " + locationIndex);
         this.updateAll();
     };
 
@@ -371,10 +369,10 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.jBoard
             .empty()
             .addClass("loading");
+        this.selector.empty();
     };
 
     BusDeparturesView.prototype.displayBoard = function () {
-        console.log("Displaying board...");
 
         var data = {
             list:this.model.getDepartures()

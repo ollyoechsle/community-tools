@@ -21,8 +21,13 @@
         }
     };
 
+    HSelector.prototype.empty = function() {
+        this.jElement.css("visibility", "hidden");
+    };
+
     HSelector.prototype.render = function (values, selectedIndex) {
 
+        this.jElement.css("visibility", "visible");
         var selectedValue = values[selectedIndex].label;
 
         this.jElement.find(".value").html(selectedValue);

@@ -20,14 +20,17 @@
     width: 20px;
     height: 20px;
     top: 0;
+    color: #999;
 }
 
 .hselector .arrow.enabled {
     cursor: pointer;
+    color: white;
 }
 
 .hselector .arrow.enabled:hover {
-    background: white;
+    background: #fbfafa;
+    color: #323232;
 }
 
 .hselector .arrow.left {

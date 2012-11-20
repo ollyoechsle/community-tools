@@ -23,7 +23,6 @@
     };
 
     BusDeparturesController.prototype.load = function () {
-        console.log("Loading data from " + BusDeparturesController.URL);
         var data = {
             url:BusDeparturesController.URL,
             dataType:"jsonp",
@@ -36,7 +35,6 @@
     };
 
     BusDeparturesController.prototype.handleLoad = function (data) {
-        console.log("Finished loading");
         this.model.data = data;
         this.view.updateAll();
     };
