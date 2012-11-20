@@ -62,8 +62,8 @@
     };
 
     BusDeparturesView.prototype.displayLoading = function () {
-        console.log("Loading...");
         this.jBoard
+            .empty()
             .addClass("loading");
     };
 

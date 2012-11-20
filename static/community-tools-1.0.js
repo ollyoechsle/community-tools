@@ -83,7 +83,7 @@ window.yaxham.modules = window.yaxham.modules || {};
             .map(function (departure) {
                      var timestamp = departure.estimated || departure.scheduled,
                          endOfToday = moment().eod().format(),
-                         departureTime = moment(timestamp).add("m", delta),
+                         departureTime = moment(timestamp).add("s", delta),
                          afterToday = departureTime.diff(endOfToday) > 0,
                          threeMinutesTime = moment().add("m", 5),
                          inTenMinutes = departureTime.diff(threeMinutesTime) < 0,
@@ -196,7 +196,7 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "LocalityName":"Yaxham",
                 "Longitude":0.96479,
                 "Latitude":52.6557,
-                "delta":0
+                "delta":-30
             },
             "norwich":{
                 "NaptanCode":"nfogjmta",
@@ -206,7 +206,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"opp",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96461,
-                "Latitude":52.65584
+                "Latitude":52.65584,
+                delta:30
             }
         },
         {
@@ -218,7 +219,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"adj",
                 "LocalityName":"Yaxham",
                 "Longitude":0.96829,
-                "Latitude":52.65514
+                "Latitude":52.65514,
+                delta:-180
             },
             "norwich":{
                 "NaptanCode":"nfogjmtg",
@@ -228,7 +230,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"opp",
                 "LocalityName":"Yaxham",
                 "Longitude":0.9689,
-                "Latitude":52.65518
+                "Latitude":52.65518,
+                delta:60
             }
         },
         {
@@ -240,7 +243,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"adj",
                 "LocalityName":"Clint Green",
                 "Longitude":0.98847,
-                "Latitude":52.65877
+                "Latitude":52.65877,
+                delta:-240
             },
             "norwich":{
                 "NaptanCode":"nfogjmpw",
@@ -250,7 +254,8 @@ window.yaxham.modules = window.yaxham.modules || {};
                 "Indicator":"opp",
                 "LocalityName":"Clint Green",
                 "Longitude":0.98935,
-                "Latitude":52.65937
+                "Latitude":52.65937,
+                delta:120
             }
         }
 
@@ -323,8 +328,8 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     BusDeparturesView.prototype.displayLoading = function () {
-        console.log("Loading...");
         this.jBoard
+            .empty()
             .addClass("loading");
     };
 
@@ -334,6 +339,8 @@ window.yaxham.modules = window.yaxham.modules || {};
         var data = {
             list:this.model.getDepartures()
         };
+
+        console.log(data);
 
         var html = Mustache.to_html(BusDeparturesView.LIST, data);
 

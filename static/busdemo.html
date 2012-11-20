@@ -15,7 +15,12 @@
     <link href="tabs.css" type="text/css" rel="stylesheet"/>
     <link href="table.css" type="text/css" rel="stylesheet"/>
     <link href="buses.css" type="text/css" rel="stylesheet"/>
-
+    <style>
+        .pageContainer {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,7 +43,8 @@
         window.Mustache = mustache;
 
         var location = self.location;
-        yaxham.modules.BusDeparturesController.URL = location.protocol + "//" + location.host + "/buses";
+        yaxham.modules.BusDeparturesController.URL =
+        location.protocol + "//" + location.host + "/buses";
 
         yaxham.modules.Buses(".busData").initialise();
 
