@@ -15,3 +15,5 @@ handlers:
   script: twitter.app
 - url: /buses.*
   script: buses.app
+- url: /planning.*
+  script: planning.app
