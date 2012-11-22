@@ -41,3 +41,7 @@ def write_response(request, response, content):
     else:
         response.headers['Content-Type'] = 'application/json'
         response.out.write(content)
+
+def write_html(request, response, content):
+    response.headers['Content-Type'] = 'text/html'
+    response.out.write(content)
