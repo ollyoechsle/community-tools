@@ -3,6 +3,13 @@
     position: relative;
     height: 20px;
     margin: 5px 0;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
 }
 
 .hselector .value {
@@ -21,6 +28,7 @@
     height: 20px;
     top: 0;
     color: #999;
+    font-size: 20px;
 }
 
 .hselector .arrow.enabled {
