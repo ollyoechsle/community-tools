@@ -1,29 +1,69 @@
 import common
 import webapp2
-import urllib
-import urllib2
+import urllib, urllib2, Cookie
 from google.appengine.api import urlfetch
 import logging
 import json
+import time
 from BeautifulSoup import BeautifulSoup
 
-user_agent_string = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17"
+class URLOpener:
+  def __init__(self):
+      self.cookie = Cookie.SimpleCookie()
 
-def get_params(url):
-    logging.info(url)
+  def open(self, url, data = None):
+      if data is None:
+          headers=self._getHeaders(self.cookie)
+          method = urlfetch.GET
+      else:
+          headers=self._getHeaders(self.cookie)
+          headers['Content-Type'] = 'application/x-www-form-urlencoded'
+          logging.info(data)
+          logging.info(headers)
+          method = urlfetch.POST
 
-    result = urlfetch.fetch(url, headers = {'User-Agent': user_agent_string})
+      while url is not None:
+          logging.info("Getting %s" % url)
+          response = urlfetch.fetch(url=url,
+                          payload=data,
+                          method=method,
+                          headers=headers,
+                          allow_truncated=False,
+                          follow_redirects=False,
+                          deadline=10
+                          )
+          data = None # Next request will be a get, so no need to send the data again.
+          method = urlfetch.GET
+          set_cookie = response.headers.get('set-cookie', '')
+          logging.info("Set cookie string %s" % set_cookie)
+          self.cookie.load(set_cookie) # Load the cookies from the response
+          url = response.headers.get('location')
 
-    cookie = result.headers.get('set-cookie', '')
-    logging.info("Got cookie back from server")
+      return response
 
-    html = result.content
+  def _getHeaders(self, cookie):
+      headers = {
+                 'User-Agent' : 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)',
+                 'Cookie' : self._makeCookieHeader(cookie)
+                  }
+      return headers
+
+  def _makeCookieHeader(self, cookie):
+      cookieHeader = ""
+      for value in cookie.values():
+          cookieHeader += "%s=%s; " % (value.key, value.value)
+      logging.info("Cookie: %s" % cookieHeader)
+      return cookieHeader
+
+def get_params(opener, url):
+
+    response = opener.open(url)
+
+    html = response.content
     soup = BeautifulSoup(html)
     params = {}
     for input in soup.findAll('input', {'type':'hidden'}):
         params[input.get('name')] = input.get('value')
-
-    params["cookie"] = cookie
 
     return params
 
@@ -44,35 +84,21 @@ def fill_in_other_fields(params):
 
     return params
 
-def do_search(form_fields):
+def do_search(opener, form_fields):
     form_data = urllib.urlencode(form_fields)
+    response =opener.open('http://planning.breckland.gov.uk/portal/pls/portal/!PORTAL.wwa_app_module.accept', form_data)
+    return response.content
 
-    headers = {
-        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Charset':'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-        'Accept-Language':'en-US,en;q=0.8',
-        'Cache-Control':'no-cache',
-        'Connection':'keepalive',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': form_fields["cookie"],
-        'Origin':'http://planning.breckland.gov.uk',
-        'Pragma':'no-cache',
-        'Referer':'http://planning.breckland.gov.uk/portal/page/portal/breckland/search',
-        'User-Agent': user_agent_string
-    }
-
-    logging.info("Headers: " + json.dumps(headers))
-
-    result = urlfetch.fetch(url="http://planning.breckland.gov.uk/portal/pls/portal/!PORTAL.wwa_app_module.accept",
-                            payload=form_data,
-                            method=urlfetch.POST,
-                            headers=headers)
-    return result.content
 
 class Planning(webapp2.RequestHandler):
     def get(self):
-        params = get_params("http://planning.breckland.gov.uk/portal/page/portal/breckland/search")
+        opener = URLOpener()
+        params = get_params(opener, "http://planning.breckland.gov.uk/portal/page/portal/breckland/search")
         form_fields = fill_in_other_fields(params)
-        common.write_html(self.request, self.response, do_search(form_fields))
+
+        logging.info("Waiting for 15 seconds")
+        time.sleep(15)
+
+        common.write_html(self.request, self.response, do_search(opener, form_fields))
 
 app = webapp2.WSGIApplication([('/planning', Planning)], debug=True)
