@@ -17,3 +17,5 @@ handlers:
   script: buses.app
 - url: /planning.*
   script: planning.app
+- url: /weather.*
+  script: weather.app
