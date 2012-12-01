@@ -10,8 +10,8 @@
         this.load();
         // update the board every 10 seconds
         this.intervals.push(setInterval(this.view.updateAll.bind(this.view), 10000));
-        // retrieve more data from the server every 5 minutes
-        this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
+        // retrieve more data from the server every 10 minutes
+        this.intervals.push(setInterval(this.load.bind(this), 60000 * 10));
         this.view.updateAll();
         this.view.on("changed", this.handleModelChanged.bind(this));
     };

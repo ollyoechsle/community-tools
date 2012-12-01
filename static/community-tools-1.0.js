@@ -67,8 +67,8 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.load();
         // update the board every 10 seconds
         this.intervals.push(setInterval(this.view.updateAll.bind(this.view), 10000));
-        // retrieve more data from the server every 5 minutes
-        this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
+        // retrieve more data from the server every 10 minutes
+        this.intervals.push(setInterval(this.load.bind(this), 60000 * 10));
         this.view.updateAll();
         this.view.on("changed", this.handleModelChanged.bind(this));
     };
@@ -448,6 +448,144 @@ window.yaxham.modules = window.yaxham.modules || {};
         var model = new yaxham.modules.BusDeparturesModel(),
             view = new yaxham.modules.BusDeparturesView(element, model),
             controller = new yaxham.modules.BusDeparturesController(view, model);
+
+        return controller;
+
+    }
+
+})();
+(function () {
+
+    function WeatherController(view, model) {
+        this.intervals = [];
+        this.view = view;
+        this.model = model;
+    }
+
+    WeatherController.prototype.initialise = function () {
+        this.load();
+        this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
+        this.view.updateAll();
+    };
+
+    WeatherController.prototype.load = function () {
+        var data = {
+            url:WeatherController.URL,
+            dataType:"jsonp"
+        };
+        var promise = jQuery.ajax(data);
+        promise.then(this.handleLoad.bind(this));
+    };
+
+    WeatherController.prototype.handleLoad = function (data) {
+        this.model.setAllData(data);
+        this.view.updateAll();
+    };
+
+    WeatherController.prototype.destroy = function () {
+        this.intervals.forEach(function (interval) {
+            window.clearInterval(interval);
+        });
+        this.view.destroy();
+    };
+
+    WeatherController.URL = "http://community-tools.appspot.com/weather";
+
+    yaxham.modules.WeatherController = WeatherController;
+
+})();
+(function () {
+
+    function WeatherModel(view) {
+        this.view = view;
+        this.locationIndex = 0;
+        this.direction = "dereham";
+    }
+
+    WeatherModel.locationIndex = null;
+    WeatherModel.direction = null;
+    WeatherModel.data = null;
+
+    WeatherModel.prototype.hasData = function () {
+        return !!this.data;
+    };
+
+    WeatherModel.prototype.setAllData = function (json) {
+        this.data = json;
+        this.location = json.SiteRep.DV.Location;
+    };
+
+    yaxham.modules.WeatherModel = WeatherModel;
+
+})();
+(function () {
+
+    function WeatherView(selector, model) {
+        this.jElement = jQuery(selector);
+        if (this.jElement.length == 0) {
+            throw new Error("Invalid selector: " + selector);
+        }
+        this.model = model;
+        this.initialise();
+    }
+
+    WeatherView.prototype = Object.create(Subscribable.prototype);
+
+    WeatherView.prototype.jElement = null;
+    WeatherView.prototype.jBoard = null;
+
+    WeatherView.prototype.initialise = function () {
+        this.jElement.append(WeatherView.MARKUP);
+        this.jBoard = this.jElement.find(".data");
+    };
+
+    WeatherView.prototype.updateAll = function () {
+
+        if (this.model.hasData()) {
+            this.displayBoard();
+        } else {
+            this.displayLoading();
+        }
+
+    };
+
+    WeatherView.prototype.displayLoading = function () {
+        this.jBoard
+            .empty()
+            .addClass("loading");
+    };
+
+    WeatherView.prototype.displayBoard = function () {
+        this.jBoard.html(Mustache.to_html(WeatherView.ROW, this.model.location.Period[0]));
+    };
+
+    WeatherView.prototype.destroy = function () {
+    };
+
+    WeatherView.ROW = '<tbody>' +
+                      '{{#Rep}}' +
+                      '<tr>' +
+                      '<td>{{T}}</td>' +
+                      '<td>{{W}}</td>' +
+                      '<td>{{Pp}}</td>' +
+                      '</tr>' +
+                      '{{/Rep}}' +
+                      '</tbody>';
+
+    WeatherView.MARKUP = '' +
+                         '<h2>Weather</h2>' +
+                         '<table class="data"></table>';
+
+    yaxham.modules.WeatherView = WeatherView;
+
+})();
+(function () {
+
+    yaxham.modules.Weather = function(element) {
+
+        var model = new yaxham.modules.WeatherModel(),
+            view = new yaxham.modules.WeatherView(element, model),
+            controller = new yaxham.modules.WeatherController(view, model);
 
         return controller;
 
