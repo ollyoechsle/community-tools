@@ -690,20 +690,21 @@ window.yaxham.modules = window.yaxham.modules || {};
                                      '</li>' +
                                      '</ul>';
 
-    WeatherView.LATER_CONDITIONS = '<li class="btn prev" data-direction="-1"></li>' +
+    WeatherView.LATER_CONDITIONS = '' +
                                    '{{#forecasts}}' +
                                    '<li class="{{className}}">' +
                                    '<td><img width="60" height="50" src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
                                    '<div class="time heading">{{time}}</div>' +
                                    '<div class="temperature reading">{{temperature}}&deg;C</div>' +
                                    '</li>' +
-                                   '{{/forecasts}}' +
-                                   '<li class="btn next" data-direction="+1"></li>';
+                                   '{{/forecasts}}';
 
     WeatherView.MARKUP = '' +
                          '<div class="weather">' +
                          '<div class="currentConditions"></div>' +
+                         '<div class="btn prev" data-direction="-1"></div>' +
                          '<ul class="laterConditions"></ul>' +
+                         '<div class="btn next" data-direction="+1"></div>' +
                          '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
                          '</div>';
 
