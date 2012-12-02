@@ -2,10 +2,12 @@
 
     function WeatherModel(view) {
         this.view = view;
-        this.locationIndex = 0;
+        this.currentIndex = 0;
     }
 
-    WeatherModel.locationIndex = null;
+    WeatherModel.prototype = Object.create(Subscribable.prototype);
+
+    WeatherModel.currentIndex = 0;
     WeatherModel.direction = null;
     WeatherModel.data = null;
 
@@ -15,38 +17,54 @@
 
     WeatherModel.prototype.setAllData = function (json) {
         this.data = json;
-        var periods = json.SiteRep.DV.Location.Period;
-        var allPeriods = [];
-        periods.forEach(function(period) {
+        var periods = json.SiteRep.DV.Location.Period,
+            allPeriods = [];
+        periods.forEach(function (period) {
             Array.prototype.push.apply(allPeriods, period.Rep);
         });
-        console.log(allPeriods);
         this.allPeriods = allPeriods;
     };
 
-    WeatherModel.prototype.getForecast = function() {
-        return this.allPeriods.map(function(reading) {
+    WeatherModel.prototype.changeCurrentIndex = function (delta) {
+        this.currentIndex += delta;
+        this.currentIndex = Math.max(0, this.currentIndex);
+        this.currentIndex = Math.min(this.currentIndex, this.allPeriods.length - 1);
+        this.fire("indexChanged");
+    };
+
+    WeatherModel.prototype.hasPrev = function () {
+        return this.currentIndex > 0;
+    };
+
+    WeatherModel.prototype.hasNext = function () {
+        return this.currentIndex < this.allPeriods.length - 1;
+    };
+
+    WeatherModel.prototype.getForecast = function () {
+        var currentIndex = this.currentIndex;
+        return this.allPeriods.map(function (reading, index) {
             return {
-                type: WeatherModel.WEATHER[reading.W].name,
-                icon: WeatherModel.WEATHER[reading.W].img,
-                chanceOfRain: reading.Pp,
-                temperature: reading.T,
-                windSpeed: reading.S,
-                windDirection: reading.D,
-                time: WeatherModel.timeOfReading[reading.$]
+                className: index == currentIndex ? "current" : "notCurrent",
+                type:WeatherModel.WEATHER[reading.W].name,
+                icon:WeatherModel.WEATHER[reading.W].img,
+                chanceOfRain:reading.Pp,
+                temperature:reading.T,
+                windSpeed:reading.S,
+                windDirection:reading.D,
+                time:WeatherModel.timeOfReading[reading.$]
             }
         });
     };
 
     WeatherModel.timeOfReading = {
-      "0": "0:00",
-      "180": "03:00",
-      "360": "06:00",
-      "540": "09:00",
-      "720": "12:00",
-      "900": "15:00",
-      "1080": "18:00",  
-      "1260": "21:00"
+        "0":"0:00",
+        "180":"03:00",
+        "360":"06:00",
+        "540":"09:00",
+        "720":"12:00",
+        "900":"15:00",
+        "1080":"18:00",
+        "1260":"21:00"
     };
 
     WeatherModel.WEATHER = {

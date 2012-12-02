@@ -16,13 +16,14 @@
     WeatherView.prototype.initialise = function () {
         this.jElement
             .append(WeatherView.MARKUP)
-            .delegate(".btn", "click.weather", this.handleNavigate.bind(this))
+            .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
+        this.model.on("indexChanged", this.updateAll, this);
     };
 
     WeatherView.prototype.handleNavigate = function(jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
-            action = jTarget.data("direction");
-        console.log(action);
+            direction = jTarget.data("direction");
+        this.model.changeCurrentIndex(+direction);
     };
 
     WeatherView.prototype.updateAll = function () {
@@ -43,10 +44,11 @@
 
     WeatherView.prototype.displayBoard = function () {
 
-        var forecasts = this.model.getForecast(),
-            currentConditions = forecasts[0],
+        var currentIndex = this.model.currentIndex,
+            forecasts = this.model.getForecast(),
+            currentConditions = forecasts[currentIndex],
             laterConditions = forecasts.filter(function(forecast, index) {
-                return index > 0 && index < 5
+                return index >= currentIndex && index < (currentIndex + 4)
             });
 
         this.jElement.find(".currentConditions").html(
@@ -60,6 +62,7 @@
 
     WeatherView.prototype.destroy = function () {
         this.jElement.undelegate(".weather");
+        this.model.un(null, this);
     };
 
     WeatherView.CURRENT_CONDITIONS = '' +
@@ -79,7 +82,7 @@
 
     WeatherView.LATER_CONDITIONS = '<li class="btn prev" data-direction="-1"></li>' +
                                    '{{#forecasts}}' +
-                                   '<li>' +
+                                   '<li class="{{className}}">' +
                                    '<td><img width="60" height="50" src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
                                    '<div class="time heading">{{time}}</div>' +
                                    '<div class="temperature reading">{{temperature}}&deg;C</div>' +

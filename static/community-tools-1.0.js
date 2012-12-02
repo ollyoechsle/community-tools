@@ -498,10 +498,12 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     function WeatherModel(view) {
         this.view = view;
-        this.locationIndex = 0;
+        this.currentIndex = 0;
     }
 
-    WeatherModel.locationIndex = null;
+    WeatherModel.prototype = Object.create(Subscribable.prototype);
+
+    WeatherModel.currentIndex = 0;
     WeatherModel.direction = null;
     WeatherModel.data = null;
 
@@ -511,38 +513,54 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     WeatherModel.prototype.setAllData = function (json) {
         this.data = json;
-        var periods = json.SiteRep.DV.Location.Period;
-        var allPeriods = [];
-        periods.forEach(function(period) {
+        var periods = json.SiteRep.DV.Location.Period,
+            allPeriods = [];
+        periods.forEach(function (period) {
             Array.prototype.push.apply(allPeriods, period.Rep);
         });
-        console.log(allPeriods);
         this.allPeriods = allPeriods;
     };
 
-    WeatherModel.prototype.getForecast = function() {
-        return this.allPeriods.map(function(reading) {
+    WeatherModel.prototype.changeCurrentIndex = function (delta) {
+        this.currentIndex += delta;
+        this.currentIndex = Math.max(0, this.currentIndex);
+        this.currentIndex = Math.min(this.currentIndex, this.allPeriods.length - 1);
+        this.fire("indexChanged");
+    };
+
+    WeatherModel.prototype.hasPrev = function () {
+        return this.currentIndex > 0;
+    };
+
+    WeatherModel.prototype.hasNext = function () {
+        return this.currentIndex < this.allPeriods.length - 1;
+    };
+
+    WeatherModel.prototype.getForecast = function () {
+        var currentIndex = this.currentIndex;
+        return this.allPeriods.map(function (reading, index) {
             return {
-                type: WeatherModel.WEATHER[reading.W].name,
-                icon: WeatherModel.WEATHER[reading.W].img,
-                chanceOfRain: reading.Pp,
-                temperature: reading.T,
-                windSpeed: reading.S,
-                windDirection: reading.D,
-                time: WeatherModel.timeOfReading[reading.$]
+                className: index == currentIndex ? "current" : "notCurrent",
+                type:WeatherModel.WEATHER[reading.W].name,
+                icon:WeatherModel.WEATHER[reading.W].img,
+                chanceOfRain:reading.Pp,
+                temperature:reading.T,
+                windSpeed:reading.S,
+                windDirection:reading.D,
+                time:WeatherModel.timeOfReading[reading.$]
             }
         });
     };
 
     WeatherModel.timeOfReading = {
-      "0": "0:00",
-      "180": "03:00",
-      "360": "06:00",
-      "540": "09:00",
-      "720": "12:00",
-      "900": "15:00",
-      "1080": "18:00",  
-      "1260": "21:00"
+        "0":"0:00",
+        "180":"03:00",
+        "360":"06:00",
+        "540":"09:00",
+        "720":"12:00",
+        "900":"15:00",
+        "1080":"18:00",
+        "1260":"21:00"
     };
 
     WeatherModel.WEATHER = {
@@ -608,13 +626,14 @@ window.yaxham.modules = window.yaxham.modules || {};
     WeatherView.prototype.initialise = function () {
         this.jElement
             .append(WeatherView.MARKUP)
-            .delegate(".btn", "click.weather", this.handleNavigate.bind(this))
+            .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
+        this.model.on("indexChanged", this.updateAll, this);
     };
 
     WeatherView.prototype.handleNavigate = function(jEvent) {
         var jTarget = jQuery(jEvent.currentTarget),
-            action = jTarget.data("direction");
-        console.log(action);
+            direction = jTarget.data("direction");
+        this.model.changeCurrentIndex(+direction);
     };
 
     WeatherView.prototype.updateAll = function () {
@@ -635,10 +654,11 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     WeatherView.prototype.displayBoard = function () {
 
-        var forecasts = this.model.getForecast(),
-            currentConditions = forecasts[0],
+        var currentIndex = this.model.currentIndex,
+            forecasts = this.model.getForecast(),
+            currentConditions = forecasts[currentIndex],
             laterConditions = forecasts.filter(function(forecast, index) {
-                return index > 0 && index < 5
+                return index >= currentIndex && index < (currentIndex + 4)
             });
 
         this.jElement.find(".currentConditions").html(
@@ -652,6 +672,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     WeatherView.prototype.destroy = function () {
         this.jElement.undelegate(".weather");
+        this.model.un(null, this);
     };
 
     WeatherView.CURRENT_CONDITIONS = '' +
@@ -671,7 +692,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     WeatherView.LATER_CONDITIONS = '<li class="btn prev" data-direction="-1"></li>' +
                                    '{{#forecasts}}' +
-                                   '<li>' +
+                                   '<li class="{{className}}">' +
                                    '<td><img width="60" height="50" src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
                                    '<div class="time heading">{{time}}</div>' +
                                    '<div class="temperature reading">{{temperature}}&deg;C</div>' +

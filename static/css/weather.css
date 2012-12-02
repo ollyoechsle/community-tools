@@ -1,16 +1,15 @@
 .weather .btn {
     width: 15px;
-    height: 80px;
     cursor: pointer;
     background: url(../img/arrows.png) no-repeat;
 }
 
 .btn.prev {
-    background-position: 1px 30px;
+    background-position: 1px 35px;
 }
 
 .btn.next {
-    background-position: -18px 30px;
+    background-position: -18px 35px;
 }
 
 .weather .btn:hover {
@@ -60,14 +59,18 @@
 }
 
 .weather .laterConditions {
-    border-top: 1px dotted #757575;
-    padding-top: 10px;
+    box-shadow: 0px 2px 5px black inset;
     clear: both;
 }
 
 .weather .laterConditions li {
     text-align: center;
     display: inline-block;
+    height: 90px;
+}
+
+.weather .laterConditions li.current {
+    background-color: #373737;
 }
 
 .weather .attribution {
