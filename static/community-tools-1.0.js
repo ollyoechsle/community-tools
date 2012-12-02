@@ -702,9 +702,11 @@ window.yaxham.modules = window.yaxham.modules || {};
     WeatherView.MARKUP = '' +
                          '<div class="weather">' +
                          '<div class="currentConditions"></div>' +
+                         '<div class="navigator">' +
                          '<div class="btn prev" data-direction="-1"></div>' +
                          '<ul class="laterConditions"></ul>' +
                          '<div class="btn next" data-direction="+1"></div>' +
+                         '</div>' +
                          '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
                          '</div>';
 

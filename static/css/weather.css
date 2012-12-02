@@ -1,14 +1,24 @@
-.weather .btn {
+.weather .navigator {
+    height: 120px;
+    position: relative;
+}
+
+.weather .navigator .btn {
+    height: 90px;
+    position: absolute;
     width: 15px;
+    top: 10px;
     cursor: pointer;
     background: url(../img/arrows.png) no-repeat;
 }
 
-.btn.prev {
+.weather .navigator .btn.prev {
+    left: -5px;
     background-position: 1px 35px;
 }
 
-.btn.next {
+.weather .navigator .btn.next {
+    right: -5px;
     background-position: -18px 35px;
 }
 
@@ -59,6 +69,9 @@
 }
 
 .weather .laterConditions {
+    position: absolute;
+    left: 15px;
+    right: 15px;
     box-shadow: 0px 2px 5px black inset;
     background-color: #252525;
     clear: both;
