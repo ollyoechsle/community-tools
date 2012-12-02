@@ -15,11 +15,17 @@
 
     WeatherModel.prototype.setAllData = function (json) {
         this.data = json;
-        this.location = json.SiteRep.DV.Location;
+        var periods = json.SiteRep.DV.Location.Period;
+        var allPeriods = [];
+        periods.forEach(function(period) {
+            Array.prototype.push.apply(allPeriods, period.Rep);
+        });
+        console.log(allPeriods);
+        this.allPeriods = allPeriods;
     };
 
     WeatherModel.prototype.getForecast = function() {
-        return this.location.Period[0].Rep.map(function(reading) {
+        return this.allPeriods.map(function(reading) {
             return {
                 type: WeatherModel.WEATHER[reading.W].name,
                 icon: WeatherModel.WEATHER[reading.W].img,

@@ -2,29 +2,44 @@ import common
 import webapp2
 import json
 import logging
+from google.appengine.api import memcache
 
 config = {
     "APIKey" : "a5b7c8f2-f1d0-44c5-a8bb-71d6d4e0892e",
-    "url" : "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=3hourly&key=%s"
+    "url" : "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=3hourly&key=%s",
+    "location": {
+        "Dereham":  "351196",
+        "Norwich":  "310115",
+        "Swaffham":  "324250",
+        "KingsLynn":  "352116"
+    }
 }
-
-#<Location id="351196" latitude="52.6813" longitude="0.9396" name="Dereham"/>
-#<Location id="310115" latitude="52.6305" longitude="1.2991" name="Norwich"/>
-#<Location id="324250" latitude="52.6471" longitude="0.6892" name="Swaffham"/>
-#<Location id="352116" latitude="52.7511" longitude="0.3989" name="King's Lynn Youth Hostel"/>
 
 def get_weather(location):
     url = config["url"] % (location, config["APIKey"])
     logging.info("Calling url:  " + url)
     return common.get_data(url)
 
+def get_cached_weather(location):
+    key = "weather_" + location
+    data = memcache.get(key)
+
+    if not data:
+        data = get_weather(location)
+        memcache.set(key, data, 600)
+    else:
+        logging.info("Getting cached weather data")
+
+    return data
+
 class Weather(webapp2.RequestHandler):
     def get(self):
 
-        location = self.request.get("location") or "351196"
+        location = self.request.get("location") or config["location"]["Dereham"]
         logging.info("Weather request for location:" + location)
 
-        content = get_weather(location);
+        content = get_cached_weather(location);
+
         common.write_response(self.request, self.response, content)
 
 app = webapp2.WSGIApplication([('/weather', Weather)], debug=True)
