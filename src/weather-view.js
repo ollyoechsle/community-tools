@@ -14,7 +14,15 @@
     WeatherView.prototype.jElement = null;
 
     WeatherView.prototype.initialise = function () {
-        this.jElement.append(WeatherView.MARKUP);
+        this.jElement
+            .append(WeatherView.MARKUP)
+            .delegate(".btn", "click.weather", this.handleNavigate.bind(this))
+    };
+
+    WeatherView.prototype.handleNavigate = function(jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            action = jTarget.data("direction");
+        console.log(action);
     };
 
     WeatherView.prototype.updateAll = function () {
@@ -38,7 +46,7 @@
         var forecasts = this.model.getForecast(),
             currentConditions = forecasts[0],
             laterConditions = forecasts.filter(function(forecast, index) {
-                return index > 0 && index < 6
+                return index > 0 && index < 5
             });
 
         this.jElement.find(".currentConditions").html(
@@ -51,6 +59,7 @@
     };
 
     WeatherView.prototype.destroy = function () {
+        this.jElement.undelegate(".weather");
     };
 
     WeatherView.CURRENT_CONDITIONS = '' +
@@ -68,15 +77,17 @@
                                      '</li>' +
                                      '</ul>';
 
-    WeatherView.LATER_CONDITIONS = '{{#forecasts}}' +
+    WeatherView.LATER_CONDITIONS = '<li class="btn prev" data-direction="-1"></li>' +
+                                   '{{#forecasts}}' +
                                    '<li>' +
-                                   '<td><img src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
+                                   '<td><img width="60" height="50" src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
                                    '<div class="time heading">{{time}}</div>' +
                                    '<div class="temperature reading">{{temperature}}&deg;C</div>' +
                                    '</li>' +
-                                   '{{/forecasts}}';
+                                   '{{/forecasts}}' +
+                                   '<li class="btn next" data-direction="+1"></li>';
 
-    WeatherView.MARKUP = '<h2>Yaxham Weather Station</h2>' +
+    WeatherView.MARKUP = '' +
                          '<div class="weather">' +
                          '<div class="currentConditions"></div>' +
                          '<ul class="laterConditions"></ul>' +

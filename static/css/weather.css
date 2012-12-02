@@ -1,5 +1,20 @@
-.weather {
+.weather .btn {
+    width: 15px;
+    height: 80px;
+    cursor: pointer;
+    background: url(../img/arrows.png) no-repeat;
+}
 
+.btn.prev {
+    background-position: 1px 30px;
+}
+
+.btn.next {
+    background-position: -18px 30px;
+}
+
+.weather .btn:hover {
+    background-color: #757575;
 }
 
 .weather .currentConditions {
