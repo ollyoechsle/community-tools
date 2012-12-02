@@ -19,10 +19,10 @@
     };
 
     WeatherModel.prototype.getForecast = function() {
-        return this.model.location.Period[0].Rep.map(function(reading) {
+        return this.location.Period[0].Rep.map(function(reading) {
             return {
-                type: WeatherModel[reading.W].name,
-                icon: WeatherModel[reading.W].img,
+                type: WeatherModel.WEATHER[reading.W].name,
+                icon: WeatherModel.WEATHER[reading.W].img,
                 chanceOfRain: reading.Pp,
                 temperature: reading.T,
                 windSpeed: reading.S,

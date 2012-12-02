@@ -12,11 +12,9 @@
     WeatherView.prototype = Object.create(Subscribable.prototype);
 
     WeatherView.prototype.jElement = null;
-    WeatherView.prototype.jBoard = null;
 
     WeatherView.prototype.initialise = function () {
         this.jElement.append(WeatherView.MARKUP);
-        this.jBoard = this.jElement.find(".data");
     };
 
     WeatherView.prototype.updateAll = function () {
@@ -30,7 +28,7 @@
     };
 
     WeatherView.prototype.displayLoading = function () {
-        this.jBoard.find("currentConditions")
+        this.jElement.find("currentConditions")
             .empty()
             .addClass("loading");
     };
@@ -43,12 +41,12 @@
                 return index > 0 && index < 6
             });
 
-        this.jBoard.find("currentConditions").html(
+        this.jElement.find(".currentConditions").html(
             Mustache.to_html(WeatherView.CURRENT_CONDITIONS, currentConditions)
             );
 
-        this.jBoard.find("laterConditions").html(
-            Mustache.to_html(WeatherView.ROW, {forecasts: laterConditions})
+        this.jElement.find(".laterConditions").html(
+            Mustache.to_html(WeatherView.LATER_CONDITIONS, {forecasts: laterConditions})
             );
     };
 
@@ -66,12 +64,11 @@
                                      '<div class="heading">Rain</div>' +
                                      '<div class="rainChance reading">{{chanceOfRain}}%</div>' +
                                      '<div class="heading">Wind</div>' +
-                                     '<div class="windSpeed reading">{{windSpeed}} mph {windDirection}}</div>' +
+                                     '<div class="windSpeed reading">{{windSpeed}} mph {{windDirection}}</div>' +
                                      '</li>' +
                                      '</ul>';
 
-    WeatherView.LATER_CONDITIONS = '' +
-                                   '{{#forecasts}}' +
+    WeatherView.LATER_CONDITIONS = '{{#forecasts}}' +
                                    '<li>' +
                                    '<td><img src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
                                    '<div class="time heading">{{time}}</div>' +
@@ -79,12 +76,12 @@
                                    '</li>' +
                                    '{{/forecasts}}';
 
-    WeatherView.MARKUP = '' +
-                         '<h2>Yaxham Weather Station</h2>' +
+    WeatherView.MARKUP = '<h2>Yaxham Weather Station</h2>' +
+                         '<div class="weather">' +
                          '<div class="currentConditions"></div>' +
                          '<ul class="laterConditions"></ul>' +
                          '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
-                         '</table>';
+                         '</div>';
 
     yaxham.modules.WeatherView = WeatherView;
 
