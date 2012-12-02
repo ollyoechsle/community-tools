@@ -30,31 +30,38 @@
     };
 
     WeatherView.prototype.displayLoading = function () {
-        this.jBoard
+        this.jBoard.find("tbody")
             .empty()
             .addClass("loading");
     };
 
     WeatherView.prototype.displayBoard = function () {
-        this.jBoard.html(Mustache.to_html(WeatherView.ROW, this.model.location.Period[0]));
+        var forecasts = this.model.getForecast();
+        this.jBoard.find("tbody").html(
+            Mustache.to_html(WeatherView.ROW, {forecasts: forecasts})
+            );
     };
 
     WeatherView.prototype.destroy = function () {
     };
 
-    WeatherView.ROW = '<tbody>' +
-                      '{{#Rep}}' +
+    WeatherView.ROW = '{{#forecasts}}' +
                       '<tr>' +
-                      '<td>{{T}}</td>' +
-                      '<td>{{W}}</td>' +
-                      '<td>{{Pp}}</td>' +
+                      '<td>{{type}}</td>' +
+                      '<td><img src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
+                      '<td>{{temperature}}&deg;C</td>' +
+                      '<td>{{chanceOfRain}}</td>' +
                       '</tr>' +
-                      '{{/Rep}}' +
-                      '</tbody>';
+                      '{{/forecasts}}';
 
     WeatherView.MARKUP = '' +
                          '<h2>Weather</h2>' +
-                         '<table class="data"></table>';
+                         '<table class="data">' +
+                         '<thead>' +
+                         '<tr><th>Type</th><th>Temp</th><th>Rain %</th></tr>' +
+                         '</thead>' +
+                         '<tbody></tbody>' +
+                         '</table>';
 
     yaxham.modules.WeatherView = WeatherView;
 

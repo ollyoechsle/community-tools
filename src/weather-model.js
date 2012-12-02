@@ -19,7 +19,19 @@
         this.location = json.SiteRep.DV.Location;
     };
 
-    var w = {
+    WeatherModel.prototype.getForecast = function() {
+        return this.model.location.Period[0].Rep.map(function(reading) {
+            return {
+                type: WeatherModel[reading.W].name,
+                icon: WeatherModel[reading.W].img,
+                chanceOfRain: reading.Pp,
+                temperature: reading.T,
+                windSpeed: reading.S
+            }
+        });
+    };
+
+    WeatherModel.WEATHER = {
         "NA":{"Name":"Not Available", img:""},
         "0":{"Name":"Clear night", img:"01n.png"},
         "1":{"Name":"Sunny day", img:"01d.png"},
