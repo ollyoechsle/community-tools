@@ -1,0 +1,61 @@
+.weather {
+
+}
+
+.weather .currentConditions {
+    position: relative;
+    height: 100px;
+}
+
+.weather .currentConditions .icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.weather .currentConditions ul {
+    position: absolute;
+    left: 120px;
+    top: 0;
+}
+
+.weather .currentConditions li {
+    display: inline-block;
+    width: 70px;
+    vertical-align: top;
+}
+
+.weather .currentConditions li.otherDetails {
+    text-align: right;
+}
+
+.weather .heading {
+    color: #aaa;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+.weather .reading {
+    margin-bottom: 10px;
+}
+
+.weather .currentConditions .temperature {
+    font-size: 23px;
+    margin-top: 5px;
+}
+
+.weather .laterConditions {
+    border-top: 1px dotted #757575;
+    padding-top: 10px;
+    clear: both;
+}
+
+.weather .laterConditions li {
+    text-align: center;
+    display: inline-block;
+}
+
+.weather .attribution {
+    text-align: right;
+}
+

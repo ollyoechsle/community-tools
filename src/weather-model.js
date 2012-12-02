@@ -3,7 +3,6 @@
     function WeatherModel(view) {
         this.view = view;
         this.locationIndex = 0;
-        this.direction = "dereham";
     }
 
     WeatherModel.locationIndex = null;
@@ -26,9 +25,22 @@
                 icon: WeatherModel[reading.W].img,
                 chanceOfRain: reading.Pp,
                 temperature: reading.T,
-                windSpeed: reading.S
+                windSpeed: reading.S,
+                windDirection: reading.D,
+                time: WeatherModel.timeOfReading[reading.$]
             }
         });
+    };
+
+    WeatherModel.timeOfReading = {
+      "0": "0:00",
+      "180": "03:00",
+      "360": "06:00",
+      "540": "09:00",
+      "720": "12:00",
+      "900": "15:00",
+      "1080": "18:00",  
+      "1260": "21:00"
     };
 
     WeatherModel.WEATHER = {
