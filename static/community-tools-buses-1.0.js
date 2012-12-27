@@ -110,8 +110,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 })();
 (function () {
 
-    function BusDeparturesModel(view) {
-        this.view = view;
+    function BusDeparturesModel() {
         this.locationIndex = 0;
         this.direction = "dereham";
     }

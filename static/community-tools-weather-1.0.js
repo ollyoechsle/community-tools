@@ -97,8 +97,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 })();
 (function () {
 
-    function WeatherModel(view) {
-        this.view = view;
+    function WeatherModel() {
         this.currentIndex = 0;
     }
 

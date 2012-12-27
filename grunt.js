@@ -14,6 +14,10 @@ module.exports = function (grunt) {
             weather:{
                 src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/weather/*.js'],
                 dest:'static/community-tools-weather-<%= meta.version %>.js'
+            },
+            news:{
+                src:['<banner:meta.banner>', 'src/namespace.js', 'src/news/*.js'],
+                dest:'static/community-tools-news-<%= meta.version %>.js'
             }
         },
         min:{
@@ -24,6 +28,10 @@ module.exports = function (grunt) {
             weather:{
                 src:['<config:concat.weather.dest>'],
                 dest:'static/community-tools-weather-<%= meta.version %>.min.js'
+            },
+            news:{
+                src:['<config:concat.news.dest>'],
+                dest:'static/community-tools-news-<%= meta.version %>.min.js'
             }
         },
         qunit: {
