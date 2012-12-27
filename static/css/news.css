@@ -2,6 +2,22 @@
     list-style-type: none;
 }
 
+.newsContainer time {
+    color: #999;
+}
+
 .newsContainer ul li {
     margin-bottom: 10px;
+}
+
+.newsContainer .showMore {
+    text-align: center;
+    display: block;
+    float: none;
+    line-height: 1.4em;
+    cursor: pointer;
+}
+
+.newsContainer .showMore.hidden {
+    display: none;
 }

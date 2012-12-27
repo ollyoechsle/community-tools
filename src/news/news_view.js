@@ -6,11 +6,11 @@
             throw new Error("Invalid selector: " + selector);
         }
         this.model = model;
+        this.showAll = false;
     }
 
-    NewsView.prototype = Object.create(Subscribable.prototype);
-
     NewsView.prototype.jElement = null;
+    NewsView.prototype.showAll = null;
 
     NewsView.prototype.updateAll = function () {
         if (this.model.hasData()) {
@@ -25,11 +25,26 @@
     };
 
     NewsView.prototype.displayBoard = function () {
+
+        var data = this.model.getData(!this.showAll ? 5 : 10);
+
         this.jElement.html(
             Mustache.to_html(NewsView.NEWS_LIST, {
-                items: this.model.getData()
+                items: data
             })
         );
+
+        if (!this.showAll) {
+            this.jElement.find(".showMore")
+                .removeClass("hidden")
+                .click(this.handleShowAllClicked.bind(this));
+        }
+
+    };
+
+    NewsView.prototype.handleShowAllClicked = function () {
+        this.showAll = true;
+        this.updateAll();
     };
 
     NewsView.NEWS_LIST = '' +
@@ -41,7 +56,8 @@
         '<time datetime="{{pubDate}}">{{date}}</time>' +
         '</li>' +
         '{{/items}}' +
-        '</ul>';
+        '</ul>' +
+        '<div class="showMore hidden button">Show More Items</div>';
 
     yaxham.modules.NewsView = NewsView;
 

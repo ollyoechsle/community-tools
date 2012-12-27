@@ -14,17 +14,21 @@
         this.data = json;
     };
 
-    NewsModel.prototype.getData = function() {
+    NewsModel.prototype.getData = function (numItems) {
         var formatStr = "ddd HH:mm";
-        return this.data.map(function(item) {
-            return {
-                title: item.title,
-                pubDate: item.pubDate,
-                date: moment(item.pubDate).format(formatStr),
-                description: item.description,
-                link: item.link
-            }
-        })
+        return this.data
+            .filter(function noMoreThan(val, i) {
+                return i < numItems;
+            })
+            .map(function (item) {
+                return {
+                    title: item.title,
+                    pubDate: item.pubDate,
+                    date: moment(item.pubDate).format(formatStr),
+                    description: item.description,
+                    link: item.link
+                }
+            })
     };
 
     yaxham.modules.NewsModel = NewsModel;

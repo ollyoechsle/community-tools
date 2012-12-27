@@ -73,17 +73,21 @@ window.yaxham.modules = window.yaxham.modules || {};
         this.data = json;
     };
 
-    NewsModel.prototype.getData = function() {
+    NewsModel.prototype.getData = function (numItems) {
         var formatStr = "ddd HH:mm";
-        return this.data.map(function(item) {
-            return {
-                title: item.title,
-                pubDate: item.pubDate,
-                date: moment(item.pubDate).format(formatStr),
-                description: item.description,
-                link: item.link
-            }
-        })
+        return this.data
+            .filter(function noMoreThan(val, i) {
+                return i < numItems;
+            })
+            .map(function (item) {
+                return {
+                    title: item.title,
+                    pubDate: item.pubDate,
+                    date: moment(item.pubDate).format(formatStr),
+                    description: item.description,
+                    link: item.link
+                }
+            })
     };
 
     yaxham.modules.NewsModel = NewsModel;
@@ -97,11 +101,11 @@ window.yaxham.modules = window.yaxham.modules || {};
             throw new Error("Invalid selector: " + selector);
         }
         this.model = model;
+        this.showAll = false;
     }
 
-    NewsView.prototype = Object.create(Subscribable.prototype);
-
     NewsView.prototype.jElement = null;
+    NewsView.prototype.showAll = null;
 
     NewsView.prototype.updateAll = function () {
         if (this.model.hasData()) {
@@ -116,11 +120,26 @@ window.yaxham.modules = window.yaxham.modules || {};
     };
 
     NewsView.prototype.displayBoard = function () {
+
+        var data = this.model.getData(!this.showAll ? 5 : 10);
+
         this.jElement.html(
             Mustache.to_html(NewsView.NEWS_LIST, {
-                items: this.model.getData()
+                items: data
             })
         );
+
+        if (!this.showAll) {
+            this.jElement.find(".showMore")
+                .removeClass("hidden")
+                .click(this.handleShowAllClicked.bind(this));
+        }
+
+    };
+
+    NewsView.prototype.handleShowAllClicked = function () {
+        this.showAll = true;
+        this.updateAll();
     };
 
     NewsView.NEWS_LIST = '' +
@@ -132,7 +151,8 @@ window.yaxham.modules = window.yaxham.modules || {};
         '<time datetime="{{pubDate}}">{{date}}</time>' +
         '</li>' +
         '{{/items}}' +
-        '</ul>';
+        '</ul>' +
+        '<div class="showMore hidden button">Show More Items</div>';
 
     yaxham.modules.NewsView = NewsView;
 
