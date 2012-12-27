@@ -6,7 +6,7 @@
             throw new Error("Invalid selector: " + selector);
         }
         this.model = model;
-        this.showAll = false;
+        this.itemCount = 4;
     }
 
     NewsView.prototype.jElement = null;
@@ -26,7 +26,7 @@
 
     NewsView.prototype.displayBoard = function () {
 
-        var data = this.model.getData(!this.showAll ? 5 : 10);
+        var data = this.model.getData(this.itemCount);
 
         this.jElement.html(
             Mustache.to_html(NewsView.NEWS_LIST, {
@@ -34,7 +34,7 @@
             })
         );
 
-        if (!this.showAll) {
+        if (this.itemCount < this.model.data.length) {
             this.jElement.find(".showMore")
                 .removeClass("hidden")
                 .click(this.handleShowAllClicked.bind(this));
@@ -43,7 +43,7 @@
     };
 
     NewsView.prototype.handleShowAllClicked = function () {
-        this.showAll = true;
+        this.itemCount += 5;
         this.updateAll();
     };
 
@@ -57,7 +57,7 @@
         '</li>' +
         '{{/items}}' +
         '</ul>' +
-        '<div class="showMore hidden button">Show More Items</div>';
+        '<div class="showMore hidden button">More News..</div>';
 
     yaxham.modules.NewsView = NewsView;
 
