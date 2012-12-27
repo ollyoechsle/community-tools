@@ -1,0 +1,7 @@
+.newsContainer ul {
+    list-style-type: none;
+}
+
+.newsContainer ul li {
+    margin-bottom: 10px;
+}

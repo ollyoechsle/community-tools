@@ -24,7 +24,7 @@ def to_object(item):
 
 def toISOTime(text):
     timeObj = time.strptime(text[:-6], "%a, %d %b %Y %H:%M:%S")
-    formatted = time.strftime('%Y-%m-%d %H:%M:%SZ', timeObj)
+    formatted = time.strftime('%Y-%m-%dT%H:%M:%SZ', timeObj)
     return formatted
 
 class EDPRSSFeed(webapp2.RequestHandler):

@@ -29,19 +29,22 @@
         console.log("Displaying data: " + this.model.data.length);
         this.jElement.html(
             Mustache.to_html(NewsView.NEWS_LIST, {
-                items: this.model.data
+                items: this.model.getData()
             })
         );
 
     };
 
     NewsView.NEWS_LIST = '' +
+        '<ul>' +
         '{{#items}}' +
         '<li class="{{className}}">' +
-        '<a href="{{link}}">{{title}}</a>' +
+        '<a target="_BLANK" href="{{link}}">{{title}}</a> ' +
         '<div>{{{description}}}</div>' +
+        '<time datetime="{{pubDate}}">{{date}}</time>' +
         '</li>' +
-        '{{/items}}';
+        '{{/items}}' +
+        '</ul>';
 
     yaxham.modules.NewsView = NewsView;
 
