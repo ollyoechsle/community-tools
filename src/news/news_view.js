@@ -25,14 +25,11 @@
     };
 
     NewsView.prototype.displayBoard = function () {
-
-        console.log("Displaying data: " + this.model.data.length);
         this.jElement.html(
             Mustache.to_html(NewsView.NEWS_LIST, {
                 items: this.model.getData()
             })
         );
-
     };
 
     NewsView.NEWS_LIST = '' +
