@@ -16,10 +16,10 @@ def get_rss(url):
 
 def to_object(item):
     return {
-        "title": getText(item, 'title'),
-        "description": getText(item, 'description'),
-        "pubDate": toISOTime(getText(item, 'pubDate')),
-        "link": getText(item, 'link')
+        "title": common.getText(item, 'title'),
+        "description": common.getText(item, 'description'),
+        "pubDate": toISOTime(common.getText(item, 'pubDate')),
+        "link": common.getText(item, 'link')
     }
 
 def toISOTime(text):

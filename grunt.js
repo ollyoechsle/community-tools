@@ -7,15 +7,23 @@ module.exports = function (grunt) {
             banner:"/* Community Tools <%= meta.version %> */"
         },
         concat:{
-            dist:{
-                src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/*.js'],
-                dest:'static/community-tools-<%= meta.version %>.js'
+            buses:{
+                src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/buses/*.js'],
+                dest:'static/community-tools-buses-<%= meta.version %>.js'
+            },
+            weather:{
+                src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/weather/*.js'],
+                dest:'static/community-tools-weather-<%= meta.version %>.js'
             }
         },
         min:{
-            dist:{
-                src:['<config:concat.dist.dest>'],
-                dest:'static/comunity-tools-<%= meta.version %>.min.js'
+            buses:{
+                src:['<config:concat.buses.dest>'],
+                dest:'static/community-tools-buses-<%= meta.version %>.min.js'
+            },
+            weather:{
+                src:['<config:concat.weather.dest>'],
+                dest:'static/community-tools-weather-<%= meta.version %>.min.js'
             }
         },
         qunit: {
