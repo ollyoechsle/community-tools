@@ -3,6 +3,7 @@ import common
 import webapp2
 import logging
 import time
+from google.appengine.api import memcache
 from xml.dom import minidom
 
 def get_rss(url):
@@ -27,9 +28,19 @@ def toISOTime(text):
     formatted = time.strftime('%Y-%m-%dT%H:%M:%SZ', timeObj)
     return formatted
 
+def get_news():
+    cache_id = "edpnews"
+    cached = memcache.get(cache_id)
+    if cached:
+        return cached
+    else:
+        cached = get_rss("http://www.edp24.co.uk/cmlink/edp24_news_1_595700")
+        memcache.set(cache_id, cached, time=3600)
+        return cached
+
 class EDPRSSFeed(webapp2.RequestHandler):
     def get(self):
-        content = get_rss("http://www.edp24.co.uk/cmlink/edp24_news_1_595700")
-        common.write_response(self.request, self.response, json.dumps(content))
+        news = get_news()
+        common.write_response(self.request, self.response, json.dumps(news))
 
 app = webapp2.WSGIApplication([('/news', EDPRSSFeed)], debug=True)
