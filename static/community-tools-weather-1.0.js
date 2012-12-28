@@ -390,6 +390,7 @@ window.yaxham.modules = window.yaxham.modules || {};
         forecasts.forEach(function (forecast) {
             var pc = ((forecast.temperature - temperatureRange.min) / range) * 50;
             forecast.top = 50 - pc;
+            forecast.className = forecast.time == "0:00" ? "startOfDay" : ""
         });
 
         this.weatherChart.render(forecasts);
@@ -406,7 +407,7 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     WeatherChartView.LATER_CONDITIONS = '' +
         '{{#forecasts}}' +
-        '<li>' +
+        '<li class="{{className}}">' +
         '<div class="time heading">{{time}}</div>' +
         '<div class="precipitation" style="height: {{chanceOfRain}}px"></div>' +
         '<div class="fc" style="top: {{top}}px">' +

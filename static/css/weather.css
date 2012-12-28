@@ -124,6 +124,10 @@
     box-shadow: 3px 3px 5px black;
 }
 
+.weather .laterConditions li.startOfDay {
+    border-left: 1px dashed #757575;
+}
+
 .weather.horizontal .laterConditions .precipitation {
     position: absolute;
     bottom: 0;
