@@ -383,7 +383,10 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     WeatherChartView.prototype.displayBoard = function () {
 
-        var forecasts = this.model.getForecast(),
+        var currentIndex = this.model.currentIndex,
+            forecasts = this.model.getForecast().filter(function (forecast, index) {
+                return index >= currentIndex && index < (currentIndex + 16)
+            }),
             temperatureRange = this.model.getTemperatureRange(),
             range = temperatureRange.max - temperatureRange.min;
 
@@ -392,6 +395,7 @@ window.yaxham.modules = window.yaxham.modules || {};
             forecast.top = 50 - pc;
             forecast.className = forecast.time == "0:00" ? "startOfDay" : ""
         });
+
 
         this.weatherChart.render(forecasts);
 
@@ -420,7 +424,9 @@ window.yaxham.modules = window.yaxham.modules || {};
     WeatherChartView.MARKUP = '' +
         '<div class="weather horizontal">' +
         '<div class="navigator">' +
+        '<div class="btn prev" data-direction="-1"></div>' +
         '<ul class="laterConditions"></ul>' +
+        '<div class="btn next" data-direction="+1"></div>' +
         '</div>' +
         '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
         '</div>';
@@ -463,7 +469,7 @@ window.yaxham.modules = window.yaxham.modules || {};
             fw = 36,
             cx = 0;
 
-        ctx.clearRect(0, 0, 500, 500);
+        ctx.clearRect(0, 0, 1000, 500);
 
         this.setStroke(WeatherChart.NOTCH);
         ctx.beginPath();

@@ -33,7 +33,7 @@
             fw = 36,
             cx = 0;
 
-        ctx.clearRect(0, 0, 500, 500);
+        ctx.clearRect(0, 0, 1000, 500);
 
         this.setStroke(WeatherChart.NOTCH);
         ctx.beginPath();
