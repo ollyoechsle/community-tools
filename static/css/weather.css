@@ -1,6 +1,9 @@
 .weather .navigator {
-    height: 120px;
     position: relative;
+}
+
+.weather.vertical .navigator {
+    height: 120px;
 }
 
 .weather .navigator .btn {
@@ -68,7 +71,7 @@
     margin-top: 5px;
 }
 
-.weather .laterConditions {
+.weather.vertical .laterConditions {
     position: absolute;
     left: 15px;
     right: 15px;
@@ -78,11 +81,34 @@
 }
 
 .weather .laterConditions li {
-    width: 25%;
     text-align: center;
     display: inline-block;
     height: 100px;
     padding-top:10px;
+}
+
+.weather.horizontal .laterConditions li {
+    width: 25%;
+    position: relative;
+    height: 100px;
+}
+
+.weather.horizontal .laterConditions .fc {
+    position: absolute;
+    margin-top: 25px;
+}
+
+.weather.vertical .laterConditions li {
+    width: 25%;
+}
+
+.weather.horizontal .laterConditions li {
+    width: 36px;
+}
+
+.weather.horizontal .laterConditions {
+    height: 120px;
+    overflow: hidden;
 }
 
 .weather .laterConditions li.current {

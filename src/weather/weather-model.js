@@ -55,6 +55,16 @@
         });
     };
 
+    WeatherModel.prototype.getTemperatureRange = function() {
+        var temperatures = this.allPeriods.map(function (reading) {
+            return reading.T
+        });
+        return {
+            max: Math.max.apply(null, temperatures),
+            min: Math.min.apply(null, temperatures)
+        }
+    };
+
     WeatherModel.timeOfReading = {
         "0":"0:00",
         "180":"03:00",

@@ -152,6 +152,16 @@ window.yaxham.modules = window.yaxham.modules || {};
         });
     };
 
+    WeatherModel.prototype.getTemperatureRange = function() {
+        var temperatures = this.allPeriods.map(function (reading) {
+            return reading.T
+        });
+        return {
+            max: Math.max.apply(null, temperatures),
+            min: Math.min.apply(null, temperatures)
+        }
+    };
+
     WeatherModel.timeOfReading = {
         "0":"0:00",
         "180":"03:00",
@@ -300,7 +310,7 @@ window.yaxham.modules = window.yaxham.modules || {};
                                    '{{/forecasts}}';
 
     WeatherView.MARKUP = '' +
-                         '<div class="weather">' +
+                         '<div class="weather vertical">' +
                          '<div class="currentConditions"></div>' +
                          '<div class="navigator">' +
                          '<div class="btn prev" data-direction="-1"></div>' +
@@ -318,7 +328,7 @@ window.yaxham.modules = window.yaxham.modules || {};
     yaxham.modules.Weather = function(element) {
 
         var model = new yaxham.modules.WeatherModel(),
-            view = new yaxham.modules.WeatherView(element, model),
+            view = new yaxham.modules.WeatherChartView(element, model),
             controller = new yaxham.modules.WeatherController(view, model);
 
         return controller;
@@ -326,3 +336,151 @@ window.yaxham.modules = window.yaxham.modules || {};
     }
 
 })();
+(function () {
+
+    function WeatherChartView(selector, model) {
+        this.jElement = jQuery(selector);
+        if (this.jElement.length == 0) {
+            throw new Error("Invalid selector: " + selector);
+        }
+        this.model = model;
+        this.initialise();
+    }
+
+    WeatherChartView.prototype = Object.create(Subscribable.prototype);
+
+    WeatherChartView.prototype.jElement = null;
+
+    WeatherChartView.prototype.initialise = function () {
+        this.jElement
+            .append(WeatherChartView.MARKUP)
+            .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
+        this.weatherChart = new yaxham.modules.WeatherChart(this.jElement.find(".navigator"));
+        this.model.on("indexChanged", this.updateAll, this);
+    };
+
+    WeatherChartView.prototype.handleNavigate = function (jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            direction = jTarget.data("direction");
+        this.model.changeCurrentIndex(+direction);
+    };
+
+    WeatherChartView.prototype.updateAll = function () {
+
+        if (this.model.hasData()) {
+            this.displayBoard();
+        } else {
+            this.displayLoading();
+        }
+
+    };
+
+    WeatherChartView.prototype.displayLoading = function () {
+        this.jElement.find("currentConditions")
+            .empty()
+            .addClass("loading");
+    };
+
+    WeatherChartView.prototype.displayBoard = function () {
+
+        var forecasts = this.model.getForecast(),
+            temperatureRange = this.model.getTemperatureRange(),
+            range = temperatureRange.max - temperatureRange.min;
+
+        forecasts.forEach(function (forecast) {
+            var pc = ((forecast.temperature - temperatureRange.min) / range) * 50;
+            forecast.top = 50 - pc;
+        });
+
+        this.weatherChart.render(forecasts);
+
+        this.jElement.find(".laterConditions").html(
+            Mustache.to_html(WeatherChartView.LATER_CONDITIONS, {forecasts: forecasts})
+        );
+    };
+
+    WeatherChartView.prototype.destroy = function () {
+        this.jElement.undelegate(".weather");
+        this.model.un(null, this);
+    };
+
+    WeatherChartView.LATER_CONDITIONS = '' +
+        '{{#forecasts}}' +
+        '<li>' +
+        '<div class="time heading">{{time}}</div>' +
+        '<div class="fc" style="top: {{top}}px">' +
+        '<img width="30" height="25" src="/static/img/weather/icons_60x50/{{icon}}" />' +
+        '<div class="temperature reading">{{temperature}}&deg;C</div>' +
+        '</div' +
+        '</li>' +
+        '{{/forecasts}}';
+
+    WeatherChartView.MARKUP = '' +
+        '<div class="weather horizontal">' +
+        '<div class="navigator">' +
+        '<ul class="laterConditions"></ul>' +
+        '</div>' +
+        '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
+        '</div>';
+
+    yaxham.modules.WeatherChartView = WeatherChartView;
+
+})();
+(function (jQuery) {
+
+    function WeatherChart(container) {
+        this.jContainer = jQuery(container);
+        this.initialise();
+    }
+
+    WeatherChart.prototype.jContainer = null;
+    WeatherChart.prototype.ctx = null;
+
+    WeatherChart.prototype.getCanvas = function () {
+
+        var canvas = document.createElement("canvas");
+        canvas.width = this.jContainer.width() || 160;
+        canvas.height = this.jContainer.height() || 160;
+        this.jContainer[0].appendChild(canvas);
+
+        if (window.G_vmlCanvasManager) {
+            return window.G_vmlCanvasManager.initElement(canvas);
+        } else {
+            return canvas;
+        }
+    };
+
+    WeatherChart.prototype.initialise = function () {
+        var canvas = this.getCanvas();
+        this.ctx = canvas.getContext('2d');
+    };
+
+    WeatherChart.prototype.render = function (forecast) {
+
+        var ctx = this.ctx,
+            fw = 36,
+            cx = 0;
+
+        ctx.clearRect(0, 0, 500, 500);
+
+        this.setStroke(WeatherChart.NOTCH);
+        ctx.beginPath();
+        ctx.moveTo(cx, forecast.top+2);
+        for (var i = 0; i < 20 && i < forecast.length; i++) {
+            ctx.lineTo(cx, forecast[i].top + 2);
+            cx += fw;
+        }
+        ctx.stroke();
+
+    };
+
+    WeatherChart.prototype.setStroke = function (settings) {
+        this.ctx.lineWidth = settings["stroke-width"];
+        this.ctx.strokeStyle = settings["stroke"];
+    };
+
+    WeatherChart.NOTCH = {stroke: "#ccc", "stroke-width": 2};
+
+    yaxham.modules.WeatherChart = WeatherChart;
+
+})(window.jQuery);

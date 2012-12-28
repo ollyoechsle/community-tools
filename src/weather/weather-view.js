@@ -90,7 +90,7 @@
                                    '{{/forecasts}}';
 
     WeatherView.MARKUP = '' +
-                         '<div class="weather">' +
+                         '<div class="weather vertical">' +
                          '<div class="currentConditions"></div>' +
                          '<div class="navigator">' +
                          '<div class="btn prev" data-direction="-1"></div>' +
