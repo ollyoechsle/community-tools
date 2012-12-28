@@ -1,5 +1,6 @@
 .weather .navigator {
     position: relative;
+    height: 170px;
 }
 
 .weather.vertical .navigator {
@@ -71,10 +72,13 @@
     margin-top: 5px;
 }
 
-.weather.vertical .laterConditions {
+.weather .laterConditions {
     position: absolute;
     left: 15px;
     right: 15px;
+}
+
+.weather.vertical .laterConditions {
     box-shadow: 0px 2px 5px black inset;
     background-color: #252525;
     clear: both;
