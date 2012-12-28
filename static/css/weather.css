@@ -99,6 +99,8 @@
 .weather.horizontal .laterConditions .fc {
     position: absolute;
     margin-top: 25px;
+    z-index: 1;
+    width: 100%;
 }
 
 .weather.vertical .laterConditions li {
@@ -124,8 +126,13 @@
     box-shadow: 3px 3px 5px black;
 }
 
-.weather .laterConditions li.startOfDay {
-    border-left: 1px dashed #757575;
+.weather .laterConditions li.startOfDay:after {
+    content: ' ';
+    display: block;
+    height: 147px;
+    border-left: 1px solid #555;
+    left: 17px;
+    position: absolute;
 }
 
 .weather.horizontal .laterConditions .precipitation {
