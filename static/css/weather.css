@@ -102,7 +102,7 @@
 
 .weather.horizontal .laterConditions .fc {
     position: absolute;
-    margin-top: 25px;
+    margin-top: 40px;
     z-index: 1;
     width: 100%;
 }
@@ -116,13 +116,14 @@
 }
 
 .weather.horizontal .laterConditions {
-    height: 160px;
+    height: 180px;
     overflow: hidden;
 }
 
 .weather.horizontal canvas {
     position: absolute;
-    top: 90px;
+    top: 110px;
+    left: 15px;
 }
 
 .weather .laterConditions li.current {
@@ -142,7 +143,6 @@
 .weather.horizontal .laterConditions .precipitation {
     position: absolute;
     bottom: 0;
-    height: 30px;
     width: 33px;
     background: url("/static/img/weather/precipitation.png");
 }
