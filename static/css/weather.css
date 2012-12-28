@@ -83,14 +83,17 @@
 .weather .laterConditions li {
     text-align: center;
     display: inline-block;
+    padding-top: 10px;
+}
+
+.weather .vertical .laterConditions li {
     height: 100px;
-    padding-top:10px;
 }
 
 .weather.horizontal .laterConditions li {
     width: 25%;
     position: relative;
-    height: 100px;
+    height: 150px;
 }
 
 .weather.horizontal .laterConditions .fc {
@@ -107,13 +110,26 @@
 }
 
 .weather.horizontal .laterConditions {
-    height: 120px;
+    height: 160px;
     overflow: hidden;
+}
+
+.weather.horizontal canvas {
+    position: absolute;
+    top: 90px;
 }
 
 .weather .laterConditions li.current {
     background-color: #373737;
     box-shadow: 3px 3px 5px black;
+}
+
+.weather.horizontal .laterConditions .precipitation {
+    position: absolute;
+    bottom: 0;
+    height: 30px;
+    width: 33px;
+    background: url("/static/img/weather/precipitation.png");
 }
 
 .weather .attribution {

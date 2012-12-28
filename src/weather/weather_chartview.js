@@ -70,10 +70,11 @@
         '{{#forecasts}}' +
         '<li>' +
         '<div class="time heading">{{time}}</div>' +
+        '<div class="precipitation" style="height: {{chanceOfRain}}px"></div>' +
         '<div class="fc" style="top: {{top}}px">' +
         '<img width="30" height="25" src="/static/img/weather/icons_60x50/{{icon}}" />' +
         '<div class="temperature reading">{{temperature}}&deg;C</div>' +
-        '</div' +
+        '</div>' +
         '</li>' +
         '{{/forecasts}}';
 
