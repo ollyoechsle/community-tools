@@ -712,10 +712,9 @@ if(typeof module !== 'undefined') {
                              '<table class="table">'
                                  + '<thead>'
                                  + '<tr>'
-                                 + '<th class="service">Service</th>'
-                                 + '<th>To</th>'
-                                 + '<th>Departs</th>'
-                                 + '<th></th>'
+                                 + '<th class="service">No.</th>'
+                                 + '<th>Toward</th>'
+                                 + '<th class="time">Departs</th>'
                                  + '</tr>'
                                  + '</thead>'
                                  + '<tbody>' +
@@ -725,8 +724,9 @@ if(typeof module !== 'undefined') {
                              '<td>{{destination}}</td>' +
                              '<td class="time"><time datetime="{{timestamp}}">' +
                              '{{time}}' +
-                             '</time></td>' +
-                             '<td class="inTime">{{inTime}}</td>' +
+                             '</time>' +
+                             '<div class="inTime">{{inTime}}</div>' +
+                             '</td>' +
                              '</tr>' +
                              '{{/list}}' +
                              '</tbody>' +
