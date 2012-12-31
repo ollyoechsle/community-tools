@@ -8,7 +8,7 @@ module.exports = function (grunt) {
         },
         concat:{
             buses:{
-                src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/buses/*.js'],
+                src:['<banner:meta.banner>', 'src/namespace.js', 'src/subscribable.js', 'src/hselector.js', 'src/buses/*.js'],
                 dest:'static/community-tools-buses-<%= meta.version %>.js'
             },
             weather:{

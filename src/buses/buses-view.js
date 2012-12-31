@@ -108,7 +108,6 @@
                              '</table>';
 
     BusDeparturesView.MARKUP = '' +
-                               '<h2>Bus Departures</h2>' +
                                '<ul class="tabs"></ul>' +
                                '<div class="otherStops"></div>' +
                                '<div class="board"></div>';

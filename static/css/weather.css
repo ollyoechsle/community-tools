@@ -134,7 +134,7 @@
 .weather .laterConditions li.startOfDay:after {
     content: ' ';
     display: block;
-    height: 147px;
+    height: 118px;
     border-left: 1px solid #555;
     left: 17px;
     position: absolute;

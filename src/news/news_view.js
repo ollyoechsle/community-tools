@@ -51,7 +51,7 @@
         '<ul>' +
         '{{#items}}' +
         '<li class="{{className}}">' +
-        '<a target="_BLANK" href="{{link}}">{{title}}</a> ' +
+        '<h3><a target="_BLANK" href="{{link}}">{{title}}</a></h3>' +
         '<div>{{{description}}}</div>' +
         '<time datetime="{{pubDate}}">{{date}}</time>' +
         '</li>' +
