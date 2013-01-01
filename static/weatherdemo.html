@@ -19,7 +19,10 @@
 <div class="pageContainer">
     <div class="body" style="padding: 10px">
         <h2>Yaxham Weather Station</h2>
-        <div class="weatherContainer"></div>
+        <div class="weatherContainer vertical"></div>
+
+        <div class="weatherContainer horizontal"></div>
+
     </div>
 
     <p>
@@ -42,7 +45,7 @@
         yaxham.modules.WeatherController.URL =
         location.protocol + "//" + location.host + "/weather";
 
-        yaxham.modules.Weather(".weatherContainer").initialise();
+        yaxham.modules.Weather(".weatherContainer");
 
     });
 </script>
