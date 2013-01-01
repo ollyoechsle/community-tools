@@ -1,0 +1,155 @@
+/* Community Tools 1.0 */
+
+.weather .navigator {
+    position: relative;
+    height: 170px;
+}
+
+.weather.vertical .navigator {
+    height: 120px;
+}
+
+.weather .navigator .btn {
+    height: 90px;
+    position: absolute;
+    width: 15px;
+    top: 10px;
+    cursor: pointer;
+    background: url(../img/arrows.png) no-repeat;
+}
+
+.weather .navigator .btn.prev {
+    left: -5px;
+    background-position: 1px 35px;
+}
+
+.weather .navigator .btn.next {
+    right: -5px;
+    background-position: -18px 35px;
+}
+
+.weather .btn:hover {
+    background-color: #757575;
+}
+
+.weather .currentConditions {
+    position: relative;
+    height: 100px;
+}
+
+.weather .currentConditions .icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.weather .currentConditions ul {
+    position: absolute;
+    left: 120px;
+    top: 0;
+}
+
+.weather .currentConditions li {
+    display: inline-block;
+    width: 70px;
+    vertical-align: top;
+}
+
+.weather .currentConditions li.otherDetails {
+    text-align: right;
+}
+
+.weather .heading {
+    color: #aaa;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+.weather .reading {
+    margin-bottom: 10px;
+}
+
+.weather .currentConditions .temperature {
+    font-size: 23px;
+    margin-top: 5px;
+}
+
+.weather .laterConditions {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+}
+
+.weather.vertical .laterConditions {
+    box-shadow: 0px 2px 5px black inset;
+    background-color: #252525;
+    clear: both;
+}
+
+.weather .laterConditions li {
+    text-align: center;
+    display: inline-block;
+    padding-top: 10px;
+}
+
+.weather .vertical .laterConditions li {
+    height: 100px;
+}
+
+.weather.horizontal .laterConditions li {
+    width: 25%;
+    position: relative;
+    height: 150px;
+}
+
+.weather.horizontal .laterConditions .fc {
+    position: absolute;
+    margin-top: 40px;
+    z-index: 1;
+    width: 100%;
+}
+
+.weather.vertical .laterConditions li {
+    width: 25%;
+}
+
+.weather.horizontal .laterConditions li {
+    width: 36px;
+}
+
+.weather.horizontal .laterConditions {
+    height: 180px;
+    overflow: hidden;
+}
+
+.weather.horizontal canvas {
+    position: absolute;
+    top: 110px;
+    left: 15px;
+}
+
+.weather .laterConditions li.current {
+    background-color: #373737;
+    box-shadow: 3px 3px 5px black;
+}
+
+.weather .laterConditions li.startOfDay:after {
+    content: ' ';
+    display: block;
+    height: 118px;
+    border-left: 1px solid #555;
+    left: 17px;
+    position: absolute;
+}
+
+.weather.horizontal .laterConditions .precipitation {
+    position: absolute;
+    bottom: 0;
+    width: 33px;
+    background: url("/static/img/weather/precipitation.png");
+}
+
+.weather .attribution {
+    text-align: right;
+}
+

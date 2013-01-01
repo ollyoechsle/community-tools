@@ -1,0 +1,130 @@
+/* Community Tools 1.0 */
+
+.loading {
+    background: url(../../static/img/ajax-loader.gif) no-repeat center;
+    min-height: 137px;
+    text-align: center;
+}
+
+.board table {
+    width: 100%;
+}
+
+.board .time {
+    text-align: right;
+    width: 80px;
+}
+
+.board tbody .inTime {
+    color: #bbb;
+}
+
+.board tbody .service {
+    color: yellow;
+    font-family: monospace;
+    text-align: center;
+}
+
+.board tbody .iminent .inTime  {
+    color: red;
+}
+.table {
+    border-spacing: 0;
+}
+
+.table thead th {
+    text-align: left;
+    padding: 3px;
+    color: #fbfafa;
+    border-bottom: 2px solid #666;
+}
+
+.table tbody td {
+    padding: 3px;
+    border-bottom: 1px solid #666;
+}
+
+.table tbody tr:hover {
+    background: #666;
+    -webkit-transition: all 1s ease;
+}
+
+
+ul.tabs {
+    border-bottom: 2px solid #999;
+    padding: 0;
+    margin: 0;
+}
+
+ul.tabs li {
+    display: inline-block;
+    padding: 3px 8px;
+    color: #fbfafa;
+}
+
+.ie6, .ie7 ul.tabs li {
+    display: inline;
+}
+
+ul.tabs li:hover {
+    background: #666;
+    cursor: pointer;
+}
+
+ul.tabs li.selected,
+ul.table li.selected:hover {
+    background: #999;
+    cursor: default;
+}
+
+.hselector {
+    width: 100%;
+    position: relative;
+    height: 20px;
+    margin: 5px 0;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+.hselector .value {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    line-height: 20px;
+    text-align: center;
+    top: 0;
+}
+
+.hselector .arrow {
+    position: absolute;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    color: #999;
+    font-size: 20px;
+}
+
+.hselector .arrow.enabled {
+    cursor: pointer;
+    color: white;
+}
+
+.hselector .arrow.enabled:hover {
+    background: #fbfafa;
+    color: #323232;
+}
+
+.hselector .arrow.left {
+    left: 0;
+}
+
+.hselector .arrow.right {
+    right: 0;
+}
+

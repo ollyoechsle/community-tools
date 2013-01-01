@@ -1,5 +1,5 @@
 .loading {
-    background: url(../loading.gif) no-repeat center;
+    background: url(../../static/img/ajax-loader.gif) no-repeat center;
     min-height: 137px;
     text-align: center;
 }
@@ -10,6 +10,7 @@
 
 .board .time {
     text-align: right;
+    width: 80px;
 }
 
 .board tbody .inTime {

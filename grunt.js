@@ -7,17 +7,29 @@ module.exports = function (grunt) {
             banner:"/* Community Tools <%= meta.version %> */"
         },
         concat:{
+            buses_css:{
+                src:['<banner:meta.banner>', 'src/css/buses.css', 'src/css/table.css', 'src/css/tabs.css', 'src/css/hselector.css'],
+                dest:'static/community-tools-buses-<%= meta.version %>.css'
+            },
             buses:{
-                src:['<banner:meta.banner>', 'src/namespace.js', 'src/subscribable.js', 'src/hselector.js', 'src/buses/*.js'],
+                src:['<banner:meta.banner>', 'src/js/namespace.js', 'src/js/subscribable.js', 'src/js/hselector.js', 'src/js/buses/*.js'],
                 dest:'static/community-tools-buses-<%= meta.version %>.js'
             },
             weather:{
-                src:['<banner:meta.banner>', 'src/namespace.js', 'src/hselector.js', 'src/weather/*.js'],
+                src:['<banner:meta.banner>', 'src/js/namespace.js', 'src/js/hselector.js', 'src/js/weather/*.js'],
                 dest:'static/community-tools-weather-<%= meta.version %>.js'
             },
+            weather_css:{
+                src:['<banner:meta.banner>', 'src/css/weather.css'],
+                dest:'static/community-tools-weather-<%= meta.version %>.css'
+            },
             news:{
-                src:['<banner:meta.banner>', 'src/namespace.js', 'src/news/*.js'],
+                src:['<banner:meta.banner>', 'src/js/namespace.js', 'src/js/news/*.js'],
                 dest:'static/community-tools-news-<%= meta.version %>.js'
+            },
+            news_css:{
+                src:['<banner:meta.banner>', 'src/css/news.css'],
+                dest:'static/community-tools-news-<%= meta.version %>.css'
             }
         },
         min:{

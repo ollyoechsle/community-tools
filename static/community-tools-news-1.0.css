@@ -1,0 +1,30 @@
+/* Community Tools 1.0 */
+
+.newsContainer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.newsContainer p {
+    margin: 0;
+}
+
+.newsContainer time {
+    color: #999;
+}
+
+.newsContainer ul li {
+    margin-bottom: 10px;
+}
+
+.newsContainer .showMore {
+    text-align: center;
+    display: block;
+    float: none;
+    line-height: 1.4em;
+    cursor: pointer;
+}
+
+.newsContainer .showMore.hidden {
+    display: none;
+}
