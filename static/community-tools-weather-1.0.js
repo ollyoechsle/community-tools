@@ -326,18 +326,16 @@ if(typeof module !== 'undefined') {
     }
 
     WeatherController.prototype.initialise = function () {
-        this.load();
-        this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
+        this.loadDetailedForecast();
+        this.intervals.push(setInterval(this.loadDetailedForecast.bind(this), 60000 * 5));
         this.view.updateAll();
     };
 
-    WeatherController.prototype.load = function () {
-        var data = {
-            url:WeatherController.URL + "/weather/hourly",
-            dataType:"jsonp"
-        };
-        var promise = jQuery.ajax(data);
-        promise.then(this.handleLoad.bind(this));
+    WeatherController.prototype.loadDetailedForecast = function () {
+        jQuery.ajax({
+            url: WeatherController.URL + "/weather/hourly",
+            dataType: "jsonp"
+        }).then(this.handleLoad.bind(this));
     };
 
     WeatherController.prototype.handleLoad = function (data) {
@@ -352,7 +350,7 @@ if(typeof module !== 'undefined') {
         this.view.destroy();
     };
 
-    WeatherController.URL  = "http://community-tools.appspot.com";
+    WeatherController.URL = "http://community-tools.appspot.com";
 
     yaxham.modules.WeatherController = WeatherController;
 
@@ -371,6 +369,11 @@ if(typeof module !== 'undefined') {
 
     WeatherModel.prototype.hasData = function () {
         return !!this.data;
+    };
+
+    WeatherModel.prototype.setTextForecast = function(json) {
+        this.textForecast = json;
+        this.fire("loadedTextForecast");
     };
 
     WeatherModel.prototype.setAllData = function (json) {
@@ -683,7 +686,6 @@ if(typeof module !== 'undefined') {
             forecast.time = forecast.time == "0:00" ? forecast.day + "<br>" + forecast.time : "<br>" + forecast.time;
         });
 
-
         this.weatherChart.render(forecasts);
 
         this.jElement.find(".laterConditions").html(
@@ -761,7 +763,7 @@ if(typeof module !== 'undefined') {
         this.setStroke(WeatherChart.NOTCH);
         ctx.beginPath();
         ctx.moveTo(cx, forecast.top+2);
-        for (var i = 0; i < 20 && i < forecast.length; i++) {
+        for (var i = 0; i < forecast.length-1; i++) {
             ctx.lineTo(cx, forecast[i].top + 2);
             cx += fw;
         }

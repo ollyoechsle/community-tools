@@ -38,7 +38,7 @@
         this.setStroke(WeatherChart.NOTCH);
         ctx.beginPath();
         ctx.moveTo(cx, forecast.top+2);
-        for (var i = 0; i < 20 && i < forecast.length; i++) {
+        for (var i = 0; i < forecast.length-1; i++) {
             ctx.lineTo(cx, forecast[i].top + 2);
             cx += fw;
         }

@@ -7,18 +7,16 @@
     }
 
     WeatherController.prototype.initialise = function () {
-        this.load();
-        this.intervals.push(setInterval(this.load.bind(this), 60000 * 5));
+        this.loadDetailedForecast();
+        this.intervals.push(setInterval(this.loadDetailedForecast.bind(this), 60000 * 5));
         this.view.updateAll();
     };
 
-    WeatherController.prototype.load = function () {
-        var data = {
-            url:WeatherController.URL + "/weather/hourly",
-            dataType:"jsonp"
-        };
-        var promise = jQuery.ajax(data);
-        promise.then(this.handleLoad.bind(this));
+    WeatherController.prototype.loadDetailedForecast = function () {
+        jQuery.ajax({
+            url: WeatherController.URL + "/weather/hourly",
+            dataType: "jsonp"
+        }).then(this.handleLoad.bind(this));
     };
 
     WeatherController.prototype.handleLoad = function (data) {
@@ -33,7 +31,7 @@
         this.view.destroy();
     };
 
-    WeatherController.URL  = "http://community-tools.appspot.com";
+    WeatherController.URL = "http://community-tools.appspot.com";
 
     yaxham.modules.WeatherController = WeatherController;
 

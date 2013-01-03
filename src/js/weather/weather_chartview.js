@@ -63,7 +63,6 @@
             forecast.time = forecast.time == "0:00" ? forecast.day + "<br>" + forecast.time : "<br>" + forecast.time;
         });
 
-
         this.weatherChart.render(forecasts);
 
         this.jElement.find(".laterConditions").html(

@@ -14,6 +14,11 @@
         return !!this.data;
     };
 
+    WeatherModel.prototype.setTextForecast = function(json) {
+        this.textForecast = json;
+        this.fire("loadedTextForecast");
+    };
+
     WeatherModel.prototype.setAllData = function (json) {
         this.data = json;
 
