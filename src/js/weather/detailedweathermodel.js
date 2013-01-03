@@ -59,6 +59,7 @@
                 chanceOfRain: reading.Pp || reading.PPd || reading.PPn,
                 temperature: reading.T || reading.Dm || reading.Nm,
                 windSpeed: reading.S,
+                timeOfDay: reading.$,
                 windDirection: reading.D,
                 time: DetailedWeatherModel.timeOfReading[reading.$],
                 day: reading.day

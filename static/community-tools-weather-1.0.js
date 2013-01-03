@@ -381,7 +381,10 @@ if(typeof module !== 'undefined') {
         + '<tbody>' +
         '{{#list}}' +
         '<tr">' +
-        '<td>{{day}}</td>' +
+        '<td>' +
+        '{{day}}' +
+        '<small>{{timeOfDay}}</small>' +
+        '</td>' +
         '<td><div class="icon {{icon}}"></div></td>' +
         '<td class="numeric">{{temperature}} &deg;C</td>' +
         '<td class="numeric">{{windSpeed}} {{windDirection}}</td>' +
@@ -454,6 +457,7 @@ if(typeof module !== 'undefined') {
                 chanceOfRain: reading.Pp || reading.PPd || reading.PPn,
                 temperature: reading.T || reading.Dm || reading.Nm,
                 windSpeed: reading.S,
+                timeOfDay: reading.$,
                 windDirection: reading.D,
                 time: DetailedWeatherModel.timeOfReading[reading.$],
                 day: reading.day

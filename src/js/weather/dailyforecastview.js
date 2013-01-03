@@ -62,7 +62,10 @@
         + '<tbody>' +
         '{{#list}}' +
         '<tr">' +
-        '<td>{{day}}</td>' +
+        '<td>' +
+        '{{day}}' +
+        '<small>{{timeOfDay}}</small>' +
+        '</td>' +
         '<td><div class="icon {{icon}}"></div></td>' +
         '<td class="numeric">{{temperature}} &deg;C</td>' +
         '<td class="numeric">{{windSpeed}} {{windDirection}}</td>' +
