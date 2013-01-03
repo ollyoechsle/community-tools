@@ -6,7 +6,8 @@ from google.appengine.api import memcache
 
 config = {
     "APIKey": "a5b7c8f2-f1d0-44c5-a8bb-71d6d4e0892e",
-    "detailedForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=3hourly&key=%s",
+    "hourlyForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=3hourly&key=%s",
+    "dailyForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=daily&key=%s",
     "textForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/txt/wxfcs/regionalforecast/json/%s?key=%s",
     "location": {
         "Dereham": "351196",
@@ -28,18 +29,18 @@ def get_text_forecast(region_id):
     return json.dumps(first_period)
 
 
-def get_detailed_forecast(location):
-    url = config["detailedForecastUrl"] % (location, config["APIKey"])
+def get_detailed_forecast(urlKey, location):
+    url = config[urlKey] % (location, config["APIKey"])
     logging.info("Calling url:  " + url)
     return common.get_data(url)
 
 
-def get_cached_detailed_forecast(location):
-    key = "detailed_forecast_" + location
+def get_cached_detailed_forecast(urlKey, location):
+    key = "detailed_forecast_" + urlKey + location
     data = memcache.get(key)
 
     if not data:
-        data = get_detailed_forecast(location)
+        data = get_detailed_forecast(urlKey, location)
         memcache.set(key, data, 86400)
 
     return data
@@ -56,13 +57,19 @@ def get_cached_text_forecast(location):
     return data
 
 
-class DetailedForecastController(webapp2.RequestHandler):
+class HourlyForecastController(webapp2.RequestHandler):
     def get(self):
         location = self.request.get("location") or config["location"]["Dereham"]
         logging.info("Weather request for location:" + location)
-        content = get_cached_detailed_forecast(location)
+        content = get_cached_detailed_forecast("hourlyForecastUrl", location)
         common.write_response(self.request, self.response, content)
 
+class DailyForecastController(webapp2.RequestHandler):
+    def get(self):
+        location = self.request.get("location") or config["location"]["Dereham"]
+        logging.info("Weather request for location:" + location)
+        content = get_cached_detailed_forecast("dailyForecastUrl", location)
+        common.write_response(self.request, self.response, content)
 
 class TextForecastController(webapp2.RequestHandler):
     def get(self):
@@ -72,6 +79,7 @@ class TextForecastController(webapp2.RequestHandler):
         common.write_response(self.request, self.response, content)
 
 app = webapp2.WSGIApplication([
-    ('/weather/hourly', DetailedForecastController),
+    ('/weather/hourly', HourlyForecastController),
+    ('/weather/daily', DailyForecastController),
     ('/weather/text', TextForecastController)
 ], debug=True)
