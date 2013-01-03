@@ -1,25 +1,22 @@
 (function () {
 
-    function WeatherModel() {
+    function DetailedWeatherModel() {
         this.currentIndex = 0;
+        this.path = "/weather/hourly"
     }
 
-    WeatherModel.prototype = Object.create(Subscribable.prototype);
+    DetailedWeatherModel.prototype = Object.create(Subscribable.prototype);
 
-    WeatherModel.currentIndex = 0;
-    WeatherModel.direction = null;
-    WeatherModel.data = null;
+    DetailedWeatherModel.currentIndex = 0;
+    DetailedWeatherModel.direction = null;
+    DetailedWeatherModel.data = null;
+    DetailedWeatherModel.path = null;
 
-    WeatherModel.prototype.hasData = function () {
+    DetailedWeatherModel.prototype.hasData = function () {
         return !!this.data;
     };
 
-    WeatherModel.prototype.setTextForecast = function(json) {
-        this.textForecast = json;
-        this.fire("loadedTextForecast");
-    };
-
-    WeatherModel.prototype.setAllData = function (json) {
+    DetailedWeatherModel.prototype.setAllData = function (json) {
         this.data = json;
 
         var periods = json.SiteRep.DV.Location.Period,
@@ -36,39 +33,39 @@
         this.allPeriods = allPeriods;
     };
 
-    WeatherModel.prototype.changeCurrentIndex = function (delta) {
+    DetailedWeatherModel.prototype.changeCurrentIndex = function (delta) {
         this.currentIndex += delta;
         this.currentIndex = Math.max(0, this.currentIndex);
         this.currentIndex = Math.min(this.currentIndex, this.allPeriods.length - 1);
         this.fire("indexChanged");
     };
 
-    WeatherModel.prototype.hasPrev = function () {
+    DetailedWeatherModel.prototype.hasPrev = function () {
         return this.currentIndex > 0;
     };
 
-    WeatherModel.prototype.hasNext = function () {
+    DetailedWeatherModel.prototype.hasNext = function () {
         return this.currentIndex < this.allPeriods.length - 1;
     };
 
-    WeatherModel.prototype.getForecast = function () {
+    DetailedWeatherModel.prototype.getForecast = function () {
         var currentIndex = this.currentIndex;
         return this.allPeriods.map(function (reading, index) {
             return {
                 className: index == currentIndex ? "current" : "notCurrent",
-                type: WeatherModel.WEATHER[reading.W].name,
-                icon: WeatherModel.WEATHER[reading.W].className,
+                type: DetailedWeatherModel.WEATHER[reading.W].name,
+                icon: DetailedWeatherModel.WEATHER[reading.W].className,
                 chanceOfRain: reading.Pp,
                 temperature: reading.T,
                 windSpeed: reading.S,
                 windDirection: reading.D,
-                time: WeatherModel.timeOfReading[reading.$],
+                time: DetailedWeatherModel.timeOfReading[reading.$],
                 day: reading.day
             }
         });
     };
 
-    WeatherModel.prototype.getTemperatureRange = function () {
+    DetailedWeatherModel.prototype.getTemperatureRange = function () {
         var temperatures = this.allPeriods.map(function (reading) {
             return reading.T
         });
@@ -78,7 +75,7 @@
         }
     };
 
-    WeatherModel.timeOfReading = {
+    DetailedWeatherModel.timeOfReading = {
         "0": "0:00",
         "180": "03:00",
         "360": "06:00",
@@ -89,7 +86,7 @@
         "1260": "21:00"
     };
 
-    WeatherModel.WEATHER = {
+    DetailedWeatherModel.WEATHER = {
         "NA": {"name": "Not Available", className: "notAvailable"},
         "0": {"name": "Clear", className: "clearNight"},
         "1": {"name": "Sunny", className: "clearDay"},
@@ -131,6 +128,6 @@
         "30": {"name": "Thunder", className: "thunderStorm"}
     };
 
-    yaxham.modules.WeatherModel = WeatherModel;
+    yaxham.modules.DetailedWeatherModel = DetailedWeatherModel;
 
 })();

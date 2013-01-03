@@ -14,7 +14,7 @@
 
     WeatherController.prototype.loadDetailedForecast = function () {
         jQuery.ajax({
-            url: WeatherController.URL + "/weather/hourly",
+            url: WeatherController.URL + this.model.path,
             dataType: "jsonp"
         }).then(this.handleLoad.bind(this));
     };

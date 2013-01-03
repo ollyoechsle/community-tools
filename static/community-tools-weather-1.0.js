@@ -319,64 +319,23 @@ if(typeof module !== 'undefined') {
 }
 (function () {
 
-    function WeatherController(view, model) {
-        this.intervals = [];
-        this.view = view;
-        this.model = model;
-    }
-
-    WeatherController.prototype.initialise = function () {
-        this.loadDetailedForecast();
-        this.intervals.push(setInterval(this.loadDetailedForecast.bind(this), 60000 * 5));
-        this.view.updateAll();
-    };
-
-    WeatherController.prototype.loadDetailedForecast = function () {
-        jQuery.ajax({
-            url: WeatherController.URL + "/weather/hourly",
-            dataType: "jsonp"
-        }).then(this.handleLoad.bind(this));
-    };
-
-    WeatherController.prototype.handleLoad = function (data) {
-        this.model.setAllData(data);
-        this.view.updateAll();
-    };
-
-    WeatherController.prototype.destroy = function () {
-        this.intervals.forEach(function (interval) {
-            window.clearInterval(interval);
-        });
-        this.view.destroy();
-    };
-
-    WeatherController.URL = "http://community-tools.appspot.com";
-
-    yaxham.modules.WeatherController = WeatherController;
-
-})();
-(function () {
-
-    function WeatherModel() {
+    function DetailedWeatherModel() {
         this.currentIndex = 0;
+        this.path = "/weather/hourly"
     }
 
-    WeatherModel.prototype = Object.create(Subscribable.prototype);
+    DetailedWeatherModel.prototype = Object.create(Subscribable.prototype);
 
-    WeatherModel.currentIndex = 0;
-    WeatherModel.direction = null;
-    WeatherModel.data = null;
+    DetailedWeatherModel.currentIndex = 0;
+    DetailedWeatherModel.direction = null;
+    DetailedWeatherModel.data = null;
+    DetailedWeatherModel.path = null;
 
-    WeatherModel.prototype.hasData = function () {
+    DetailedWeatherModel.prototype.hasData = function () {
         return !!this.data;
     };
 
-    WeatherModel.prototype.setTextForecast = function(json) {
-        this.textForecast = json;
-        this.fire("loadedTextForecast");
-    };
-
-    WeatherModel.prototype.setAllData = function (json) {
+    DetailedWeatherModel.prototype.setAllData = function (json) {
         this.data = json;
 
         var periods = json.SiteRep.DV.Location.Period,
@@ -393,39 +352,39 @@ if(typeof module !== 'undefined') {
         this.allPeriods = allPeriods;
     };
 
-    WeatherModel.prototype.changeCurrentIndex = function (delta) {
+    DetailedWeatherModel.prototype.changeCurrentIndex = function (delta) {
         this.currentIndex += delta;
         this.currentIndex = Math.max(0, this.currentIndex);
         this.currentIndex = Math.min(this.currentIndex, this.allPeriods.length - 1);
         this.fire("indexChanged");
     };
 
-    WeatherModel.prototype.hasPrev = function () {
+    DetailedWeatherModel.prototype.hasPrev = function () {
         return this.currentIndex > 0;
     };
 
-    WeatherModel.prototype.hasNext = function () {
+    DetailedWeatherModel.prototype.hasNext = function () {
         return this.currentIndex < this.allPeriods.length - 1;
     };
 
-    WeatherModel.prototype.getForecast = function () {
+    DetailedWeatherModel.prototype.getForecast = function () {
         var currentIndex = this.currentIndex;
         return this.allPeriods.map(function (reading, index) {
             return {
                 className: index == currentIndex ? "current" : "notCurrent",
-                type: WeatherModel.WEATHER[reading.W].name,
-                icon: WeatherModel.WEATHER[reading.W].className,
+                type: DetailedWeatherModel.WEATHER[reading.W].name,
+                icon: DetailedWeatherModel.WEATHER[reading.W].className,
                 chanceOfRain: reading.Pp,
                 temperature: reading.T,
                 windSpeed: reading.S,
                 windDirection: reading.D,
-                time: WeatherModel.timeOfReading[reading.$],
+                time: DetailedWeatherModel.timeOfReading[reading.$],
                 day: reading.day
             }
         });
     };
 
-    WeatherModel.prototype.getTemperatureRange = function () {
+    DetailedWeatherModel.prototype.getTemperatureRange = function () {
         var temperatures = this.allPeriods.map(function (reading) {
             return reading.T
         });
@@ -435,7 +394,7 @@ if(typeof module !== 'undefined') {
         }
     };
 
-    WeatherModel.timeOfReading = {
+    DetailedWeatherModel.timeOfReading = {
         "0": "0:00",
         "180": "03:00",
         "360": "06:00",
@@ -446,7 +405,7 @@ if(typeof module !== 'undefined') {
         "1260": "21:00"
     };
 
-    WeatherModel.WEATHER = {
+    DetailedWeatherModel.WEATHER = {
         "NA": {"name": "Not Available", className: "notAvailable"},
         "0": {"name": "Clear", className: "clearNight"},
         "1": {"name": "Sunny", className: "clearDay"},
@@ -488,7 +447,305 @@ if(typeof module !== 'undefined') {
         "30": {"name": "Thunder", className: "thunderStorm"}
     };
 
-    yaxham.modules.WeatherModel = WeatherModel;
+    yaxham.modules.DetailedWeatherModel = DetailedWeatherModel;
+
+})();
+(function () {
+
+    function TextForecastView(selector, model) {
+        this.jElement = jQuery(selector);
+        this.model = model;
+        this.initialise();
+    }
+
+    TextForecastView.prototype = Object.create(Subscribable.prototype);
+
+    TextForecastView.prototype.jElement = null;
+
+    TextForecastView.prototype.initialise = function () {
+        this.model.on("dataLoaded", this.updateAll, this);
+    };
+
+    TextForecastView.prototype.updateAll = function () {
+
+        if (this.model.hasData()) {
+            this.displayBoard();
+        } else {
+            this.displayLoading();
+        }
+
+    };
+
+    TextForecastView.prototype.displayLoading = function () {
+        this.jElement.empty().addClass("loading");
+    };
+
+    TextForecastView.prototype.displayBoard = function () {
+        this.jElement.html(Mustache.to_html(TextForecastView.MARKUP, this.model.data));
+    };
+
+    TextForecastView.MARKUP = '' +
+        '{{#Paragraph}}' +
+        '<h3>{{title}}</h3>' +
+        '<p>{{$}}</p>' +
+        '{{/Paragraph}}';
+
+    yaxham.modules.TextForecastView = TextForecastView;
+
+})();
+(function () {
+
+    function TextForecastModel() {
+        this.path = "/weather/text"
+    }
+
+    TextForecastModel.prototype = Object.create(Subscribable.prototype);
+    TextForecastModel.data = null;
+
+    TextForecastModel.prototype.hasData = function () {
+        return !!this.data;
+    };
+
+    TextForecastModel.prototype.setAllData = function (json) {
+        this.data = json;
+        this.fire("dataLoaded");
+    };
+
+    yaxham.modules.TextForecastModel = TextForecastModel;
+
+})();
+(function () {
+
+    function getView(element, model) {
+        if (element.hasClass("textForecast")) {
+            return new yaxham.modules.TextForecastView(element, model)
+        } else if (element.hasClass("horizontal")) {
+            return new yaxham.modules.WeatherChartView(element, model)
+        } else {
+            return new yaxham.modules.WeatherView(element, model)
+        }
+    }
+
+    function getModel(element) {
+        if (element.hasClass("textForecast")) {
+            return new yaxham.modules.TextForecastModel()
+        } else {
+            return new yaxham.modules.DetailedWeatherModel();
+        }
+    }
+
+    yaxham.modules.Weather = function (selector) {
+
+        jQuery(selector).each(function () {
+
+            var jElement = jQuery(this),
+                model = getModel(jElement),
+                view = getView(jElement, model),
+                controller = new yaxham.modules.WeatherController(view, model);
+
+            controller.initialise();
+
+        });
+
+    }
+
+})();
+(function (jQuery) {
+
+    function WeatherChart(container) {
+        this.jContainer = jQuery(container);
+        this.initialise();
+    }
+
+    WeatherChart.prototype.jContainer = null;
+    WeatherChart.prototype.ctx = null;
+
+    WeatherChart.prototype.getCanvas = function () {
+
+        var canvas = document.createElement("canvas");
+        canvas.width = this.jContainer.width() || 160;
+        canvas.height = this.jContainer.height() || 160;
+        this.jContainer[0].appendChild(canvas);
+
+        if (window.G_vmlCanvasManager) {
+            return window.G_vmlCanvasManager.initElement(canvas);
+        } else {
+            return canvas;
+        }
+    };
+
+    WeatherChart.prototype.initialise = function () {
+        var canvas = this.getCanvas();
+        this.ctx = canvas.getContext('2d');
+    };
+
+    WeatherChart.prototype.render = function (forecast) {
+
+        var ctx = this.ctx,
+            fw = 36,
+            cx = 0;
+
+        ctx.clearRect(0, 0, 1000, 500);
+
+        this.setStroke(WeatherChart.NOTCH);
+        ctx.beginPath();
+        ctx.moveTo(cx, forecast.top+2);
+        for (var i = 0; i < forecast.length-1; i++) {
+            ctx.lineTo(cx, forecast[i].top + 2);
+            cx += fw;
+        }
+        ctx.stroke();
+
+    };
+
+    WeatherChart.prototype.setStroke = function (settings) {
+        this.ctx.lineWidth = settings["stroke-width"];
+        this.ctx.strokeStyle = settings["stroke"];
+    };
+
+    WeatherChart.NOTCH = {stroke: "#ccc", "stroke-width": 2};
+
+    yaxham.modules.WeatherChart = WeatherChart;
+
+})(window.jQuery);
+(function () {
+
+    function WeatherChartView(selector, model) {
+        this.jElement = jQuery(selector);
+        if (this.jElement.length == 0) {
+            throw new Error("Invalid selector: " + selector);
+        }
+        this.model = model;
+        this.initialise();
+    }
+
+    WeatherChartView.prototype = Object.create(Subscribable.prototype);
+
+    WeatherChartView.prototype.jElement = null;
+
+    WeatherChartView.prototype.initialise = function () {
+
+        this.jElement
+            .append(WeatherChartView.MARKUP)
+            .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
+        this.weatherChart = new yaxham.modules.WeatherChart(this.jElement.find(".navigator"));
+
+        this.numItems = Math.max(5, this.jElement.width() / 36);
+        this.model.on("indexChanged", this.updateAll, this);
+    };
+
+    WeatherChartView.prototype.handleNavigate = function (jEvent) {
+        var jTarget = jQuery(jEvent.currentTarget),
+            direction = jTarget.data("direction");
+        this.model.changeCurrentIndex(+direction);
+    };
+
+    WeatherChartView.prototype.updateAll = function () {
+
+        if (this.model.hasData()) {
+            this.displayBoard();
+        } else {
+            this.displayLoading();
+        }
+
+    };
+
+    WeatherChartView.prototype.displayLoading = function () {
+        this.jElement.find("currentConditions")
+            .empty()
+            .addClass("loading");
+    };
+
+    WeatherChartView.prototype.displayBoard = function () {
+
+        var numItems = this.numItems,
+            currentIndex = this.model.currentIndex,
+            forecasts = this.model.getForecast().filter(function (forecast, index) {
+                return index >= currentIndex && index < (currentIndex + numItems)
+            }),
+            temperatureRange = this.model.getTemperatureRange(),
+            range = temperatureRange.max - temperatureRange.min;
+
+        forecasts.forEach(function (forecast) {
+            var pc = ((forecast.temperature - temperatureRange.min) / range) * 50;
+            forecast.top = 50 - pc;
+            forecast.className = forecast.time == "0:00" ? "startOfDay" : ""
+            forecast.time = forecast.time == "0:00" ? forecast.day + "<br>" + forecast.time : "<br>" + forecast.time;
+        });
+
+        this.weatherChart.render(forecasts);
+
+        this.jElement.find(".laterConditions").html(
+            Mustache.to_html(WeatherChartView.LATER_CONDITIONS, {forecasts: forecasts})
+        );
+    };
+
+    WeatherChartView.prototype.destroy = function () {
+        this.jElement.undelegate(".weather");
+        this.model.un(null, this);
+    };
+
+    WeatherChartView.LATER_CONDITIONS = '' +
+        '{{#forecasts}}' +
+        '<li class="{{className}}">' +
+        '<div class="time heading">{{{time}}}</div>' +
+        '<div class="precipitation" style="height: {{chanceOfRain}}px"></div>' +
+        '<div class="fc" style="top: {{top}}px">' +
+        '<div class="icon {{icon}}" title="{{type}}"></div>' +
+        '<div class="temperature reading">{{temperature}}&deg;C</div>' +
+        '</div>' +
+        '</li>' +
+        '{{/forecasts}}';
+
+    WeatherChartView.MARKUP = '' +
+        '<div class="weather horizontal">' +
+        '<div class="navigator">' +
+        '<div class="btn prev" data-direction="-1"></div>' +
+        '<ul class="laterConditions"></ul>' +
+        '<div class="btn next" data-direction="+1"></div>' +
+        '</div>' +
+        '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
+        '</div>';
+
+    yaxham.modules.WeatherChartView = WeatherChartView;
+
+})();
+(function () {
+
+    function WeatherController(view, model) {
+        this.intervals = [];
+        this.view = view;
+        this.model = model;
+    }
+
+    WeatherController.prototype.initialise = function () {
+        this.loadDetailedForecast();
+        this.intervals.push(setInterval(this.loadDetailedForecast.bind(this), 60000 * 5));
+        this.view.updateAll();
+    };
+
+    WeatherController.prototype.loadDetailedForecast = function () {
+        jQuery.ajax({
+            url: WeatherController.URL + this.model.path,
+            dataType: "jsonp"
+        }).then(this.handleLoad.bind(this));
+    };
+
+    WeatherController.prototype.handleLoad = function (data) {
+        this.model.setAllData(data);
+        this.view.updateAll();
+    };
+
+    WeatherController.prototype.destroy = function () {
+        this.intervals.forEach(function (interval) {
+            window.clearInterval(interval);
+        });
+        this.view.destroy();
+    };
+
+    WeatherController.URL = "http://community-tools.appspot.com";
+
+    yaxham.modules.WeatherController = WeatherController;
 
 })();
 (function () {
@@ -596,188 +853,3 @@ if(typeof module !== 'undefined') {
     yaxham.modules.WeatherView = WeatherView;
 
 })();
-(function () {
-
-    function getView(element, model) {
-        if (element.hasClass("horizontal")) {
-            return new yaxham.modules.WeatherChartView(element, model)
-        } else {
-            return new yaxham.modules.WeatherView(element, model)
-        }
-    }
-
-    yaxham.modules.Weather = function (selector) {
-
-        jQuery(selector).each(function () {
-
-            var model = new yaxham.modules.WeatherModel(),
-                view = getView(jQuery(this), model),
-                controller = new yaxham.modules.WeatherController(view, model);
-
-            controller.initialise();
-
-        });
-
-    }
-
-})();
-(function () {
-
-    function WeatherChartView(selector, model) {
-        this.jElement = jQuery(selector);
-        if (this.jElement.length == 0) {
-            throw new Error("Invalid selector: " + selector);
-        }
-        this.model = model;
-        this.initialise();
-    }
-
-    WeatherChartView.prototype = Object.create(Subscribable.prototype);
-
-    WeatherChartView.prototype.jElement = null;
-
-    WeatherChartView.prototype.initialise = function () {
-
-        this.jElement
-            .append(WeatherChartView.MARKUP)
-            .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
-        this.weatherChart = new yaxham.modules.WeatherChart(this.jElement.find(".navigator"));
-
-        this.numItems = Math.max(5, this.jElement.width() / 36);
-        this.model.on("indexChanged", this.updateAll, this);
-    };
-
-    WeatherChartView.prototype.handleNavigate = function (jEvent) {
-        var jTarget = jQuery(jEvent.currentTarget),
-            direction = jTarget.data("direction");
-        this.model.changeCurrentIndex(+direction);
-    };
-
-    WeatherChartView.prototype.updateAll = function () {
-
-        if (this.model.hasData()) {
-            this.displayBoard();
-        } else {
-            this.displayLoading();
-        }
-
-    };
-
-    WeatherChartView.prototype.displayLoading = function () {
-        this.jElement.find("currentConditions")
-            .empty()
-            .addClass("loading");
-    };
-
-    WeatherChartView.prototype.displayBoard = function () {
-
-        var numItems = this.numItems,
-            currentIndex = this.model.currentIndex,
-            forecasts = this.model.getForecast().filter(function (forecast, index) {
-                return index >= currentIndex && index < (currentIndex + numItems)
-            }),
-            temperatureRange = this.model.getTemperatureRange(),
-            range = temperatureRange.max - temperatureRange.min;
-
-        forecasts.forEach(function (forecast) {
-            var pc = ((forecast.temperature - temperatureRange.min) / range) * 50;
-            forecast.top = 50 - pc;
-            forecast.className = forecast.time == "0:00" ? "startOfDay" : ""
-            forecast.time = forecast.time == "0:00" ? forecast.day + "<br>" + forecast.time : "<br>" + forecast.time;
-        });
-
-        this.weatherChart.render(forecasts);
-
-        this.jElement.find(".laterConditions").html(
-            Mustache.to_html(WeatherChartView.LATER_CONDITIONS, {forecasts: forecasts})
-        );
-    };
-
-    WeatherChartView.prototype.destroy = function () {
-        this.jElement.undelegate(".weather");
-        this.model.un(null, this);
-    };
-
-    WeatherChartView.LATER_CONDITIONS = '' +
-        '{{#forecasts}}' +
-        '<li class="{{className}}">' +
-        '<div class="time heading">{{{time}}}</div>' +
-        '<div class="precipitation" style="height: {{chanceOfRain}}px"></div>' +
-        '<div class="fc" style="top: {{top}}px">' +
-        '<div class="icon {{icon}}" title="{{type}}"></div>' +
-        '<div class="temperature reading">{{temperature}}&deg;C</div>' +
-        '</div>' +
-        '</li>' +
-        '{{/forecasts}}';
-
-    WeatherChartView.MARKUP = '' +
-        '<div class="weather horizontal">' +
-        '<div class="navigator">' +
-        '<div class="btn prev" data-direction="-1"></div>' +
-        '<ul class="laterConditions"></ul>' +
-        '<div class="btn next" data-direction="+1"></div>' +
-        '</div>' +
-        '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
-        '</div>';
-
-    yaxham.modules.WeatherChartView = WeatherChartView;
-
-})();
-(function (jQuery) {
-
-    function WeatherChart(container) {
-        this.jContainer = jQuery(container);
-        this.initialise();
-    }
-
-    WeatherChart.prototype.jContainer = null;
-    WeatherChart.prototype.ctx = null;
-
-    WeatherChart.prototype.getCanvas = function () {
-
-        var canvas = document.createElement("canvas");
-        canvas.width = this.jContainer.width() || 160;
-        canvas.height = this.jContainer.height() || 160;
-        this.jContainer[0].appendChild(canvas);
-
-        if (window.G_vmlCanvasManager) {
-            return window.G_vmlCanvasManager.initElement(canvas);
-        } else {
-            return canvas;
-        }
-    };
-
-    WeatherChart.prototype.initialise = function () {
-        var canvas = this.getCanvas();
-        this.ctx = canvas.getContext('2d');
-    };
-
-    WeatherChart.prototype.render = function (forecast) {
-
-        var ctx = this.ctx,
-            fw = 36,
-            cx = 0;
-
-        ctx.clearRect(0, 0, 1000, 500);
-
-        this.setStroke(WeatherChart.NOTCH);
-        ctx.beginPath();
-        ctx.moveTo(cx, forecast.top+2);
-        for (var i = 0; i < forecast.length-1; i++) {
-            ctx.lineTo(cx, forecast[i].top + 2);
-            cx += fw;
-        }
-        ctx.stroke();
-
-    };
-
-    WeatherChart.prototype.setStroke = function (settings) {
-        this.ctx.lineWidth = settings["stroke-width"];
-        this.ctx.strokeStyle = settings["stroke"];
-    };
-
-    WeatherChart.NOTCH = {stroke: "#ccc", "stroke-width": 2};
-
-    yaxham.modules.WeatherChart = WeatherChart;
-
-})(window.jQuery);
