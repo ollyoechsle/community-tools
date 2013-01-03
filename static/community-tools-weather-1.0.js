@@ -411,7 +411,7 @@ if(typeof module !== 'undefined') {
             return {
                 className: index == currentIndex ? "current" : "notCurrent",
                 type: WeatherModel.WEATHER[reading.W].name,
-                icon: WeatherModel.WEATHER[reading.W].img,
+                icon: WeatherModel.WEATHER[reading.W].className,
                 chanceOfRain: reading.Pp,
                 temperature: reading.T,
                 windSpeed: reading.S,
@@ -444,45 +444,45 @@ if(typeof module !== 'undefined') {
     };
 
     WeatherModel.WEATHER = {
-        "NA": {"name": "Not Available", img: ""},
-        "0": {"name": "Clear", img: "01n.png"},
-        "1": {"name": "Sunny", img: "01d.png"},
-        "2": {"name": "Partly cloudy", img: "01n.png"},
-        "3": {"name": "Partly cloudy", img: "01d.png"},
-        "5": {"name": "Mist", img: "15.png"},
-        "6": {"name": "Fog", img: "15.png"},
-        "7": {"name": "Cloudy", img: "04.png"},
-        "8": {"name": "Overcast", img: "04.png"},
+        "NA": {"name": "Not Available", className: "notAvailable"},
+        "0": {"name": "Clear", className: "clearNight"},
+        "1": {"name": "Sunny", className: "clearDay"},
+        "2": {"name": "Partly cloudy", className: "clearNight"},
+        "3": {"name": "Partly cloudy", className: "clearDay"},
+        "5": {"name": "Mist", className: "fogMist"},
+        "6": {"name": "Fog", className: "fogMist"},
+        "7": {"name": "Cloudy", className: "cloudy"},
+        "8": {"name": "Overcast", className: "cloudy"},
 
-        "9": {"name": "Light rain shower", img: "05n.png"},
-        "10": {"name": "Light rain shower", img: "05d.png"},
+        "9": {"name": "Light rain shower", className: "lightRainShowerNight"},
+        "10": {"name": "Light rain shower", className: "lightRainShowerDay"},
 
-        "11": {"name": "Drizzle", img: "09.png"},
-        "12": {"name": "Light rain", img: "09.png"},
+        "11": {"name": "Drizzle", className: "lightRain"},
+        "12": {"name": "Light rain", className: "lightRain"},
 
-        "13": {"name": "Heavy rain shower", img: "10.png"},
-        "14": {"name": "Heavy rain shower", img: "10.png"},
-        "15": {"name": "Heavy rain", img: "10.png"},
+        "13": {"name": "Heavy rain shower", className: "heavyRain"},
+        "14": {"name": "Heavy rain shower", className: "heavyRain"},
+        "15": {"name": "Heavy rain", className: "heavyRain"},
 
-        "16": {"name": "Sleet shower", img: "12.png"},
-        "17": {"name": "Sleet shower", img: "12.png"},
-        "18": {"name": "Sleet", img: "12.png"},
+        "16": {"name": "Sleet shower", className: "sleet"},
+        "17": {"name": "Sleet shower", className: "sleet"},
+        "18": {"name": "Sleet", className: "sleet"},
 
-        "19": {"name": "Hail shower", img: "08d.png"},
-        "20": {"name": "Hail shower", img: "08n.png"},
-        "21": {"name": "Hail", img: "08d.png"},
+        "19": {"name": "Hail shower", className: "lightSnowDay"},
+        "20": {"name": "Hail shower", className: "lightSnowNight"},
+        "21": {"name": "Hail", className: "lightSnowDay"},
 
-        "22": {"name": "Light snow shower", img: "08d.png"},
-        "23": {"name": "Light snow shower", img: "08n.png"},
-        "24": {"name": "Light snow", img: "08d.png"},
+        "22": {"name": "Light snow shower", className: "lightSnowDay"},
+        "23": {"name": "Light snow shower", className: "lightSnowNight"},
+        "24": {"name": "Light snow", className: "lightSnowDay"},
 
-        "25": {"name": "Heavy snow shower", img: "13.png"},
-        "26": {"name": "Heavy snow shower", img: "13.png"},
-        "27": {"name": "Heavy snow", img: "13.png"},
+        "25": {"name": "Heavy snow shower", className: "heavySnow"},
+        "26": {"name": "Heavy snow shower", className: "heavySnow"},
+        "27": {"name": "Heavy snow", className: "heavySnow"},
 
-        "28": {"name": "Thunder shower", img: "11.png"},
-        "29": {"name": "Thunder shower", img: "11.png"},
-        "30": {"name": "Thunder", img: "11.png"}
+        "28": {"name": "Thunder shower", className: "thunderStorm"},
+        "29": {"name": "Thunder shower", className: "thunderStorm"},
+        "30": {"name": "Thunder", className: "thunderStorm"}
     };
 
     yaxham.modules.WeatherModel = WeatherModel;
@@ -556,7 +556,7 @@ if(typeof module !== 'undefined') {
     };
 
     WeatherView.CURRENT_CONDITIONS = '' +
-                                     '<img class="icon" width="60" height="50" src="http://dev.yaxham.com:8083/static/img/weather/icons_120x100/{{icon}}"/>' +
+                                     '<div class="big icon {{icon}}"></div>' +
                                      '<ul>' +
                                      '<li>' +
                                      '<div class="weatherType">{{type}}</div>' +
@@ -573,7 +573,7 @@ if(typeof module !== 'undefined') {
     WeatherView.LATER_CONDITIONS = '' +
                                    '{{#forecasts}}' +
                                    '<li class="{{className}}">' +
-                                   '<td><img width="30" height="25" src="http://dev.yaxham.com:8083/static/img/weather/icons_60x50/{{icon}}" /></td>' +
+                                   '<td><div class="icon {{icon}}">' +
                                    '<div class="time heading">{{time}}</div>' +
                                    '<div class="temperature reading">{{temperature}}&deg;C</div>' +
                                    '</li>' +
@@ -634,10 +634,13 @@ if(typeof module !== 'undefined') {
     WeatherChartView.prototype.jElement = null;
 
     WeatherChartView.prototype.initialise = function () {
+
         this.jElement
             .append(WeatherChartView.MARKUP)
             .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
         this.weatherChart = new yaxham.modules.WeatherChart(this.jElement.find(".navigator"));
+
+        this.numItems = Math.max(5, this.jElement.width() / 36);
         this.model.on("indexChanged", this.updateAll, this);
     };
 
@@ -665,9 +668,10 @@ if(typeof module !== 'undefined') {
 
     WeatherChartView.prototype.displayBoard = function () {
 
-        var currentIndex = this.model.currentIndex,
+        var numItems = this.numItems,
+            currentIndex = this.model.currentIndex,
             forecasts = this.model.getForecast().filter(function (forecast, index) {
-                return index >= currentIndex && index < (currentIndex + 16)
+                return index >= currentIndex && index < (currentIndex + numItems)
             }),
             temperatureRange = this.model.getTemperatureRange(),
             range = temperatureRange.max - temperatureRange.min;
@@ -698,7 +702,7 @@ if(typeof module !== 'undefined') {
         '<div class="time heading">{{{time}}}</div>' +
         '<div class="precipitation" style="height: {{chanceOfRain}}px"></div>' +
         '<div class="fc" style="top: {{top}}px">' +
-        '<img width="30" height="25" src="/static/img/weather/icons_60x50/{{icon}}" />' +
+        '<div class="icon {{icon}}" title="{{type}}"></div>' +
         '<div class="temperature reading">{{temperature}}&deg;C</div>' +
         '</div>' +
         '</li>' +

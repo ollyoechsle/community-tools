@@ -14,10 +14,13 @@
     WeatherChartView.prototype.jElement = null;
 
     WeatherChartView.prototype.initialise = function () {
+
         this.jElement
             .append(WeatherChartView.MARKUP)
             .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
         this.weatherChart = new yaxham.modules.WeatherChart(this.jElement.find(".navigator"));
+
+        this.numItems = Math.max(5, this.jElement.width() / 36);
         this.model.on("indexChanged", this.updateAll, this);
     };
 
@@ -45,9 +48,10 @@
 
     WeatherChartView.prototype.displayBoard = function () {
 
-        var currentIndex = this.model.currentIndex,
+        var numItems = this.numItems,
+            currentIndex = this.model.currentIndex,
             forecasts = this.model.getForecast().filter(function (forecast, index) {
-                return index >= currentIndex && index < (currentIndex + 16)
+                return index >= currentIndex && index < (currentIndex + numItems)
             }),
             temperatureRange = this.model.getTemperatureRange(),
             range = temperatureRange.max - temperatureRange.min;
@@ -78,7 +82,7 @@
         '<div class="time heading">{{{time}}}</div>' +
         '<div class="precipitation" style="height: {{chanceOfRain}}px"></div>' +
         '<div class="fc" style="top: {{top}}px">' +
-        '<img width="30" height="25" src="/static/img/weather/icons_60x50/{{icon}}" />' +
+        '<div class="icon {{icon}}" title="{{type}}"></div>' +
         '<div class="temperature reading">{{temperature}}&deg;C</div>' +
         '</div>' +
         '</li>' +
