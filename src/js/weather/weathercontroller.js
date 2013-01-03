@@ -16,12 +16,7 @@
         jQuery.ajax({
             url: WeatherController.URL + this.model.path,
             dataType: "jsonp"
-        }).then(this.handleLoad.bind(this));
-    };
-
-    WeatherController.prototype.handleLoad = function (data) {
-        this.model.setAllData(data);
-        this.view.updateAll();
+        }).then(this.model.setAllData.bind(this.model));
     };
 
     WeatherController.prototype.destroy = function () {

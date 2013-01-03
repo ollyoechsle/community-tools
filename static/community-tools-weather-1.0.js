@@ -319,9 +319,85 @@ if(typeof module !== 'undefined') {
 }
 (function () {
 
-    function DetailedWeatherModel() {
+    function DailyForecastView(selector, model) {
+        this.jElement = jQuery(selector);
+        if (this.jElement.length == 0) {
+            throw new Error("Invalid selector: " + selector);
+        }
+        this.model = model;
+        this.initialise();
+    }
+
+    DailyForecastView.prototype = Object.create(Subscribable.prototype);
+
+    DailyForecastView.prototype.jElement = null;
+
+    DailyForecastView.prototype.initialise = function () {
+        this.model.on("dataLoaded", this.updateAll, this);
+    };
+
+    DailyForecastView.prototype.updateAll = function () {
+
+        if (this.model.hasData()) {
+            this.displayBoard();
+        } else {
+            this.displayLoading();
+        }
+
+    };
+
+    DailyForecastView.prototype.displayLoading = function () {
+        this.jElement.empty().addClass("loading");
+    };
+
+    DailyForecastView.prototype.displayBoard = function () {
+
+        var forecasts = this.model.getForecast();
+
+        this.jElement.html(
+            Mustache.to_html(DailyForecastView.LIST, {
+                list: forecasts
+            })
+        );
+    };
+
+    DailyForecastView.prototype.destroy = function () {
+        this.model.un(null, this);
+    };
+
+    /**
+     * @type {String}
+     */
+    DailyForecastView.LIST = '' +
+        '<table class="table weather">'
+        + '<thead>'
+        + '<tr>'
+        + '<th>Day</th>'
+        + '<th></th>'
+        + '<th class="numeric">Temp.</th>'
+        + '<th class="numeric">Wind</th>'
+        + '</tr>'
+        + '</thead>'
+        + '<tbody>' +
+        '{{#list}}' +
+        '<tr">' +
+        '<td>{{day}}</td>' +
+        '<td><div class="icon {{icon}}"></div></td>' +
+        '<td class="numeric">{{temperature}} &deg;C</td>' +
+        '<td class="numeric">{{windSpeed}} {{windDirection}}</td>' +
+        '</tr>' +
+        '{{/list}}' +
+        '</tbody>' +
+        '</table>';
+
+    yaxham.modules.DailyForecastView = DailyForecastView;
+
+})();
+(function () {
+
+    function DetailedWeatherModel(path) {
         this.currentIndex = 0;
-        this.path = "/weather/hourly"
+        this.path = path || "/weather/hourly"
     }
 
     DetailedWeatherModel.prototype = Object.create(Subscribable.prototype);
@@ -350,6 +426,7 @@ if(typeof module !== 'undefined') {
         });
 
         this.allPeriods = allPeriods;
+        this.fire("dataLoaded");
     };
 
     DetailedWeatherModel.prototype.changeCurrentIndex = function (delta) {
@@ -374,8 +451,8 @@ if(typeof module !== 'undefined') {
                 className: index == currentIndex ? "current" : "notCurrent",
                 type: DetailedWeatherModel.WEATHER[reading.W].name,
                 icon: DetailedWeatherModel.WEATHER[reading.W].className,
-                chanceOfRain: reading.Pp,
-                temperature: reading.T,
+                chanceOfRain: reading.Pp || reading.PPd || reading.PPn,
+                temperature: reading.T || reading.Dm || reading.Nm,
                 windSpeed: reading.S,
                 windDirection: reading.D,
                 time: DetailedWeatherModel.timeOfReading[reading.$],
@@ -519,10 +596,10 @@ if(typeof module !== 'undefined') {
     function getView(element, model) {
         if (element.hasClass("textForecast")) {
             return new yaxham.modules.TextForecastView(element, model)
-        } else if (element.hasClass("horizontal")) {
-            return new yaxham.modules.WeatherChartView(element, model)
+        } else if (element.hasClass("daily")) {
+            return new yaxham.modules.DailyForecastView(element, model)
         } else {
-            return new yaxham.modules.WeatherView(element, model)
+            return new yaxham.modules.WeatherChartView(element, model)
         }
     }
 
@@ -530,7 +607,11 @@ if(typeof module !== 'undefined') {
         if (element.hasClass("textForecast")) {
             return new yaxham.modules.TextForecastModel()
         } else {
-            return new yaxham.modules.DetailedWeatherModel();
+            if (element.hasClass("daily")) {
+                return new yaxham.modules.DetailedWeatherModel("/weather/daily");
+            } else {
+                return new yaxham.modules.DetailedWeatherModel("/weather/hourly");
+            }
         }
     }
 
@@ -632,6 +713,7 @@ if(typeof module !== 'undefined') {
 
         this.numItems = Math.max(5, this.jElement.width() / 36);
         this.model.on("indexChanged", this.updateAll, this);
+        this.model.on("dataLoaded", this.updateAll, this);
     };
 
     WeatherChartView.prototype.handleNavigate = function (jEvent) {
@@ -728,12 +810,7 @@ if(typeof module !== 'undefined') {
         jQuery.ajax({
             url: WeatherController.URL + this.model.path,
             dataType: "jsonp"
-        }).then(this.handleLoad.bind(this));
-    };
-
-    WeatherController.prototype.handleLoad = function (data) {
-        this.model.setAllData(data);
-        this.view.updateAll();
+        }).then(this.model.setAllData.bind(this.model));
     };
 
     WeatherController.prototype.destroy = function () {
@@ -746,110 +823,5 @@ if(typeof module !== 'undefined') {
     WeatherController.URL = "http://community-tools.appspot.com";
 
     yaxham.modules.WeatherController = WeatherController;
-
-})();
-(function () {
-
-    function WeatherView(selector, model) {
-        this.jElement = jQuery(selector);
-        if (this.jElement.length == 0) {
-            throw new Error("Invalid selector: " + selector);
-        }
-        this.model = model;
-        this.initialise();
-    }
-
-    WeatherView.prototype = Object.create(Subscribable.prototype);
-
-    WeatherView.prototype.jElement = null;
-
-    WeatherView.prototype.initialise = function () {
-        this.jElement
-            .append(WeatherView.MARKUP)
-            .delegate(".btn", "click.weather", this.handleNavigate.bind(this));
-        this.model.on("indexChanged", this.updateAll, this);
-    };
-
-    WeatherView.prototype.handleNavigate = function(jEvent) {
-        var jTarget = jQuery(jEvent.currentTarget),
-            direction = jTarget.data("direction");
-        this.model.changeCurrentIndex(+direction);
-    };
-
-    WeatherView.prototype.updateAll = function () {
-
-        if (this.model.hasData()) {
-            this.displayBoard();
-        } else {
-            this.displayLoading();
-        }
-
-    };
-
-    WeatherView.prototype.displayLoading = function () {
-        this.jElement.find("currentConditions")
-            .empty()
-            .addClass("loading");
-    };
-
-    WeatherView.prototype.displayBoard = function () {
-
-        var currentIndex = this.model.currentIndex,
-            forecasts = this.model.getForecast(),
-            currentConditions = forecasts[currentIndex],
-            laterConditions = forecasts.filter(function(forecast, index) {
-                return index >= currentIndex && index < (currentIndex + 4)
-            });
-
-        this.jElement.find(".currentConditions").html(
-            Mustache.to_html(WeatherView.CURRENT_CONDITIONS, currentConditions)
-            );
-
-        this.jElement.find(".laterConditions").html(
-            Mustache.to_html(WeatherView.LATER_CONDITIONS, {forecasts: laterConditions})
-            );
-    };
-
-    WeatherView.prototype.destroy = function () {
-        this.jElement.undelegate(".weather");
-        this.model.un(null, this);
-    };
-
-    WeatherView.CURRENT_CONDITIONS = '' +
-                                     '<div class="big icon {{icon}}"></div>' +
-                                     '<ul>' +
-                                     '<li>' +
-                                     '<div class="weatherType">{{type}}</div>' +
-                                     '<div class="temperature">{{temperature}}&deg;C</div>' +
-                                     '</li>' +
-                                     '<li class="otherDetails">' +
-                                     '<div class="heading">Rain</div>' +
-                                     '<div class="rainChance reading">{{chanceOfRain}}%</div>' +
-                                     '<div class="heading">Wind</div>' +
-                                     '<div class="windSpeed reading">{{windSpeed}} mph {{windDirection}}</div>' +
-                                     '</li>' +
-                                     '</ul>';
-
-    WeatherView.LATER_CONDITIONS = '' +
-                                   '{{#forecasts}}' +
-                                   '<li class="{{className}}">' +
-                                   '<td><div class="icon {{icon}}">' +
-                                   '<div class="time heading">{{time}}</div>' +
-                                   '<div class="temperature reading">{{temperature}}&deg;C</div>' +
-                                   '</li>' +
-                                   '{{/forecasts}}';
-
-    WeatherView.MARKUP = '' +
-                         '<div class="weather vertical">' +
-                         '<div class="currentConditions"></div>' +
-                         '<div class="navigator">' +
-                         '<div class="btn prev" data-direction="-1"></div>' +
-                         '<ul class="laterConditions"></ul>' +
-                         '<div class="btn next" data-direction="+1"></div>' +
-                         '</div>' +
-                         '<p class="attribution">Data: <a href="http://www.metoffice.gov.uk/public/weather/forecast/dereham">Met Office</a></p>' +
-                         '</div>';
-
-    yaxham.modules.WeatherView = WeatherView;
 
 })();

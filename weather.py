@@ -60,14 +60,14 @@ def get_cached_text_forecast(location):
 class HourlyForecastController(webapp2.RequestHandler):
     def get(self):
         location = self.request.get("location") or config["location"]["Dereham"]
-        logging.info("Weather request for location:" + location)
+        logging.info("Hourly weather request for location:" + location)
         content = get_cached_detailed_forecast("hourlyForecastUrl", location)
         common.write_response(self.request, self.response, content)
 
 class DailyForecastController(webapp2.RequestHandler):
     def get(self):
         location = self.request.get("location") or config["location"]["Dereham"]
-        logging.info("Weather request for location:" + location)
+        logging.info("Daily weather request for location:" + location)
         content = get_cached_detailed_forecast("dailyForecastUrl", location)
         common.write_response(self.request, self.response, content)
 

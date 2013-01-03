@@ -3,10 +3,10 @@
     function getView(element, model) {
         if (element.hasClass("textForecast")) {
             return new yaxham.modules.TextForecastView(element, model)
-        } else if (element.hasClass("horizontal")) {
-            return new yaxham.modules.WeatherChartView(element, model)
+        } else if (element.hasClass("daily")) {
+            return new yaxham.modules.DailyForecastView(element, model)
         } else {
-            return new yaxham.modules.WeatherView(element, model)
+            return new yaxham.modules.WeatherChartView(element, model)
         }
     }
 
@@ -14,7 +14,11 @@
         if (element.hasClass("textForecast")) {
             return new yaxham.modules.TextForecastModel()
         } else {
-            return new yaxham.modules.DetailedWeatherModel();
+            if (element.hasClass("daily")) {
+                return new yaxham.modules.DetailedWeatherModel("/weather/daily");
+            } else {
+                return new yaxham.modules.DetailedWeatherModel("/weather/hourly");
+            }
         }
     }
 

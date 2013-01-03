@@ -1,10 +1,10 @@
+.daily table.weather {
+    width: 100%;
+}
+
 .weather .navigator {
     position: relative;
     height: 170px;
-}
-
-.weather.vertical .navigator {
-    height: 75px;
 }
 
 .weather .navigator .btn {
@@ -82,20 +82,11 @@
     right: 15px;
 }
 
-.weather.vertical .laterConditions {
-    box-shadow: 0px 2px 5px black inset;
-    background-color: #252525;
-    clear: both;
-}
 
 .weather .laterConditions li {
     text-align: center;
     display: inline-block;
     padding-top: 10px;
-}
-
-.weather .vertical .laterConditions li {
-    height: 100px;
 }
 
 .weather.horizontal .laterConditions li {
@@ -109,10 +100,6 @@
     margin-top: 40px;
     z-index: 1;
     width: 100%;
-}
-
-.weather.vertical .laterConditions li {
-    width: 25%;
 }
 
 .weather.horizontal .laterConditions li {

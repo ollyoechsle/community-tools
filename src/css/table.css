@@ -14,8 +14,13 @@
     border-bottom: 1px solid #666;
 }
 
+.table .numeric {
+    text-align: right;
+}
+
 .table tbody tr:hover {
     background: #666;
     -webkit-transition: all 1s ease;
 }
+
 

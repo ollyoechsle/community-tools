@@ -1,8 +1,8 @@
 (function () {
 
-    function DetailedWeatherModel() {
+    function DetailedWeatherModel(path) {
         this.currentIndex = 0;
-        this.path = "/weather/hourly"
+        this.path = path || "/weather/hourly"
     }
 
     DetailedWeatherModel.prototype = Object.create(Subscribable.prototype);
@@ -31,6 +31,7 @@
         });
 
         this.allPeriods = allPeriods;
+        this.fire("dataLoaded");
     };
 
     DetailedWeatherModel.prototype.changeCurrentIndex = function (delta) {
@@ -55,8 +56,8 @@
                 className: index == currentIndex ? "current" : "notCurrent",
                 type: DetailedWeatherModel.WEATHER[reading.W].name,
                 icon: DetailedWeatherModel.WEATHER[reading.W].className,
-                chanceOfRain: reading.Pp,
-                temperature: reading.T,
+                chanceOfRain: reading.Pp || reading.PPd || reading.PPn,
+                temperature: reading.T || reading.Dm || reading.Nm,
                 windSpeed: reading.S,
                 windDirection: reading.D,
                 time: DetailedWeatherModel.timeOfReading[reading.$],

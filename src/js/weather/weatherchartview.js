@@ -22,6 +22,7 @@
 
         this.numItems = Math.max(5, this.jElement.width() / 36);
         this.model.on("indexChanged", this.updateAll, this);
+        this.model.on("dataLoaded", this.updateAll, this);
     };
 
     WeatherChartView.prototype.handleNavigate = function (jEvent) {
