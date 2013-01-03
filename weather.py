@@ -26,7 +26,7 @@ def get_cached_weather(location):
 
     if not data:
         data = get_weather(location)
-        memcache.set(key, data, 600)
+        memcache.set(key, data, 86400)
     else:
         logging.info("Getting cached weather data")
 

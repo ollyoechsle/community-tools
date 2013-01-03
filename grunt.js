@@ -16,7 +16,7 @@ module.exports = function (grunt) {
                 dest:'static/community-tools-buses-<%= meta.version %>.js'
             },
             weather:{
-                src:['<banner:meta.banner>', 'src/js/namespace.js', 'src/js/hselector.js', 'src/js/weather/*.js'],
+                src:['<banner:meta.banner>', 'src/js/namespace.js', 'src/js/subscribable.js', 'src/js/weather/*.js'],
                 dest:'static/community-tools-weather-<%= meta.version %>.js'
             },
             weather_css:{

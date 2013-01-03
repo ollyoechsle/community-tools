@@ -121,6 +121,8 @@ window.yaxham.modules = window.yaxham.modules || {};
 
     NewsView.prototype.displayBoard = function () {
 
+        this.jElement.removeClass("loading");
+
         var data = this.model.getData(this.itemCount);
 
         this.jElement.html(

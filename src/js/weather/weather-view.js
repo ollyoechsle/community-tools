@@ -66,7 +66,7 @@
     };
 
     WeatherView.CURRENT_CONDITIONS = '' +
-                                     '<img class="icon" src="img/weather/icons_120x100/{{icon}}"/>' +
+                                     '<img class="icon" width="60" height="50" src="http://dev.yaxham.com:8083/static/img/weather/icons_120x100/{{icon}}"/>' +
                                      '<ul>' +
                                      '<li>' +
                                      '<div class="weatherType">{{type}}</div>' +
@@ -83,7 +83,7 @@
     WeatherView.LATER_CONDITIONS = '' +
                                    '{{#forecasts}}' +
                                    '<li class="{{className}}">' +
-                                   '<td><img width="60" height="50" src="/static/img/weather/icons_60x50/{{icon}}" /></td>' +
+                                   '<td><img width="30" height="25" src="http://dev.yaxham.com:8083/static/img/weather/icons_60x50/{{icon}}" /></td>' +
                                    '<div class="time heading">{{time}}</div>' +
                                    '<div class="temperature reading">{{temperature}}&deg;C</div>' +
                                    '</li>' +

@@ -81,7 +81,7 @@ def get_buses(stop):
     else:
         cached = get_buses_xml(stop)
 
-    memcache.set(cache_id, cached, 1200)
+    memcache.set(cache_id, cached, 86400)
     return cached
 
 def to_json(xml):

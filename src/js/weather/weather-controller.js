@@ -14,7 +14,7 @@
 
     WeatherController.prototype.load = function () {
         var data = {
-            url:WeatherController.URL,
+            url:WeatherController.URL + "/weather",
             dataType:"jsonp"
         };
         var promise = jQuery.ajax(data);
@@ -33,7 +33,7 @@
         this.view.destroy();
     };
 
-    WeatherController.URL = "http://community-tools.appspot.com/weather";
+    WeatherController.URL  = "http://community-tools.appspot.com";
 
     yaxham.modules.WeatherController = WeatherController;
 

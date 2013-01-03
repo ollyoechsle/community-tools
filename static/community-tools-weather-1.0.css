@@ -10,10 +10,10 @@
 }
 
 .weather .navigator .btn {
-    height: 90px;
+    height: 80px;
     position: absolute;
     width: 15px;
-    top: 10px;
+    top: 0;
     cursor: pointer;
     background: url(../img/arrows.png) no-repeat;
 }
@@ -45,8 +45,10 @@
 
 .weather .currentConditions ul {
     position: absolute;
-    left: 120px;
+    left: 75px;
     top: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .weather .currentConditions li {
@@ -76,6 +78,8 @@
 
 .weather .laterConditions {
     position: absolute;
+    padding: 0;
+    margin: 0;
     left: 15px;
     right: 15px;
 }
@@ -129,7 +133,7 @@
 }
 
 .weather .laterConditions li.current {
-    background-color: #373737;
+    background-color: #444;
     box-shadow: 3px 3px 5px black;
 }
 
