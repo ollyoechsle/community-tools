@@ -198,3 +198,91 @@
 .weather .icon.heavySnow {background-image: url(/static/img/weather/icons_60x50/13.png);}
 .weather .icon.heavySnow {background-image: url(/static/img/weather/icons_60x50/13.png);}
 .weather .icon.thunderStorm {background-image: url(/static/img/weather/icons_60x50/11.png);}
+
+.weather .wind {
+    width: 32px;
+    height: 32px;
+    color: #fbfafa;
+    font-size: 9px;
+
+    display: inline-block;
+    text-align: center;
+    line-height: 32px;
+    font-weight: bold;
+    position: relative;
+
+}
+
+.weather .wind:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    left: 16px;
+    top: 16px;
+    margin-left: -16px;
+    margin-top: -16px;
+    background: url(/static/img/wind-direction.png);
+    background-size: 32px 32px;
+}
+
+.weather .wind.NNE:after {
+    -webkit-transform:rotate(22.5deg);
+}
+
+.weather .wind.NE:after {
+    -webkit-transform:rotate(45deg);
+}
+
+.weather .wind.ENE:after {
+    -webkit-transform:rotate(67.5deg);
+}
+
+.weather .wind.E:after {
+    -webkit-transform:rotate(90deg);
+}
+
+.weather .wind.ESE:after {
+    -webkit-transform:rotate(102.5deg);
+}
+
+.weather .wind.SE:after {
+    -webkit-transform:rotate(135deg);
+}
+
+.weather .wind.SSE:after {
+    -webkit-transform:rotate(157.5deg);
+}
+
+.weather .wind.S:after {
+    -webkit-transform:rotate(180deg);
+}
+
+.weather .wind.SSW:after {
+    -webkit-transform:rotate(202.5deg);
+}
+
+.weather .wind.SW:after {
+    -webkit-transform:rotate(225deg);
+}
+
+.weather .wind.WSW:after {
+    -webkit-transform:rotate(247.5deg);
+}
+
+.weather .wind.W:after {
+    -webkit-transform:rotate(270deg);
+}
+
+.weather .wind.WNW:after {
+    -webkit-transform:rotate(292.5deg);
+}
+
+.weather .wind.NW:after {
+    -webkit-transform:rotate(315deg);
+}
+
+.weather .wind.NNW:after {
+    -webkit-transform:rotate(337.5deg);
+}

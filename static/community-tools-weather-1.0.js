@@ -354,6 +354,8 @@ if(typeof module !== 'undefined') {
 
         var forecasts = this.model.getForecast();
 
+        this.jElement.removeClass("loading");
+
         this.jElement.html(
             Mustache.to_html(DailyForecastView.LIST, {
                 list: forecasts
@@ -387,7 +389,7 @@ if(typeof module !== 'undefined') {
         '</td>' +
         '<td><div class="icon {{icon}}"></div></td>' +
         '<td class="numeric">{{temperature}} &deg;C</td>' +
-        '<td class="numeric">{{windSpeed}} {{windDirection}}</td>' +
+        '<td class="numeric"><div class="wind {{windDirection}}">{{windSpeed}}</div></td>' +
         '</tr>' +
         '{{/list}}' +
         '</tbody>' +
