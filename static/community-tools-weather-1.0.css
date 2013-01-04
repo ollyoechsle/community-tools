@@ -116,7 +116,6 @@
     right: 15px;
 }
 
-
 .weather .laterConditions li {
     text-align: center;
     display: inline-block;
@@ -183,21 +182,65 @@
     background-size: 100%;
 }
 
-.weather .icon.notAvailable {background-image: none;}
-.weather .icon.clearNight {background-image: url(/static/img/weather/icons_60x50/01n.png);}
-.weather .icon.clearDay {background-image: url(/static/img/weather/icons_60x50/01d.png);}
-.weather .icon.fogMist {background-image: url(/static/img/weather/icons_60x50/15.png);}
-.weather .icon.cloudy {background-image: url(/static/img/weather/icons_60x50/04.png);}
-.weather .icon.lightRainShowerNight {background-image: url(/static/img/weather/icons_60x50/05n.png);}
-.weather .icon.lightRainShowerDay {background-image: url(/static/img/weather/icons_60x50/05d.png);}
-.weather .icon.lightRain {background-image: url(/static/img/weather/icons_60x50/09.png);}
-.weather .icon.heavyRain {background-image: url(/static/img/weather/icons_60x50/10.png);}
-.weather .icon.sleet {background-image: url(/static/img/weather/icons_60x50/12.png);}
-.weather .icon.lightSnowNight {background-image: url(/static/img/weather/icons_60x50/08n.png);}
-.weather .icon.lightSnowDay {background-image: url(/static/img/weather/icons_60x50/08d.png);}
-.weather .icon.heavySnow {background-image: url(/static/img/weather/icons_60x50/13.png);}
-.weather .icon.heavySnow {background-image: url(/static/img/weather/icons_60x50/13.png);}
-.weather .icon.thunderStorm {background-image: url(/static/img/weather/icons_60x50/11.png);}
+.weather .icon.notAvailable {
+    background-image: none;
+}
+
+.weather .icon.clearNight {
+    background-image: url(/static/img/weather/icons_60x50/01n.png);
+}
+
+.weather .icon.clearDay {
+    background-image: url(/static/img/weather/icons_60x50/01d.png);
+}
+
+.weather .icon.fogMist {
+    background-image: url(/static/img/weather/icons_60x50/15.png);
+}
+
+.weather .icon.cloudy {
+    background-image: url(/static/img/weather/icons_60x50/04.png);
+}
+
+.weather .icon.lightRainShowerNight {
+    background-image: url(/static/img/weather/icons_60x50/05n.png);
+}
+
+.weather .icon.lightRainShowerDay {
+    background-image: url(/static/img/weather/icons_60x50/05d.png);
+}
+
+.weather .icon.lightRain {
+    background-image: url(/static/img/weather/icons_60x50/09.png);
+}
+
+.weather .icon.heavyRain {
+    background-image: url(/static/img/weather/icons_60x50/10.png);
+}
+
+.weather .icon.sleet {
+    background-image: url(/static/img/weather/icons_60x50/12.png);
+}
+
+.weather .icon.lightSnowNight {
+    background-image: url(/static/img/weather/icons_60x50/08n.png);
+}
+
+.weather .icon.lightSnowDay {
+    background-image: url(/static/img/weather/icons_60x50/08d.png);
+}
+
+.weather .icon.heavySnow {
+    background-image: url(/static/img/weather/icons_60x50/13.png);
+}
+
+.weather .icon.heavySnow {
+    background-image: url(/static/img/weather/icons_60x50/13.png);
+}
+
+.weather .icon.thunderStorm {
+    background-image: url(/static/img/weather/icons_60x50/11.png);
+}
 
 .weather .wind {
     width: 32px;
@@ -224,65 +267,72 @@
     margin-left: -16px;
     margin-top: -16px;
     background: url(/static/img/wind-direction.png);
-    background-size: 32px 32px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Retina-specific stuff here */
+    .weather .wind:after {
+        background: url(/static/img/wind-direction-retina.png);
+        background-size: 32px 32px;
+    }
 }
 
 .weather .wind.NNE:after {
-    -webkit-transform:rotate(22.5deg);
+    -webkit-transform: rotate(22.5deg);
 }
 
 .weather .wind.NE:after {
-    -webkit-transform:rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }
 
 .weather .wind.ENE:after {
-    -webkit-transform:rotate(67.5deg);
+    -webkit-transform: rotate(67.5deg);
 }
 
 .weather .wind.E:after {
-    -webkit-transform:rotate(90deg);
+    -webkit-transform: rotate(90deg);
 }
 
 .weather .wind.ESE:after {
-    -webkit-transform:rotate(102.5deg);
+    -webkit-transform: rotate(102.5deg);
 }
 
 .weather .wind.SE:after {
-    -webkit-transform:rotate(135deg);
+    -webkit-transform: rotate(135deg);
 }
 
 .weather .wind.SSE:after {
-    -webkit-transform:rotate(157.5deg);
+    -webkit-transform: rotate(157.5deg);
 }
 
 .weather .wind.S:after {
-    -webkit-transform:rotate(180deg);
+    -webkit-transform: rotate(180deg);
 }
 
 .weather .wind.SSW:after {
-    -webkit-transform:rotate(202.5deg);
+    -webkit-transform: rotate(202.5deg);
 }
 
 .weather .wind.SW:after {
-    -webkit-transform:rotate(225deg);
+    -webkit-transform: rotate(225deg);
 }
 
 .weather .wind.WSW:after {
-    -webkit-transform:rotate(247.5deg);
+    -webkit-transform: rotate(247.5deg);
 }
 
 .weather .wind.W:after {
-    -webkit-transform:rotate(270deg);
+    -webkit-transform: rotate(270deg);
 }
 
 .weather .wind.WNW:after {
-    -webkit-transform:rotate(292.5deg);
+    -webkit-transform: rotate(292.5deg);
 }
 
 .weather .wind.NW:after {
-    -webkit-transform:rotate(315deg);
+    -webkit-transform: rotate(315deg);
 }
 
 .weather .wind.NNW:after {
-    -webkit-transform:rotate(337.5deg);
+    -webkit-transform: rotate(337.5deg);
 }
