@@ -34,7 +34,7 @@ def get_news():
     if cached:
         return cached
     else:
-        cached = get_rss("http://www.edp24.co.uk/cmlink/edp24_news_1_595700")
+        cached = get_rss("http://createfeed.fivefilters.org/extract.php?url=https%3A%2F%2Fwww.derehamtimes.co.uk%2F&item=.mdc-card__primary-action&item_title=.mdc-card__title")
         memcache.set(cache_id, cached, time=3600)
         return cached
 
