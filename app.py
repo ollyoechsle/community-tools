@@ -1,21 +1,14 @@
-import datetime
 from flask import jsonify
 from flask import Flask, render_template, Response
 from rss import get_rss
+from services.weather import get_weather_service, Resolution, Region, Location
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def root():
-    # For the sake of example, use static information to inflate the template.
-    # This will be replaced with real information in later steps.
-    dummy_times = [datetime.datetime(2018, 1, 1, 10, 0, 0),
-                   datetime.datetime(2018, 1, 2, 10, 30, 0),
-                   datetime.datetime(2018, 1, 3, 11, 0, 0),
-                   ]
-
-    return render_template('index.html', times=dummy_times)
+    return render_template('index.html')
 
 
 @app.route('/news')
@@ -23,6 +16,25 @@ def news() -> Response:
     data = get_rss(
         "http://createfeed.fivefilters.org/extract.php?url=https%3A%2F%2Fwww.derehamtimes.co.uk%2F&item=.mdc-card__primary-action&item_title=.mdc-card__title")
     return jsonify(data)
+
+
+@app.route('/weather/daily')
+def daily_weather() -> Response:
+    data = get_weather_service().get_location_forecast(location=Location.DEREHAM, resolution=Resolution.DAILY)
+    return jsonify(data)
+
+
+@app.route('/weather/hourly')
+def hourly_weather() -> Response:
+    data = get_weather_service().get_location_forecast(location=Location.DEREHAM, resolution=Resolution.HOURLY)
+    return jsonify(data)
+
+
+@app.route('/weather/text')
+def text_weather() -> Response:
+    data = get_weather_service().get_regional_text_forecast(region=Region.EASTERN_ENGLAND)
+    return jsonify(data)
+
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
