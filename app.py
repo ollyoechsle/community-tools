@@ -1,6 +1,7 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask import Flask, render_template, Response
 from rss import get_rss
+from services.buses import get_default_bus_service
 from services.weather import get_weather_service, Resolution, Region, Location
 
 app = Flask(__name__)
@@ -33,6 +34,13 @@ def hourly_weather() -> Response:
 @app.route('/weather/text')
 def text_weather() -> Response:
     data = get_weather_service().get_regional_text_forecast(region=Region.EASTERN_ENGLAND)
+    return jsonify(data)
+
+
+@app.route('/buses')
+def buses() -> Response:
+    stop_code = request.args.get("stops")
+    data = get_default_bus_service().get_bus_departures(stop_code)
     return jsonify(data)
 
 
