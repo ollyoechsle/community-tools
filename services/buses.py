@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from xml.dom.minidom import Element
 
 import requests
 from datetime import datetime
@@ -21,9 +22,18 @@ def get_default_bus_service():
         password=config['password']
     )
 
+
 stops = {
     "Yaxham_Road": "NFOAMTMG"
 }
+
+
+def get_element_text(dom: Element, tag_name: str):
+    elements = dom.getElementsByTagName(tag_name)
+    if len(elements) > 0:
+        return elements[0].childNodes[0].data
+    else:
+        return None
 
 
 @dataclass
@@ -67,9 +77,9 @@ class BusService:
                                  data=soap_request,
                                  timeout=10,
                                  auth=HTTPBasicAuth(self.username, self.password))
-        return self.to_json(response.text)
+        return self.convert_xml(response.text)
 
-    def to_json(self, xml: str) -> List[BusDeparture]:
+    def convert_xml(self, xml: str) -> List[BusDeparture]:
         xmldoc = minidom.parseString(xml)
 
         visits = xmldoc.getElementsByTagName("MonitoredStopVisit")
@@ -78,11 +88,11 @@ class BusService:
 
     def to_object(self, item) -> BusDeparture:
         return BusDeparture(
-            destination=item['DirectionName'],
-            scheduled=item['AimedDepartureTime'],
-            estimated=item['ExpectedDepartureTime'],
-            service=item['PublishedLineName'],
-            stop=item['MonitoringRef'],
+            destination=get_element_text(item, 'DirectionName'),
+            scheduled=get_element_text(item, 'AimedDepartureTime'),
+            estimated=get_element_text(item, 'ExpectedDepartureTime'),
+            service=get_element_text(item, 'PublishedLineName'),
+            stop=get_element_text(item, 'MonitoringRef'),
         )
 
 
