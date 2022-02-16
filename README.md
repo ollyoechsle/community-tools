@@ -11,3 +11,7 @@ Current tools include:
 * Local News
 * Local Weather
 * Bus times
+
+Further details:
+* Backend: Read [backend/README.md]()
+* Frontend: Read [frontend/README.md]()
