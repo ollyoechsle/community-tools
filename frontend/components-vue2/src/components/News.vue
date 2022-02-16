@@ -5,6 +5,9 @@
         <a target="_blank" :href="article.link">{{ article.title }}</a>
       </li>
     </ul>
+    <div v-if="error" class="error-message">
+      {{error}}
+    </div>
   </div>
 </template>
 
@@ -15,11 +18,22 @@ import axios, {AxiosResponse} from 'axios'
 @Component
 export default class HelloWorld extends Vue {
   private news: any = []
+  private error: string = ""
 
   public mounted() {
-    axios.get('http://localhost:8080/news').then((response: AxiosResponse<any>) => {
-      this.news = response.data
-    })
+    this.loadNews()
+  }
+
+  public loadNews() {
+    this.error = ""
+    this.news = []
+    axios.get('http://localhost:8080/news').then(
+        (response: AxiosResponse<any>) => {
+          this.news = response.data
+        },
+        (error) => {
+          this.error = "Unable to load news. " + error
+        })
   }
 }
 </script>
