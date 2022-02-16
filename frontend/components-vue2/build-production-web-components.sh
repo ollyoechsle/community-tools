@@ -1,0 +1,1 @@
+npm run build -- --target wc --name ct-news src/components/News.vue
