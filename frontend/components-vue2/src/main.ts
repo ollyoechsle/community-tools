@@ -1,8 +1,17 @@
+// import Vue from "vue";
+// import App from "./App.vue";
+//
+// Vue.config.productionTip = false;
+//
+// new Vue({
+//   render: h => h(App)
+// }).$mount("#app");
+
+
 import Vue from "vue";
-import App from "./App.vue";
+import wrap from "@vue/web-component-wrapper";
 
-Vue.config.productionTip = false;
+import News from "./components/News.vue";
 
-new Vue({
-  render: h => h(App)
-}).$mount("#app");
+const wrappedNews: any = wrap(Vue, News);
+window.customElements.define("ct-news", wrappedNews);
