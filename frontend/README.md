@@ -50,6 +50,33 @@ sh build-production-web-components.sh
 
 This will build appropriate versions in the dist/ folder including a demo page.
 
+# Other Commands
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your unit tests
+```
+npm run test:unit
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
 ## References
 
 * https://medium.com/tunaiku-tech/your-first-web-component-with-vue-js-3386cffc0b1f
