@@ -65,15 +65,15 @@ class WeatherService:
         self.hostname = hostname
         self.api_key = api_key
 
-    def get_regional_text_forecast(self, region: Region) -> List[ForecastParagraph]:
-        url = f"{self.hostname}/public/data/txt/wxfcs/regionalforecast/json/{region.value}?key={self.api_key}"
+    def get_regional_text_forecast(self, region: int) -> List[ForecastParagraph]:
+        url = f"{self.hostname}/public/data/txt/wxfcs/regionalforecast/json/{region}?key={self.api_key}"
         response = requests.get(url)
         data = response.json()
         first_period_paragraphs = data["RegionalFcst"]["FcstPeriods"]["Period"][0]["Paragraph"]
         return [ForecastParagraph(title=para["title"], text=para["$"]) for para in first_period_paragraphs]
 
-    def get_location_forecast(self, location: Location, resolution: Resolution) -> Dict:
-        url = f"{self.hostname}/public/data/val/wxfcs/all/json/{location.value}?res={get_resolution_param(resolution)}&key={self.api_key}"
+    def get_location_forecast(self, location_id: int, resolution: Resolution) -> Dict:
+        url = f"{self.hostname}/public/data/val/wxfcs/all/json/{location_id}?res={get_resolution_param(resolution)}&key={self.api_key}"
         response = requests.get(url)
         return response.json()
 

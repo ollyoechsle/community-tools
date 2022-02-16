@@ -1,11 +1,11 @@
 <template>
-  <div class="news-component">
+  <div class="ct-component ct-news">
     <ul class="news">
       <li v-for="(article, index) in news" :key="index">
         <a target="_blank" :href="article.link">{{ article.title }}</a>
       </li>
     </ul>
-    <div v-if="error" class="error-message">
+    <div v-if="error" class="ct-error-message">
       {{error}}
     </div>
   </div>
@@ -16,7 +16,7 @@ import {Component, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
 
 @Component
-export default class HelloWorld extends Vue {
+export default class News extends Vue {
   private news: any = []
   private error: string = ""
 

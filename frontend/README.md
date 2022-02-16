@@ -19,12 +19,14 @@
 
 ## Running locally
 
+Demos of the components can be viewed on the development server
+which is started by:
+
 ```
 npm run serve
 ```
 
-Demos of the components can be viewed on the development server
-(typically: localhost:8081)
+(typically: localhost:8080)
 
 # Developer Setup
 

@@ -23,19 +23,22 @@ def news() -> Response:
 
 @app.route('/weather/daily')
 def daily_weather() -> Response:
-    data = get_weather_service().get_location_forecast(location=Location.DEREHAM, resolution=Resolution.DAILY)
+    location = request.args.get("location")
+    data = get_weather_service().get_location_forecast(location=int(location), resolution=Resolution.DAILY)
     return jsonify(data)
 
 
 @app.route('/weather/hourly')
 def hourly_weather() -> Response:
-    data = get_weather_service().get_location_forecast(location=Location.DEREHAM, resolution=Resolution.HOURLY)
+    location = request.args.get("location")
+    data = get_weather_service().get_location_forecast(location=int(location), resolution=Resolution.HOURLY)
     return jsonify(data)
 
 
 @app.route('/weather/text')
 def text_weather() -> Response:
-    data = get_weather_service().get_regional_text_forecast(region=Region.EASTERN_ENGLAND)
+    region = request.args.get("region")
+    data = get_weather_service().get_regional_text_forecast(region=int(region))
     return jsonify(data)
 
 
