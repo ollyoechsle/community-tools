@@ -1,9 +1,8 @@
 import common
 import webapp2
-import urllib, urllib2, Cookie
+import urllib, Cookie
 from google.appengine.api import urlfetch
 import logging
-import json
 import time
 from BeautifulSoup import BeautifulSoup
 

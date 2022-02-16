@@ -1,9 +1,6 @@
-import json
 import common
 import webapp2
-import logging
-import time
-from xml.dom import minidom
+
 
 def get_tweets(url):
     json = common.get_cached_data(url)

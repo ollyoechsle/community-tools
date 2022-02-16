@@ -1,7 +1,6 @@
 import json
 import common
 import webapp2
-import logging
 import time
 from google.appengine.api import memcache
 from xml.dom import minidom

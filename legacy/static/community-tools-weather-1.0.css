@@ -168,7 +168,7 @@
     position: absolute;
     bottom: 0;
     width: 33px;
-    background: url("/static/img/weather/precipitation.png");
+    background: url("/legacy/static/static/img/weather/precipitation.png");
 }
 
 .weather .attribution {
@@ -187,59 +187,59 @@
 }
 
 .weather .icon.clearNight {
-    background-image: url(/static/img/weather/icons_60x50/01n.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/01n.png);
 }
 
 .weather .icon.clearDay {
-    background-image: url(/static/img/weather/icons_60x50/01d.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/01d.png);
 }
 
 .weather .icon.fogMist {
-    background-image: url(/static/img/weather/icons_60x50/15.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/15.png);
 }
 
 .weather .icon.cloudy {
-    background-image: url(/static/img/weather/icons_60x50/04.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/04.png);
 }
 
 .weather .icon.lightRainShowerNight {
-    background-image: url(/static/img/weather/icons_60x50/05n.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/05n.png);
 }
 
 .weather .icon.lightRainShowerDay {
-    background-image: url(/static/img/weather/icons_60x50/05d.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/05d.png);
 }
 
 .weather .icon.lightRain {
-    background-image: url(/static/img/weather/icons_60x50/09.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/09.png);
 }
 
 .weather .icon.heavyRain {
-    background-image: url(/static/img/weather/icons_60x50/10.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/10.png);
 }
 
 .weather .icon.sleet {
-    background-image: url(/static/img/weather/icons_60x50/12.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/12.png);
 }
 
 .weather .icon.lightSnowNight {
-    background-image: url(/static/img/weather/icons_60x50/08n.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/08n.png);
 }
 
 .weather .icon.lightSnowDay {
-    background-image: url(/static/img/weather/icons_60x50/08d.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/08d.png);
 }
 
 .weather .icon.heavySnow {
-    background-image: url(/static/img/weather/icons_60x50/13.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/13.png);
 }
 
 .weather .icon.heavySnow {
-    background-image: url(/static/img/weather/icons_60x50/13.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/13.png);
 }
 
 .weather .icon.thunderStorm {
-    background-image: url(/static/img/weather/icons_60x50/11.png);
+    background-image: url(/legacy/static/img/weather/icons_60x50/11.png);
 }
 
 .weather .wind {
@@ -266,13 +266,13 @@
     top: 16px;
     margin-left: -16px;
     margin-top: -16px;
-    background: url(/static/img/wind-direction.png);
+    background: url(/legacy/static/img/wind-direction.png);
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     /* Retina-specific stuff here */
     .weather .wind:after {
-        background: url(/static/img/wind-direction-retina.png);
+        background: url(/legacy/static/img/wind-direction-retina.png);
         background-size: 32px 32px;
     }
 }

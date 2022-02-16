@@ -1,8 +1,8 @@
 from flask import jsonify, request
 from flask import Flask, render_template, Response
-from rss import get_rss
+from services.rss import get_rss
 from services.buses import get_default_bus_service
-from services.weather import get_weather_service, Resolution, Region, Location
+from services.weather import get_weather_service, Resolution
 from flask_cors import CORS
 
 app = Flask(__name__)

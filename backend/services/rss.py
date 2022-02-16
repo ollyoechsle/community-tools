@@ -4,7 +4,7 @@ from datetime import datetime
 import requests
 from xml.dom.minidom import parseString, Element
 
-from dto import NewsResponseDto
+from legacy.dto import NewsResponseDto
 
 
 def get_rss(url: str) -> List[NewsResponseDto]:
