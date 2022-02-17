@@ -1,0 +1,253 @@
+{
+  "SiteRep": {
+    "DV": {
+      "Location": {
+        "Period": [
+          {
+            "Rep": [
+              {
+                "$": "Day",
+                "D": "W",
+                "Dm": "9",
+                "FDm": "5",
+                "Gn": "47",
+                "Hn": "58",
+                "PPd": "50",
+                "S": "27",
+                "U": "1",
+                "V": "VG",
+                "W": "10"
+              },
+              {
+                "$": "Night",
+                "D": "SSW",
+                "FNm": "2",
+                "Gm": "20",
+                "Hm": "81",
+                "Nm": "5",
+                "PPn": "95",
+                "S": "9",
+                "V": "VG",
+                "W": "12"
+              }
+            ],
+            "type": "Day",
+            "value": "2022-02-17Z"
+          },
+          {
+            "Rep": [
+              {
+                "$": "Day",
+                "D": "SW",
+                "Dm": "11",
+                "FDm": "6",
+                "Gn": "63",
+                "Hn": "54",
+                "PPd": "88",
+                "S": "36",
+                "U": "1",
+                "V": "EX",
+                "W": "12"
+              },
+              {
+                "$": "Night",
+                "D": "W",
+                "FNm": "-4",
+                "Gm": "40",
+                "Hm": "67",
+                "Nm": "1",
+                "PPn": "3",
+                "S": "22",
+                "V": "EX",
+                "W": "2"
+              }
+            ],
+            "type": "Day",
+            "value": "2022-02-18Z"
+          },
+          {
+            "Rep": [
+              {
+                "$": "Day",
+                "D": "SW",
+                "Dm": "6",
+                "FDm": "1",
+                "Gn": "27",
+                "Hn": "73",
+                "PPd": "94",
+                "S": "16",
+                "U": "1",
+                "V": "VG",
+                "W": "12"
+              },
+              {
+                "$": "Night",
+                "D": "W",
+                "FNm": "-1",
+                "Gm": "20",
+                "Hm": "91",
+                "Nm": "3",
+                "PPn": "89",
+                "S": "11",
+                "V": "GO",
+                "W": "12"
+              }
+            ],
+            "type": "Day",
+            "value": "2022-02-19Z"
+          },
+          {
+            "Rep": [
+              {
+                "$": "Day",
+                "D": "WSW",
+                "Dm": "12",
+                "FDm": "7",
+                "Gn": "43",
+                "Hn": "88",
+                "PPd": "87",
+                "S": "22",
+                "U": "1",
+                "V": "GO",
+                "W": "14"
+              },
+              {
+                "$": "Night",
+                "D": "W",
+                "FNm": "-2",
+                "Gm": "43",
+                "Hm": "68",
+                "Nm": "4",
+                "PPn": "67",
+                "S": "25",
+                "V": "VG",
+                "W": "12"
+              }
+            ],
+            "type": "Day",
+            "value": "2022-02-20Z"
+          },
+          {
+            "Rep": [
+              {
+                "$": "Day",
+                "D": "WNW",
+                "Dm": "9",
+                "FDm": "5",
+                "Gn": "47",
+                "Hn": "66",
+                "PPd": "12",
+                "S": "27",
+                "U": "1",
+                "V": "VG",
+                "W": "8"
+              },
+              {
+                "$": "Night",
+                "D": "W",
+                "FNm": "1",
+                "Gm": "18",
+                "Hm": "85",
+                "Nm": "4",
+                "PPn": "13",
+                "S": "9",
+                "V": "VG",
+                "W": "7"
+              }
+            ],
+            "type": "Day",
+            "value": "2022-02-21Z"
+          }
+        ],
+        "continent": "EUROPE",
+        "country": "ENGLAND",
+        "elevation": "48.0",
+        "i": "351196",
+        "lat": "52.6813",
+        "lon": "0.9396",
+        "name": "DEREHAM"
+      },
+      "dataDate": "2022-02-17T19:00:00Z",
+      "type": "Forecast"
+    },
+    "Wx": {
+      "Param": [
+        {
+          "$": "Feels Like Day Maximum Temperature",
+          "name": "FDm",
+          "units": "C"
+        },
+        {
+          "$": "Feels Like Night Minimum Temperature",
+          "name": "FNm",
+          "units": "C"
+        },
+        {
+          "$": "Day Maximum Temperature",
+          "name": "Dm",
+          "units": "C"
+        },
+        {
+          "$": "Night Minimum Temperature",
+          "name": "Nm",
+          "units": "C"
+        },
+        {
+          "$": "Wind Gust Noon",
+          "name": "Gn",
+          "units": "mph"
+        },
+        {
+          "$": "Wind Gust Midnight",
+          "name": "Gm",
+          "units": "mph"
+        },
+        {
+          "$": "Screen Relative Humidity Noon",
+          "name": "Hn",
+          "units": "%"
+        },
+        {
+          "$": "Screen Relative Humidity Midnight",
+          "name": "Hm",
+          "units": "%"
+        },
+        {
+          "$": "Visibility",
+          "name": "V",
+          "units": ""
+        },
+        {
+          "$": "Wind Direction",
+          "name": "D",
+          "units": "compass"
+        },
+        {
+          "$": "Wind Speed",
+          "name": "S",
+          "units": "mph"
+        },
+        {
+          "$": "Max UV Index",
+          "name": "U",
+          "units": ""
+        },
+        {
+          "$": "Weather Type",
+          "name": "W",
+          "units": ""
+        },
+        {
+          "$": "Precipitation Probability Day",
+          "name": "PPd",
+          "units": "%"
+        },
+        {
+          "$": "Precipitation Probability Night",
+          "name": "PPn",
+          "units": "%"
+        }
+      ]
+    }
+  }
+}

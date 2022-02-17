@@ -57,6 +57,47 @@ class ForecastParagraph:
     text: str
 
 
+@dataclass
+class WeatherForecastPeriod:
+    day: str
+    timeOfDay: str
+    icon: str
+    temperature: str
+    windDirection: str
+    windSpeed: str
+
+
+@dataclass
+class WeatherForecast:
+    periods: List[WeatherForecastPeriod]
+
+
+def get_lookup(param) -> Dict:
+    data = {}
+    for item in param:
+        data[item['name']] = data
+    return data
+
+
+def to_period(period: Dict, lookup: Dict) -> WeatherForecastPeriod:
+    return WeatherForecastPeriod(
+        day="",
+        timeOfDay="",
+        icon="",
+        temperature='',
+        windDirection='',
+        windSpeed=''
+    )
+
+
+def convert_to_weather_dto(data: Dict) -> WeatherForecast:
+    site_report = data['SiteRep']
+    lookup = get_lookup(site_report['Wx']['Param'])
+    return WeatherForecast(
+        periods=[to_period(period, lookup) for period in site_report['DV']['Location']['Period']]
+    )
+
+
 class WeatherService:
     hostname: str
     api_key: str
@@ -75,7 +116,7 @@ class WeatherService:
     def get_location_forecast(self, location_id: int, resolution: Resolution) -> Dict:
         url = f"{self.hostname}/public/data/val/wxfcs/all/json/{location_id}?res={get_resolution_param(resolution)}&key={self.api_key}"
         response = requests.get(url)
-        return response.json()
+        return convert_to_weather_dto(response.json())
 
 
 if __name__ == '__main__':
