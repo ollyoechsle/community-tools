@@ -8,6 +8,9 @@
     <div v-if="error" class="ct-error-message">
       {{error}}
     </div>
+    <div v-if="loading" class="ct-loading">
+      Loading...
+    </div>
   </div>
 </template>
 
@@ -17,22 +20,26 @@ import axios, {AxiosResponse} from 'axios'
 
 @Component
 export default class News extends Vue {
+  private loading = false;
   private news: any = []
-  private error: string = ""
+  private error? = ""
 
   public mounted() {
     this.loadNews()
   }
 
   public loadNews() {
-    this.error = ""
+    this.loading = true;
+    this.error = undefined
     this.news = []
     axios.get('http://localhost:8080/news').then(
         (response: AxiosResponse<any>) => {
           this.news = response.data
+          this.loading = false;
         },
         (error) => {
           this.error = "Unable to load news. " + error
+          this.loading = false;
         })
   }
 }

@@ -24,14 +24,14 @@ def news() -> Response:
 @app.route('/weather/daily')
 def daily_weather() -> Response:
     location = request.args.get("location")
-    data = get_weather_service().get_location_forecast(location=int(location), resolution=Resolution.DAILY)
+    data = get_weather_service().get_location_forecast(location_id=int(location), resolution=Resolution.DAILY)
     return jsonify(data)
 
 
 @app.route('/weather/hourly')
 def hourly_weather() -> Response:
     location = request.args.get("location")
-    data = get_weather_service().get_location_forecast(location=int(location), resolution=Resolution.HOURLY)
+    data = get_weather_service().get_location_forecast(location_id=int(location), resolution=Resolution.HOURLY)
     return jsonify(data)
 
 
