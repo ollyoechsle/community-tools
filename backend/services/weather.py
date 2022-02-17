@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
+from time import strptime
 from typing import List, Dict, Iterable
 
 import requests
@@ -79,12 +81,17 @@ def get_lookup(param) -> Dict:
     return data
 
 
+def get_day(iso_date: str) -> str:
+    date = datetime.strptime(iso_date, '%Y-%m-%dZ')
+    return date.strftime('%a')
+
+
 def get_periods(lookup: Dict, periods: Dict) -> Iterable[WeatherForecastPeriod]:
     for period in periods:
         for rep in period['Rep']:
             temp_key = 'Dm' if rep['$'] == 'Day' else 'Nm'
             yield WeatherForecastPeriod(
-                day=period['value'],
+                day=get_day(period['value']),
                 timeOfDay=rep['$'],
                 icon="",
                 temperature=rep[temp_key],
