@@ -64,6 +64,7 @@ class WeatherForecastPeriod:
     day: str
     timeOfDay: str
     icon: str
+    report: str
     temperature: str
     windDirection: str
     windSpeed: str
@@ -74,11 +75,47 @@ class WeatherForecast:
     periods: List[WeatherForecastPeriod]
 
 
-def get_lookup(param) -> Dict:
-    data = {}
-    for item in param:
-        data[item['name']] = data
-    return data
+REPORT_CODE_LOOKUP = {
+    "NA": {"name": "Not Available", "className": "notAvailable"},
+    "0": {"name": "Clear", "className": "clearNight"},
+    "1": {"name": "Sunny", "className": "clearDay"},
+    "2": {"name": "Partly cloudy", "className": "clearNight"},
+    "3": {"name": "Partly cloudy", "className": "clearDay"},
+    "5": {"name": "Mist", "className": "fogMist"},
+    "6": {"name": "Fog", "className": "fogMist"},
+    "7": {"name": "Cloudy", "className": "cloudy"},
+    "8": {"name": "Overcast", "className": "cloudy"},
+
+    "9": {"name": "Light rain shower", "className": "lightRainShowerNight"},
+    "10": {"name": "Light rain shower", "className": "lightRainShowerDay"},
+
+    "11": {"name": "Drizzle", "className": "lightRain"},
+    "12": {"name": "Light rain", "className": "lightRain"},
+
+    "13": {"name": "Heavy rain shower", "className": "heavyRain"},
+    "14": {"name": "Heavy rain shower", "className": "heavyRain"},
+    "15": {"name": "Heavy rain", "className": "heavyRain"},
+
+    "16": {"name": "Sleet shower", "className": "sleet"},
+    "17": {"name": "Sleet shower", "className": "sleet"},
+    "18": {"name": "Sleet", "className": "sleet"},
+
+    "19": {"name": "Hail shower", "className": "lightSnowDay"},
+    "20": {"name": "Hail shower", "className": "lightSnowNight"},
+    "21": {"name": "Hail", "className": "lightSnowDay"},
+
+    "22": {"name": "Light snow shower", "className": "lightSnowDay"},
+    "23": {"name": "Light snow shower", "className": "lightSnowNight"},
+    "24": {"name": "Light snow", "className": "lightSnowDay"},
+
+    "25": {"name": "Heavy snow shower", "className": "heavySnow"},
+    "26": {"name": "Heavy snow shower", "className": "heavySnow"},
+    "27": {"name": "Heavy snow", "className": "heavySnow"},
+
+    "28": {"name": "Thunder shower", "className": "thunderStorm"},
+    "29": {"name": "Thunder shower", "className": "thunderStorm"},
+    "30": {"name": "Thunder", "className": "thunderStorm"}
+}
 
 
 def get_day(iso_date: str) -> str:
@@ -86,26 +123,25 @@ def get_day(iso_date: str) -> str:
     return date.strftime('%a')
 
 
-def get_periods(lookup: Dict, periods: Dict) -> Iterable[WeatherForecastPeriod]:
+def get_periods(periods: Dict) -> Iterable[WeatherForecastPeriod]:
     for period in periods:
-        for rep in period['Rep']:
-            temp_key = 'Dm' if rep['$'] == 'Day' else 'Nm'
+        for report in period['Rep']:
+            temp_key = 'Dm' if report['$'] == 'Day' else 'Nm'
             yield WeatherForecastPeriod(
                 day=get_day(period['value']),
-                timeOfDay=rep['$'],
-                icon="",
-                temperature=rep[temp_key],
-                windDirection=rep['D'],
-                windSpeed=rep['S']
+                timeOfDay=report['$'],
+                icon=REPORT_CODE_LOOKUP[report['W']]["className"],
+                report=REPORT_CODE_LOOKUP[report['W']]["name"],
+                temperature=report[temp_key],
+                windDirection=report['D'],
+                windSpeed=report['S']
             )
 
 
 def convert_to_weather_dto(data: Dict) -> WeatherForecast:
     site_report = data['SiteRep']
-    lookup = get_lookup(site_report['Wx']['Param'])
-
     return WeatherForecast(
-        periods=list(get_periods(lookup, site_report['DV']['Location']['Period']))
+        periods=list(get_periods(site_report['DV']['Location']['Period']))
     )
 
 

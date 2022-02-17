@@ -9,12 +9,16 @@ def test_get_convert_json_to_weather_data():
         forecast = convert_to_weather_dto(data)
         assert len(forecast.periods) == 10
         assert forecast.periods[0].day == "Thu"
+        assert forecast.periods[0].icon == "lightRainShowerDay"
+        assert forecast.periods[0].report == "Light rain shower"
         assert forecast.periods[0].timeOfDay == "Day"
         assert forecast.periods[0].temperature == "9"
         assert forecast.periods[0].windDirection == "W"
         assert forecast.periods[0].windSpeed == "27"
 
         assert forecast.periods[1].day == "Thu"
+        assert forecast.periods[1].icon == "lightRain"
+        assert forecast.periods[1].report == "Light rain"
         assert forecast.periods[1].timeOfDay == "Night"
         assert forecast.periods[1].temperature == "5"
         assert forecast.periods[1].windDirection == "SSW"

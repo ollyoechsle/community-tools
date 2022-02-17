@@ -17,7 +17,7 @@
             <small>{{ period.timeOfDay }}</small>
           </td>
           <td>
-            <div class="icon">{{period.icon}}</div>
+            <div class="icon" :class="period.icon">{{period.report}}</div>
           </td>
           <td class="numeric">{{ period.temperature }} &deg;C</td>
           <td class="numeric">
