@@ -1,8 +1,31 @@
 <template>
   <div class="ct-component ct-weather">
-    Location {{ location }}
     <div v-if="weatherData">
-      {{ weatherData }}
+      <table class="table weather">
+        <thead>
+        <tr>
+          <th>Day</th>
+          <th></th>
+          <th class="numeric">Temp.</th>
+          <th class="numeric">Wind</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(period, index) in weatherData.periods" :key="index">
+          <td>
+            {{ period.day }}
+            <small>{{ period.timeOfDay }}</small>
+          </td>
+          <td>
+            <div class="icon">{{period.icon}}</div>
+          </td>
+          <td class="numeric">{{ period.temperature }} &deg;C</td>
+          <td class="numeric">
+            <div class="wind" :class="period.windDirection">{{ period.windSpeed }}</div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
     <div v-if="error" class="ct-error-message">
       {{ error }}

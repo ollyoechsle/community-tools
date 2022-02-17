@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Iterable
 
 import requests
 
@@ -79,22 +79,26 @@ def get_lookup(param) -> Dict:
     return data
 
 
-def to_period(period: Dict, lookup: Dict) -> WeatherForecastPeriod:
-    return WeatherForecastPeriod(
-        day="",
-        timeOfDay="",
-        icon="",
-        temperature='',
-        windDirection='',
-        windSpeed=''
-    )
+def get_periods(lookup: Dict, periods: Dict) -> Iterable[WeatherForecastPeriod]:
+    for period in periods:
+        for rep in period['Rep']:
+            temp_key = 'Dm' if rep['$'] == 'Day' else 'Nm'
+            yield WeatherForecastPeriod(
+                day=period['value'],
+                timeOfDay=rep['$'],
+                icon="",
+                temperature=rep[temp_key],
+                windDirection=rep['D'],
+                windSpeed=rep['S']
+            )
 
 
 def convert_to_weather_dto(data: Dict) -> WeatherForecast:
     site_report = data['SiteRep']
     lookup = get_lookup(site_report['Wx']['Param'])
+
     return WeatherForecast(
-        periods=[to_period(period, lookup) for period in site_report['DV']['Location']['Period']]
+        periods=list(get_periods(lookup, site_report['DV']['Location']['Period']))
     )
 
 
