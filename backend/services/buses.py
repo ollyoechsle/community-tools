@@ -8,6 +8,8 @@ from xml.dom import minidom
 
 from requests.auth import HTTPBasicAuth
 
+from exceptions.exceptions import ServerError
+
 config = {
     'url': "http://nextbus.mxdata.co.uk/nextbuses/1.0/1",
     'username': "TravelineAPI138",
@@ -77,7 +79,10 @@ class BusService:
                                  data=soap_request,
                                  timeout=10,
                                  auth=HTTPBasicAuth(self.username, self.password))
-        return self.convert_xml(response.text)
+        if response.status_code == 200:
+            return self.convert_xml(response.text)
+        else:
+            raise ServerError(message=f"Failed to get bus departures. Server returned code {response.status_code}", http_code=500)
 
     def convert_xml(self, xml: str) -> List[BusDeparture]:
         xmldoc = minidom.parseString(xml)
@@ -98,5 +103,5 @@ class BusService:
 
 if __name__ == '__main__':
     service = get_default_bus_service()
-    response = service.get_bus_departures(stop=stops["Yaxham_Road"])
+    response = service.get_bus_departures(stop="2900Y011")
     print(response)

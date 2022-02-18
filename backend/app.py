@@ -1,5 +1,7 @@
 from flask import jsonify, request
 from flask import Flask, render_template, Response
+
+from exceptions.exceptions import ServerError
 from services.rss import get_rss
 from services.buses import get_default_bus_service
 from services.weather import get_weather_service, Resolution
@@ -47,6 +49,11 @@ def buses() -> Response:
     stop_code = request.args.get("stops")
     data = get_default_bus_service().get_bus_departures(stop_code)
     return jsonify(data)
+
+
+@app.errorhandler(ServerError)
+def handle_bad_request(e: ServerError):
+    return e.message, e.http_code
 
 
 if __name__ == '__main__':
