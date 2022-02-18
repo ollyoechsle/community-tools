@@ -26,6 +26,8 @@ def news() -> Response:
 @app.route('/weather/daily')
 def daily_weather() -> Response:
     location = request.args.get("location")
+    assert location is not None
+
     data = get_weather_service().get_location_forecast(location_id=int(location), resolution=Resolution.DAILY)
     return jsonify(data)
 
@@ -33,6 +35,8 @@ def daily_weather() -> Response:
 @app.route('/weather/hourly')
 def hourly_weather() -> Response:
     location = request.args.get("location")
+    assert location is not None
+
     data = get_weather_service().get_location_forecast(location_id=int(location), resolution=Resolution.HOURLY)
     return jsonify(data)
 
@@ -40,14 +44,19 @@ def hourly_weather() -> Response:
 @app.route('/weather/text')
 def text_weather() -> Response:
     region = request.args.get("region")
+    assert region is not None
+
     data = get_weather_service().get_regional_text_forecast(region=int(region))
     return jsonify(data)
 
 
 @app.route('/buses')
 def buses() -> Response:
-    stop_code = request.args.get("stops")
+    stop_code = request.args.get("stop")
+    assert stop_code is not None
+
     data = get_default_bus_service().get_bus_departures(stop_code)
+    print(data)
     return jsonify(data)
 
 

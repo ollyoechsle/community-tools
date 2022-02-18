@@ -74,13 +74,14 @@ class BusService:
         return request_xml
 
     def get_bus_departures(self, stop) -> List[BusDeparture]:
+        assert stop is not None
         soap_request = self.get_soap_request(stop)
         response = requests.post(url='http://nextbus.mxdata.co.uk/nextbuses/1.0/1',
                                  data=soap_request,
                                  timeout=10,
                                  auth=HTTPBasicAuth(self.username, self.password))
         if response.status_code == 200:
-            return self.convert_xml(response.text)
+            return self.convert_xml(xml=response.text)
         else:
             raise ServerError(message=f"Failed to get bus departures. Server returned code {response.status_code}", http_code=500)
 
@@ -89,9 +90,9 @@ class BusService:
 
         visits = xmldoc.getElementsByTagName("MonitoredStopVisit")
 
-        return [self.to_object(visit) for visit in visits]
+        return [self.to_departure(visit) for visit in visits]
 
-    def to_object(self, item) -> BusDeparture:
+    def to_departure(self, item) -> BusDeparture:
         return BusDeparture(
             destination=get_element_text(item, 'DirectionName'),
             scheduled=get_element_text(item, 'AimedDepartureTime'),
@@ -103,5 +104,5 @@ class BusService:
 
 if __name__ == '__main__':
     service = get_default_bus_service()
-    response = service.get_bus_departures(stop="2900Y011")
+    response = service.get_bus_departures(stop="gwntmjp")
     print(response)
