@@ -1,11 +1,30 @@
 <template>
   <div class="ct-component ct-bus-times">
-    <ul class="bus-times">
-      Stop {{stop}}
-      {{data}}
-    </ul>
+    <div class="bus-times" v-if="data">
+      <table class="table">
+        <thead>
+        <tr>
+          <th class="service">No.</th>
+          <th>Toward</th>
+          <th class="time">Departs</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr :class="departure.className" v-for="(departure, index) in data" :key="index">
+          <td class="service">{{ departure.service }}</td>
+          <td>{{ departure.destination }}</td>
+          <td class="time">
+            <time>
+              {{ departure.time }}
+            </time>
+            <div class="inTime">{{ departure.inTime }}</div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-if="error" class="ct-error-message">
-      {{error}}
+      {{ error }}
     </div>
     <div v-if="loading" class="ct-loading">
       Loading...
