@@ -12,17 +12,15 @@ from services.bus_config import get_directions
 from services.bus_model import BusDeparture, BusResponse
 
 config = {
-    'url': "http://nextbus.mxdata.co.uk/nextbuses/1.0/1",
-    'username': "TravelineAPI138",
-    'password': "AeD6Otai"
+    "url": "http://nextbus.mxdata.co.uk/nextbuses/1.0/1",
+    "username": "TravelineAPI138",
+    "password": "AeD6Otai",
 }
 
 
 def get_default_bus_service():
     return BusService(
-        hostname=config['url'],
-        username=config['username'],
-        password=config['password']
+        hostname=config["url"], username=config["username"], password=config["password"]
     )
 
 
@@ -45,36 +43,43 @@ class BusService:
         self.password = password
 
     def get_soap_request(self, stop: str) -> str:
-        request_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%SZ')
-        request_xml = (f'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                       f'<Siri version="1.0" xmlns="http://www.siri.org.uk/">'
-                       f'<ServiceRequest>'
-                       f'<RequestTimestamp>{request_timestamp}</RequestTimestamp>'
-                       f'<RequestorRef>{self.username}</RequestorRef>'
-                       f'<StopMonitoringRequest version="1.0">'
-                       f'<RequestTimestamp>{request_timestamp}</RequestTimestamp>'
-                       f'<MessageIdentifier>123456</MessageIdentifier>'
-                       f'<MonitoringRef>{stop}</MonitoringRef>'
-                       f'</StopMonitoringRequest>'
-                       f'</ServiceRequest>'
-                       f'</Siri>')
+        request_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%SZ")
+        request_xml = (
+            f'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            f'<Siri version="1.0" xmlns="http://www.siri.org.uk/">'
+            f"<ServiceRequest>"
+            f"<RequestTimestamp>{request_timestamp}</RequestTimestamp>"
+            f"<RequestorRef>{self.username}</RequestorRef>"
+            f'<StopMonitoringRequest version="1.0">'
+            f"<RequestTimestamp>{request_timestamp}</RequestTimestamp>"
+            f"<MessageIdentifier>123456</MessageIdentifier>"
+            f"<MonitoringRef>{stop}</MonitoringRef>"
+            f"</StopMonitoringRequest>"
+            f"</ServiceRequest>"
+            f"</Siri>"
+        )
         return request_xml
 
     def get_bus_departures(self, stop) -> BusResponse:
         assert stop is not None
         soap_request = self.get_soap_request(stop)
-        response = requests.post(url='http://nextbus.mxdata.co.uk/nextbuses/1.0/1',
-                                 data=soap_request,
-                                 timeout=10,
-                                 auth=HTTPBasicAuth(self.username, self.password))
+        response = requests.post(
+            url="http://nextbus.mxdata.co.uk/nextbuses/1.0/1",
+            data=soap_request,
+            timeout=10,
+            auth=HTTPBasicAuth(self.username, self.password),
+        )
         if response.status_code == 200:
             return BusResponse(
                 directions=get_directions(),
-                departures=self.convert_xml(xml=response.text)
+                departures=self.convert_xml(xml=response.text),
             )
         else:
-            raise ServerError(message=f"Failed to get bus departures. Server returned code {response.status_code}",
-                              http_code=500)
+            raise ServerError(
+                message=f"Failed to get bus departures."
+                f"Server returned code {response.status_code}",
+                http_code=500,
+            )
 
     def convert_xml(self, xml: str) -> List[BusDeparture]:
         xmldoc = minidom.parseString(xml)
@@ -85,9 +90,9 @@ class BusService:
 
     def to_departure(self, item) -> BusDeparture:
         return BusDeparture(
-            destination=get_element_text(item, 'DirectionName'),
-            scheduled=get_element_text(item, 'AimedDepartureTime'),
-            estimated=get_element_text(item, 'ExpectedDepartureTime'),
-            service=get_element_text(item, 'PublishedLineName'),
-            stop=get_element_text(item, 'MonitoringRef'),
+            destination=get_element_text(item, "DirectionName"),
+            scheduled=get_element_text(item, "AimedDepartureTime"),
+            estimated=get_element_text(item, "ExpectedDepartureTime"),
+            service=get_element_text(item, "PublishedLineName"),
+            stop=get_element_text(item, "MonitoringRef"),
         )

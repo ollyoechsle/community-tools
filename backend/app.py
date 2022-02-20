@@ -11,37 +11,45 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/')
+@app.route("/")
 def root():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@app.route('/news')
+@app.route("/news")
 def news() -> Response:
     data = get_rss(
-        "http://createfeed.fivefilters.org/extract.php?url=https%3A%2F%2Fwww.derehamtimes.co.uk%2F&item=.mdc-card__primary-action&item_title=.mdc-card__title")
+        "http://createfeed.fivefilters.org/extract.php?"
+        "url=https%3A%2F%2Fwww.derehamtimes.co.uk%2F"
+        "&item=.mdc-card__primary-action"
+        "&item_title=.mdc-card__title"
+    )
     return jsonify(data)
 
 
-@app.route('/weather/daily')
+@app.route("/weather/daily")
 def daily_weather() -> Response:
     location = request.args.get("location")
     assert location is not None
 
-    data = get_weather_service().get_location_forecast(location_id=int(location), resolution=Resolution.DAILY)
+    data = get_weather_service().get_location_forecast(
+        location_id=int(location), resolution=Resolution.DAILY
+    )
     return jsonify(data)
 
 
-@app.route('/weather/hourly')
+@app.route("/weather/hourly")
 def hourly_weather() -> Response:
     location = request.args.get("location")
     assert location is not None
 
-    data = get_weather_service().get_location_forecast(location_id=int(location), resolution=Resolution.HOURLY)
+    data = get_weather_service().get_location_forecast(
+        location_id=int(location), resolution=Resolution.HOURLY
+    )
     return jsonify(data)
 
 
-@app.route('/weather/text')
+@app.route("/weather/text")
 def text_weather() -> Response:
     region = request.args.get("region")
     assert region is not None
@@ -50,7 +58,7 @@ def text_weather() -> Response:
     return jsonify(data)
 
 
-@app.route('/buses')
+@app.route("/buses")
 def buses() -> Response:
     stop_code = request.args.get("stop")
     assert stop_code is not None
@@ -64,7 +72,7 @@ def handle_bad_request(e: ServerError):
     return e.message, e.http_code
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # This is used when running locally only. When deploying to Google App
     # Engine, a webserver process such as Gunicorn will serve the app. This
     # can be configured by adding an `entrypoint` to app.yaml.
@@ -72,4 +80,4 @@ if __name__ == '__main__':
     # the "static" directory. See:
     # http://flask.pocoo.org/docs/1.0/quickstart/#static-files. Once deployed,
     # App Engine itself will serve those files as configured in app.yaml.
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host="127.0.0.1", port=8080, debug=True)

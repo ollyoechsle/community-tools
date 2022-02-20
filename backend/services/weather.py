@@ -1,30 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from time import strptime
 from typing import List, Dict, Iterable
 
 import requests
 
-import json
-
-
-# config = {
-#     "APIKey": ,
-#     "hourlyForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=3hourly&key=%s",
-#     "dailyForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/%s?res=daily&key=%s",
-#     "textForecastUrl": "http://datapoint.metoffice.gov.uk/public/data/txt/wxfcs/regionalforecast/json/%s?key=%s",
-
-#     "region": {
-#         "ee": "512",
-#         "uk": "515"
-#     }
-# }
 
 def get_weather_service():
     return WeatherService(
         api_key="a5b7c8f2-f1d0-44c5-a8bb-71d6d4e0892e",
-        hostname="http://datapoint.metoffice.gov.uk"
+        hostname="http://datapoint.metoffice.gov.uk",
     )
 
 
@@ -85,63 +70,55 @@ REPORT_CODE_LOOKUP = {
     "6": {"name": "Fog", "className": "fogMist"},
     "7": {"name": "Cloudy", "className": "cloudy"},
     "8": {"name": "Overcast", "className": "cloudy"},
-
     "9": {"name": "Light rain shower", "className": "lightRainShowerNight"},
     "10": {"name": "Light rain shower", "className": "lightRainShowerDay"},
-
     "11": {"name": "Drizzle", "className": "lightRain"},
     "12": {"name": "Light rain", "className": "lightRain"},
-
     "13": {"name": "Heavy rain shower", "className": "heavyRain"},
     "14": {"name": "Heavy rain shower", "className": "heavyRain"},
     "15": {"name": "Heavy rain", "className": "heavyRain"},
-
     "16": {"name": "Sleet shower", "className": "sleet"},
     "17": {"name": "Sleet shower", "className": "sleet"},
     "18": {"name": "Sleet", "className": "sleet"},
-
     "19": {"name": "Hail shower", "className": "lightSnowDay"},
     "20": {"name": "Hail shower", "className": "lightSnowNight"},
     "21": {"name": "Hail", "className": "lightSnowDay"},
-
     "22": {"name": "Light snow shower", "className": "lightSnowDay"},
     "23": {"name": "Light snow shower", "className": "lightSnowNight"},
     "24": {"name": "Light snow", "className": "lightSnowDay"},
-
     "25": {"name": "Heavy snow shower", "className": "heavySnow"},
     "26": {"name": "Heavy snow shower", "className": "heavySnow"},
     "27": {"name": "Heavy snow", "className": "heavySnow"},
-
     "28": {"name": "Thunder shower", "className": "thunderStorm"},
     "29": {"name": "Thunder shower", "className": "thunderStorm"},
-    "30": {"name": "Thunder", "className": "thunderStorm"}
+    "30": {"name": "Thunder", "className": "thunderStorm"},
 }
 
 
 def get_day(iso_date: str) -> str:
-    date = datetime.strptime(iso_date, '%Y-%m-%dZ')
-    return date.strftime('%a')
+    date = datetime.strptime(iso_date, "%Y-%m-%dZ")
+    return date.strftime("%a")
 
 
 def get_periods(periods: Dict) -> Iterable[WeatherForecastPeriod]:
     for period in periods:
-        for report in period['Rep']:
-            temp_key = 'Dm' if report['$'] == 'Day' else 'Nm'
+        for report in period["Rep"]:
+            temp_key = "Dm" if report["$"] == "Day" else "Nm"
             yield WeatherForecastPeriod(
-                day=get_day(period['value']),
-                timeOfDay=report['$'],
-                icon=REPORT_CODE_LOOKUP[report['W']]["className"],
-                report=REPORT_CODE_LOOKUP[report['W']]["name"],
+                day=get_day(period["value"]),
+                timeOfDay=report["$"],
+                icon=REPORT_CODE_LOOKUP[report["W"]]["className"],
+                report=REPORT_CODE_LOOKUP[report["W"]]["name"],
                 temperature=report[temp_key],
-                windDirection=report['D'],
-                windSpeed=report['S']
+                windDirection=report["D"],
+                windSpeed=report["S"],
             )
 
 
 def convert_to_weather_dto(data: Dict) -> WeatherForecast:
-    site_report = data['SiteRep']
+    site_report = data["SiteRep"]
     return WeatherForecast(
-        periods=list(get_periods(site_report['DV']['Location']['Period']))
+        periods=list(get_periods(site_report["DV"]["Location"]["Period"]))
     )
 
 
@@ -157,17 +134,27 @@ class WeatherService:
         url = f"{self.hostname}/public/data/txt/wxfcs/regionalforecast/json/{region}?key={self.api_key}"
         response = requests.get(url)
         data = response.json()
-        first_period_paragraphs = data["RegionalFcst"]["FcstPeriods"]["Period"][0]["Paragraph"]
-        return [ForecastParagraph(title=para["title"], text=para["$"]) for para in first_period_paragraphs]
+        first_period_paragraphs = data["RegionalFcst"]["FcstPeriods"]["Period"][0][
+            "Paragraph"
+        ]
+        return [
+            ForecastParagraph(title=para["title"], text=para["$"])
+            for para in first_period_paragraphs
+        ]
 
     def get_location_forecast(self, location_id: int, resolution: Resolution) -> Dict:
-        url = f"{self.hostname}/public/data/val/wxfcs/all/json/{location_id}?res={get_resolution_param(resolution)}&key={self.api_key}"
+        url = (
+            f"{self.hostname}/public/data/val/wxfcs/all/json/{location_id}"
+            f"?res={get_resolution_param(resolution)}&key={self.api_key}"
+        )
         response = requests.get(url)
         return convert_to_weather_dto(response.json())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     weather_service = get_weather_service()
     # response = weather_service.get_regional_text_forecast(region=Region.EASTERN_ENGLAND)
-    response = weather_service.get_location_forecast(location_id=351196, resolution=Resolution.HOURLY)
+    response = weather_service.get_location_forecast(
+        location_id=351196, resolution=Resolution.HOURLY
+    )
     print(response)

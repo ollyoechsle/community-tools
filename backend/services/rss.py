@@ -25,10 +25,10 @@ def getText(dom, tagName):
 
 def to_object(item: Element) -> NewsResponseDto:
     return NewsResponseDto(
-        title=getText(item, 'title'),
-        description=getText(item, 'description'),
-        pubDate=toISOTime(getText(item, 'pubDate')),
-        link=getText(item, 'link')
+        title=getText(item, "title"),
+        description=getText(item, "description"),
+        pubDate=toISOTime(getText(item, "pubDate")),
+        link=getText(item, "link"),
     )
 
 
@@ -36,5 +36,5 @@ def toISOTime(text: str) -> Optional[str]:
     if not text:
         return None
     timeObj = datetime.strptime(text[:-6], "%a, %d %b %Y %H:%M:%S")
-    formatted = datetime.strftime('%Y-%m-%dT%H:%M:%SZ', timeObj)
+    formatted = datetime.strftime("%Y-%m-%dT%H:%M:%SZ", timeObj)
     return formatted

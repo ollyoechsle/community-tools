@@ -13,13 +13,11 @@ config = {
         "Dereham": "351196",
         "Norwich": "310115",
         "Swaffham": "324250",
-        "KingsLynn": "352116"
+        "KingsLynn": "352116",
     },
-    "region": {
-        "ee": "512",
-        "uk": "515"
-    }
+    "region": {"ee": "512", "uk": "515"},
 }
+
 
 def get_text_forecast(region_id):
     url = config["textForecastUrl"] % (region_id, config["APIKey"])
@@ -64,12 +62,14 @@ class HourlyForecastController(webapp2.RequestHandler):
         content = get_cached_detailed_forecast("hourlyForecastUrl", location)
         common.write_response(self.request, self.response, content)
 
+
 class DailyForecastController(webapp2.RequestHandler):
     def get(self):
         location = self.request.get("location") or config["location"]["Dereham"]
         logging.info("Daily weather request for location:" + location)
         content = get_cached_detailed_forecast("dailyForecastUrl", location)
         common.write_response(self.request, self.response, content)
+
 
 class TextForecastController(webapp2.RequestHandler):
     def get(self):
@@ -78,8 +78,12 @@ class TextForecastController(webapp2.RequestHandler):
         content = get_cached_text_forecast(region_id)
         common.write_response(self.request, self.response, content)
 
-app = webapp2.WSGIApplication([
-    ('/weather/hourly', HourlyForecastController),
-    ('/weather/daily', DailyForecastController),
-    ('/weather/text', TextForecastController)
-], debug=True)
+
+app = webapp2.WSGIApplication(
+    [
+        ("/weather/hourly", HourlyForecastController),
+        ("/weather/daily", DailyForecastController),
+        ("/weather/text", TextForecastController),
+    ],
+    debug=True,
+)
