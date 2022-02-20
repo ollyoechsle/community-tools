@@ -50,7 +50,7 @@ export default class Weather extends Vue {
   public error? = ""
   public loading = false
 
-  public created() {
+  public mounted() {
     if (!this.location) {
       this.error = "No location specified"
     } else {
