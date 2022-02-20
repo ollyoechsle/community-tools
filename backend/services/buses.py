@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import List
 from xml.dom.minidom import Element
 
@@ -9,6 +8,8 @@ from xml.dom import minidom
 from requests.auth import HTTPBasicAuth
 
 from exceptions.exceptions import ServerError
+from services.bus_config import get_directions
+from services.bus_model import BusDeparture, BusResponse
 
 config = {
     'url': "http://nextbus.mxdata.co.uk/nextbuses/1.0/1",
@@ -25,26 +26,12 @@ def get_default_bus_service():
     )
 
 
-stops = {
-    "Yaxham_Road": "NFOAMTMG"
-}
-
-
 def get_element_text(dom: Element, tag_name: str):
     elements = dom.getElementsByTagName(tag_name)
     if len(elements) > 0:
         return elements[0].childNodes[0].data
     else:
         return None
-
-
-@dataclass
-class BusDeparture:
-    destination: str
-    scheduled: str
-    estimated: str
-    service: str
-    stop: str
 
 
 class BusService:
@@ -73,7 +60,7 @@ class BusService:
                        f'</Siri>')
         return request_xml
 
-    def get_bus_departures(self, stop) -> List[BusDeparture]:
+    def get_bus_departures(self, stop) -> BusResponse:
         assert stop is not None
         soap_request = self.get_soap_request(stop)
         response = requests.post(url='http://nextbus.mxdata.co.uk/nextbuses/1.0/1',
@@ -81,9 +68,13 @@ class BusService:
                                  timeout=10,
                                  auth=HTTPBasicAuth(self.username, self.password))
         if response.status_code == 200:
-            return self.convert_xml(xml=response.text)
+            return BusResponse(
+                directions=get_directions(),
+                departures=self.convert_xml(xml=response.text)
+            )
         else:
-            raise ServerError(message=f"Failed to get bus departures. Server returned code {response.status_code}", http_code=500)
+            raise ServerError(message=f"Failed to get bus departures. Server returned code {response.status_code}",
+                              http_code=500)
 
     def convert_xml(self, xml: str) -> List[BusDeparture]:
         xmldoc = minidom.parseString(xml)
@@ -100,9 +91,3 @@ class BusService:
             service=get_element_text(item, 'PublishedLineName'),
             stop=get_element_text(item, 'MonitoringRef'),
         )
-
-
-if __name__ == '__main__':
-    service = get_default_bus_service()
-    response = service.get_bus_departures(stop="gwntmjp")
-    print(response)

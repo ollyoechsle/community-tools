@@ -14,7 +14,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr :class="departure.className" v-for="(departure, index) in data" :key="index">
+      <tr :class="departure.className" v-for="(departure, index) in data.departures" :key="index">
         <td class="service">{{ departure.service }}</td>
         <td>{{ departure.destination }}</td>
         <td class="time">
@@ -38,7 +38,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
-import {BusDeparture} from "@/model/model";
+import {BusDeparture, BusResponse} from "@/model/model";
 
 @Component
 export default class BusTimes extends Vue {
@@ -49,7 +49,7 @@ export default class BusTimes extends Vue {
   public currentStop?: string
 
   private loading = false;
-  private data: BusDeparture[] = []
+  private data: BusResponse[] = []
   private error? = ""
 
   public mounted() {
@@ -63,12 +63,12 @@ export default class BusTimes extends Vue {
     this.data = []
     const url = `http://localhost:8080/buses?stop=${stopId}`
     axios.get(url).then(
-        (response: AxiosResponse<BusDeparture[]>) => {
+        (response: AxiosResponse<BusResponse[]>) => {
           this.data = response.data
           this.loading = false;
         },
         (error) => {
-          this.error = "Unable to load news. " + error
+          this.error = "Unable to load bus times. " + error
           this.loading = false;
         })
   }

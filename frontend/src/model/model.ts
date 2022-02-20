@@ -5,3 +5,7 @@ export interface BusDeparture {
     service: string;
     stop: string;
 }
+
+export interface BusResponse {
+    departures: BusDeparture[]
+}

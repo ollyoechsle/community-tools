@@ -55,9 +55,8 @@ def buses() -> Response:
     stop_code = request.args.get("stop")
     assert stop_code is not None
 
-    data = get_default_bus_service().get_bus_departures(stop_code)
-    print(data)
-    return jsonify(data)
+    bus_response = get_default_bus_service().get_bus_departures(stop_code)
+    return jsonify(bus_response)
 
 
 @app.errorhandler(ServerError)
