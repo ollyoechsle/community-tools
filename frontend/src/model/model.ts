@@ -1,3 +1,17 @@
+export interface StopDefinition {
+    id: string;
+    label: string;
+    indicator: string;
+    lat?: number;
+    long?: number;
+}
+
+export interface DirectionDefinition {
+    id: string;
+    label: string;
+    stops: StopDefinition[];
+}
+
 export interface BusDeparture {
     destination: string;
     scheduled: string;
@@ -7,5 +21,6 @@ export interface BusDeparture {
 }
 
 export interface BusResponse {
+    directions: DirectionDefinition[]
     departures: BusDeparture[]
 }

@@ -60,7 +60,7 @@ class BusService:
         )
         return request_xml
 
-    def get_bus_departures(self, stop) -> BusResponse:
+    def get_bus_departures(self, location: str, stop: str) -> BusResponse:
         assert stop is not None
         soap_request = self.get_soap_request(stop)
         response = requests.post(
@@ -71,7 +71,7 @@ class BusService:
         )
         if response.status_code == 200:
             return BusResponse(
-                directions=get_directions(),
+                directions=get_directions(location),
                 departures=self.convert_xml(xml=response.text),
             )
         else:

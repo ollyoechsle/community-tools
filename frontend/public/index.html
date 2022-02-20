@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>components-vue2</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but components-vue2 doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
+    <link rel="stylesheet" href="http://yaxham.com/wp-includes/css/dist/block-library/style.min.css?ver=5.9">
+    <link rel="stylesheet" href="http://yaxham.com/wp-content/themes/yaxham-accessible-theme/normalize.css?ver=1.0">
+    <link rel="stylesheet" href="http://yaxham.com/wp-content/themes/yaxham-accessible-theme/style.css?ver=1.0">
+    <title>CT Frontend</title>
+</head>
+<body>
+<noscript>
+    <strong>We're sorry but CT frontend doesn't work properly without JavaScript enabled. Please enable it to
+        continue.</strong>
+</noscript>
 
-    <h1>Web Component Demos</h1>
+<h1>Web Component Demos</h1>
 
-    <h2>News Component</h2>
-    <ct-news></ct-news>
+<h2>Bus Times</h2>
+<ct-bus-times location="yaxham" default-stop="gwntmjp"></ct-bus-times>
 
-    <h2>Weather Component</h2>
-    <ct-weather location="351196"></ct-weather>
+<h2>News Component</h2>
+<ct-news></ct-news>
 
-    <h2>Bus Times</h2>
-    <ct-bus-times stops="gwntmjp"></ct-bus-times>
+<h2>Weather Component</h2>
+<ct-weather location="351196"></ct-weather>
 
-    <!-- built files will be auto injected -->
-  </body>
+<!-- built files will be auto injected -->
+</body>
 </html>

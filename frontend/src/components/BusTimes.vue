@@ -1,31 +1,43 @@
 <template>
   <div class="ct-component ct-bus-times">
-    <div class="stops">
-      <li v-for="(stop, index) in allStops" :key="index">
-        <a @click="loadData(stop)">{{ stop }}</a>
-      </li>
+    <div class="bus-times" v-if="data">
+      <div class="directions ct-tabs">
+        <div class="ct-tab"
+             v-for="(direction, index) in data.directions"
+             v-bind:class="{ selected: isSelected(direction) }"
+             :key="index">
+          <a @click="selectDirection(direction)">
+            {{ direction.label }}
+          </a>
+        </div>
+      </div>
+      <ul class="stops ct-horizontal-list">
+        <li v-for="(stop, index) in data.directions[0].stops" :key="index">
+          {{ stop.label }}
+        </li>
+      </ul>
+      <table class="bus-departures">
+        <thead>
+        <tr>
+          <th class="service">No.</th>
+          <th>Toward</th>
+          <th class="time">Departs</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr :class="departure.className" v-for="(departure, index) in data.departures" :key="index">
+          <td class="service">{{ departure.service }}</td>
+          <td>{{ departure.destination }}</td>
+          <td class="time">
+            <time>
+              {{ departure.time }}
+            </time>
+            <div class="inTime">{{ departure.inTime }}</div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-    <table class="bus-departures" v-if="data">
-      <thead>
-      <tr>
-        <th class="service">No.</th>
-        <th>Toward</th>
-        <th class="time">Departs</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr :class="departure.className" v-for="(departure, index) in data.departures" :key="index">
-        <td class="service">{{ departure.service }}</td>
-        <td>{{ departure.destination }}</td>
-        <td class="time">
-          <time>
-            {{ departure.time }}
-          </time>
-          <div class="inTime">{{ departure.inTime }}</div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
     <div v-if="error" class="ct-error-message">
       {{ error }}
     </div>
@@ -38,32 +50,34 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
-import {BusDeparture, BusResponse} from "@/model/model";
+import {BusDeparture, BusResponse, DirectionDefinition} from "@/model/model";
 
 @Component
 export default class BusTimes extends Vue {
 
   @Prop({required: true})
-  public stops?: string;
-  public allStops: string[] = [];
-  public currentStop?: string
+  public location?: string;
+
+  @Prop({required: true})
+  public defaultStop?: string;
+
+  public selectedDirection: any = null;
 
   private loading = false;
-  private data: BusResponse[] = []
+  private data: BusResponse | null = null
   private error? = ""
 
   public mounted() {
-    this.allStops = this.stops!.split(",").map(stop => stop.trim())
-    this.loadData(this.allStops[0])
+    this.loadData(this.location!, this.defaultStop!)
   }
 
-  public loadData(stopId: string) {
+  public loadData(location: string, stopId: string) {
     this.loading = true;
     this.error = undefined
-    this.data = []
-    const url = `http://localhost:8080/buses?stop=${stopId}`
+    this.data = null
+    const url = `http://localhost:8080/buses?location=${location}&stop=${stopId}`
     axios.get(url).then(
-        (response: AxiosResponse<BusResponse[]>) => {
+        (response: AxiosResponse<BusResponse>) => {
           this.data = response.data
           this.loading = false;
         },
@@ -72,5 +86,25 @@ export default class BusTimes extends Vue {
           this.loading = false;
         })
   }
+
+  public selectDirection(direction: DirectionDefinition) {
+    this.selectedDirection = direction;
+  }
+
+  public isSelected(direction: DirectionDefinition) {
+    return direction == this.selectedDirection;
+  }
+
 }
 </script>
+
+<style>
+.ct-tabs .ct-tab {
+  display: inline-flex;
+}
+
+.ct-tabs .ct-tab.selected {
+  background: red;
+}
+
+</style>

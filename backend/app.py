@@ -60,10 +60,15 @@ def text_weather() -> Response:
 
 @app.route("/buses")
 def buses() -> Response:
+    location = request.args.get("location")
+    assert location is not None
+
     stop_code = request.args.get("stop")
     assert stop_code is not None
 
-    bus_response = get_default_bus_service().get_bus_departures(stop_code)
+    bus_response = get_default_bus_service().get_bus_departures(
+        location=location, stop=stop_code
+    )
     return jsonify(bus_response)
 
 
