@@ -30,7 +30,7 @@ export default class WeatherIcon extends Vue {
 
   public iconUrl() {
     //@ts-ignore
-    return `http://localhost:8080/static/weather/icons/${iconMapping[this.icon]}.png`
+    return `${process.env.VUE_APP_API_URL}/static/weather/icons/${iconMapping[this.icon]}.png`
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div v-if="loading" class="ct-loading">
-    Loading...
+    <img :src="iconUrl()"/>
   </div>
 </template>
 
@@ -9,15 +9,19 @@ import {Component, Prop, Vue} from "vue-property-decorator";
 
 @Component
 export default class Loading extends Vue {
-    @Prop({required: true})
-    private loading = false;
+  @Prop({required: true})
+  private loading = false;
+
+  public iconUrl() {
+    //@ts-ignore
+    return `${process.env.VUE_APP_API_URL}/static/ajax-loader.gif`
+  }
 }
 </script>
 
 <style>
 .ct-loading {
-    background: url(http://localhost:8080/static/ajax-loader.gif) no-repeat center;
-    min-height: 137px;
-    text-align: center;
+  min-height: 137px;
+  text-align: center;
 }
 </style>

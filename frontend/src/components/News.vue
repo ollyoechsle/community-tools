@@ -35,7 +35,7 @@ export default class News extends Vue {
     this.loading = true;
     this.error = undefined
     this.news = []
-    axios.get('http://localhost:8080/news').then(
+    axios.get(`${process.env.VUE_APP_API_URL}/news`).then(
         (response: AxiosResponse<any>) => {
           this.news = response.data
           this.loading = false;

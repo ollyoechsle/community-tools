@@ -69,7 +69,7 @@ export default class Weather extends Vue {
     this.weatherData = null
     this.error = undefined
     this.loading = true
-    axios.get(`http://localhost:8080/weather/daily?location=${this.location}`).then(
+    axios.get(`${process.env.VUE_APP_API_URL}/weather/daily?location=${this.location}`).then(
         (response: AxiosResponse<any>) => {
           this.weatherData = response.data
           this.loading = false

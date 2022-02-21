@@ -78,7 +78,7 @@ export default class BusTimes extends Vue {
     this.loading = true;
     this.error = undefined
     this.data = null
-    const url = `http://localhost:8080/buses?location=${location}&stop=${stopId}`
+    const url = `${process.env.VUE_APP_API_URL}/buses?location=${location}&stop=${stopId}`
     axios.get(url).then(
         (response: AxiosResponse<BusResponse>) => {
           this.data = response.data
