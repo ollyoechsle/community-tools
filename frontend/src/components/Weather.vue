@@ -17,6 +17,7 @@
             <small>{{ period.timeOfDay }}</small>
           </td>
           <td>
+            <weather-icon :icon="period.icon"></weather-icon>
             <div class="icon" :class="period.icon">{{period.report}}</div>
           </td>
           <td class="numeric">{{ period.temperature }} &deg;C</td>
@@ -30,9 +31,7 @@
     <div v-if="error" class="ct-error-message">
       {{ error }}
     </div>
-    <div v-if="loading" class="ct-loading">
-      Loading...
-    </div>
+    <loading :loading="loading"></loading>
   </div>
 </template>
 
@@ -40,7 +39,15 @@
 import {Component, Prop, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
 
-@Component
+import Loading from "@/components/Loading.vue";
+import WeatherIcon from "@/components/WeatherIcon.vue";
+
+@Component({
+  components: {
+    Loading,
+    WeatherIcon
+  }
+})
 export default class Weather extends Vue {
 
   @Prop({required: true})

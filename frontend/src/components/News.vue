@@ -6,19 +6,22 @@
       </li>
     </ul>
     <div v-if="error" class="ct-error-message">
-      {{error}}
+      {{ error }}
     </div>
-    <div v-if="loading" class="ct-loading">
-      Loading...
-    </div>
+    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
+import Loading from "@/components/Loading.vue";
 
-@Component
+@Component({
+  components: {
+    Loading
+  }
+})
 export default class News extends Vue {
   private loading = false;
   private news: any = []

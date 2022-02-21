@@ -41,18 +41,21 @@
     <div v-if="error" class="ct-error-message">
       {{ error }}
     </div>
-    <div v-if="loading" class="ct-loading">
-      Loading...
-    </div>
+    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
-import {BusDeparture, BusResponse, DirectionDefinition} from "@/model/model";
+import {BusResponse, DirectionDefinition} from "@/model/model";
+import Loading from "@/components/Loading.vue";
 
-@Component
+@Component({
+  components: {
+    Loading
+  }
+})
 export default class BusTimes extends Vue {
 
   @Prop({required: true})
