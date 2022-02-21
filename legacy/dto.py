@@ -9,3 +9,9 @@ class NewsResponseDto:
     description: str
     pubDate: str
     link: str
+
+@dataclass_json
+@dataclass
+class ImageResponseDto:
+    url: str
+    alt: str

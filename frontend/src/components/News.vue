@@ -2,6 +2,7 @@
   <div class="ct-component ct-news">
     <ul class="news">
       <li v-for="(article, index) in news" :key="index">
+        <news-img :news-url="article.link"></news-img>
         <a target="_blank" :href="article.link">{{ article.title }}</a>
       </li>
     </ul>
@@ -15,11 +16,13 @@
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import axios, {AxiosResponse} from 'axios'
+import NewsImg from "@/components/NewsImg.vue";
 import Loading from "@/components/Loading.vue";
 
 @Component({
   components: {
-    Loading
+    Loading,
+    NewsImg
   }
 })
 export default class News extends Vue {

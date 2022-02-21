@@ -24,3 +24,8 @@ export interface BusResponse {
     directions: DirectionDefinition[]
     departures: BusDeparture[]
 }
+
+export interface ImageResponse {
+    url: string;
+    alt: string
+}

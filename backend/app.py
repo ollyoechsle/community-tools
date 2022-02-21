@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask import Flask, render_template, Response
 
 from exceptions.exceptions import ServerError
-from services.rss import get_rss
+from services.rss import get_rss, get_news_image
 from services.buses import get_default_bus_service
 from services.weather import get_weather_service, Resolution
 from flask_cors import CORS
@@ -25,6 +25,12 @@ def news() -> Response:
         "&item_title=.mdc-card__title"
     )
     return jsonify(data)
+
+
+@app.route("/news/img")
+def news_image() -> Response:
+    url = request.args.get("url")
+    return jsonify(get_news_image(url))
 
 
 @app.route("/weather/daily")
